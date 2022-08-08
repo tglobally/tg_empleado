@@ -12,7 +12,7 @@
 
   "autoload": {
     "psr-4": {
-      "tglobally\\tg_cliente\\controllers\\": "controllers",
+      "tglobally\\tg_empleado\\controllers\\": "controllers",
       "config\\": "config/",
       "models\\": "orm",
       "tests\\": "tests/",

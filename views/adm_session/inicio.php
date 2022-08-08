@@ -1,4 +1,4 @@
-<?php /** @var \controllers\controlador_adm_session $controlador */
+<?php /** @var tglobally\tg_empleado\controllers\controlador_adm_session $controlador */
 
 use config\views;
 $url_assets = (new views())->url_assets;
@@ -19,12 +19,12 @@ $url_assets = (new views())->url_assets;
     <div class="row">
         <div class="col-md-12">
             <div class="col-sm-2">
-                <a href="">
+                <a href="index.php?seccion=org_tipo_puesto&accion=lista&session_id=<?php echo $controlador->session_id; ?>">
                     <div class="cont_imagen_accion">
                         <img src="<?php echo $url_assets; ?>img/inicio/imagen_2.jpg">
                     </div>
                     <div class="cont_text_accion">
-                        <h4 class="text_seccion">Empleados</h4>
+                        <h4 class="text_seccion">Tipos de Puesto</h4>
                         <h4 class="text_accion">Catologo</h4>
                     </div>
                 </a>
