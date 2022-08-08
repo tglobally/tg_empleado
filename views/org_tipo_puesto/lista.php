@@ -1,4 +1,4 @@
-<?php /** @var \tglobally\tg_cliente\controllers\controlador_org_tipo_puesto$controlador */ ?>
+<?php /** @var \tglobally\tg_empleado\controllers\controlador_org_tipo_puesto   $controlador */ ?>
 <?php
 
 use config\views;
@@ -6,7 +6,6 @@ $url_icons = (new views())->url_icons;
 ?>
 
 <?php include 'templates/org_tipo_puesto/lista/secciones.php'; ?>
-
 
 <div class="col-md-9 info-lista">
     <div class="col-lg-12 content">
@@ -57,10 +56,10 @@ $url_icons = (new views())->url_icons;
                             </a>
 
                         </th>
-                        <th><?php echo $registro->tg_cte_tipo_alianza_id; ?></th>
-                        <th><?php echo $registro->tg_cte_tipo_alianza_codigo; ?></th>
-                        <th><?php echo $registro->tg_cte_tipo_alianza_codigo_bis; ?></th>
-                        <th><?php echo $registro->tg_cte_tipo_alianza_descripcion; ?></th>
+                        <th><?php echo $registro->org_tipo_puesto_id; ?></th>
+                        <th><?php echo $registro->org_tipo_puesto_codigo; ?></th>
+                        <th><?php echo $registro->org_tipo_puesto_codigo_bis; ?></th>
+                        <th><?php echo $registro->org_tipo_puesto_descripcion; ?></th>
                     </tr>
                 <?php } ?>
 

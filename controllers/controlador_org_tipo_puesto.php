@@ -14,5 +14,4 @@ class controlador_org_tipo_puesto extends \gamboamartin\organigrama\controllers\
         $this->titulo_lista = 'Tipo puesto';
     }
 
-
 }

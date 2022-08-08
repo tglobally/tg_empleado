@@ -1,0 +1,27 @@
+@import "bootstrap.min.css";
+
+.card{
+    border-radius: 2em !important;
+    box-shadow: 0 5px 10px rgba(0,0,0,.2);
+    padding: 0;
+
+    background-color: #0B0595;
+}
+
+
+.embed-responsive .card-img-top {
+
+}
+
+.card-body {
+    height: 5vw !important;
+
+}
+.card-body>h4,.card-body>h5 {
+    color: #ffffff;
+}
+.card-img-top {
+    border-radius: 2em 2em  0  0 !important;
+    width: 100% !important;
+    object-fit: cover !important;
+}
