@@ -25,6 +25,8 @@ class controlador_adm_session extends \gamboamartin\controllers\controlador_adm_
     public string $link_lista_org_puesto = '';
     public string $link_alta_com_cliente = '';
     public string $link_lista_com_cliente = '';
+    public string $link_alta_em_empleado = '';
+    public string $link_lista_em_empleado = '';
 
     /**
      * Funcion de controlador donde se ejecutaran siempre que haya un acceso denegado
@@ -66,6 +68,8 @@ class controlador_adm_session extends \gamboamartin\controllers\controlador_adm_
         $this->link_alta_tg_cte_alianza = $hd;
         $hd = "index.php?seccion=com_cliente&accion=alta&session_id=$this->session_id";
         $this->link_alta_com_cliente = $hd;
+        $hd = "index.php?seccion=em_empleado&accion=alta&session_id=$this->session_id";
+        $this->link_alta_em_empleado = $hd;
 
         $hd = "index.php?seccion=org_tipo_puesto&accion=lista&session_id=$this->session_id";
         $this->link_lista_org_tipo_puesto = $hd;
@@ -73,6 +77,8 @@ class controlador_adm_session extends \gamboamartin\controllers\controlador_adm_
         $this->link_lista_org_puesto = $hd;
         $hd = "index.php?seccion=com_cliente&accion=lista&session_id=$this->session_id";
         $this->link_lista_com_cliente = $hd;
+        $hd = "index.php?seccion=em_empleado&accion=lista&session_id=$this->session_id";
+        $this->link_lista_em_empleado = $hd;
 
         $this->include_menu = (new generales())->path_base;
         $this->include_menu .= 'templates/inicio.php';

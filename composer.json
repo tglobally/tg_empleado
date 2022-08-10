@@ -58,6 +58,8 @@
     "gamboa.martin/direccion_postal": "dev-main",
     "tglobally/template_tg": "dev-main",
     "gamboa.martin/template_1": "dev-main",
+    "gamboa.martin/im_registro_patronal": "dev-main",
+    "gamboa.martin/empleado": "dev-main",
     "gamboa.martin/js_base": "dev-master"
   },
   "require-dev": {
