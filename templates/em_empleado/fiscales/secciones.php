@@ -1,3 +1,4 @@
+
 <?php /** @var \tglobally\tg_empleado\controllers\controlador_em_empleado $controlador */?>
 <?php use config\views; ?>
 
@@ -13,4 +14,3 @@
         </div>
     </div>
 </div>
-
