@@ -1,15 +1,12 @@
 <?php /** @var \tglobally\tg_empleado\controllers\controlador_em_empleado $controlador */ ?>
-<?php include 'templates/em_empleado/fiscales/secciones.php'; ?>
+<?php include 'templates/em_empleado/imss/secciones.php'; ?>
 <div class="col-md-9 formulario">
     <div class="col-lg-12">
 
         <h3 class="text-center titulo-form">Hola, <?php echo $controlador->datos_session_usuario['adm_usuario_user']; ?> </h3>
 
         <div class="  form-main" id="form">
-            <form method="post" action="./index.php?seccion=em_empleado&accion=fiscales&session_id=<?php echo $controlador->session_id; ?>&registro_id=<?php echo $controlador->registro_id; ?>" class="form-additional">
-                <?php echo $controlador->inputs->select->cat_sat_regimen_fiscal_id; ?>
-                <?php echo $controlador->inputs->rfc; ?>
-                <a>modifica</a>
+            <form method="post" action="./index.php?seccion=em_empleado&accion=imss&session_id=<?php echo $controlador->session_id; ?>&registro_id=<?php echo $controlador->registro_id; ?>" class="form-additional">
                 <?php echo $controlador->inputs->nss; ?>
                 <?php echo $controlador->inputs->select->im_registro_patronal_id; ?>
                 <?php echo $controlador->inputs->fecha_inicio_rel_laboral; ?>
@@ -30,4 +27,5 @@
         </div>
     </div>
 </div>
+
 
