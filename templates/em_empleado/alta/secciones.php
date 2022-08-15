@@ -7,7 +7,11 @@
         </div>
         <div class="col-md-8">
             <h3>Alta Empleado</h3>
-            <?php include "templates/em_empleado/_base/buttons/1.azul.php"; ?>
+            <?php include "templates/em_empleado/_base/buttons/1.azul.alta.php"; ?>
+            <hr class="hr-menu-lateral">
+            <?php include "templates/em_empleado/_base/buttons/2.gris.fiscales.php"; ?>
+            <hr class="hr-menu-lateral">
+            <?php include "templates/em_empleado/_base/buttons/3.gris.imss.php"; ?>
         </div>
     </div>
 </div>

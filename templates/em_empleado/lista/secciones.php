@@ -3,8 +3,6 @@
         <div class="col-md-8">
             <h3>Empleados</h3>
             <?php include "templates/em_empleado/_base/links/alta.php"; ?>
-            <?php include "templates/em_empleado/_base/links/fiscales.php"; ?>
-            <?php include "templates/em_empleado/_base/links/imss.php"; ?>
         </div>
     </div>
 </div>
