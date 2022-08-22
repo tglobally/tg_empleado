@@ -12,6 +12,8 @@
             <?php include "templates/em_empleado/_base/buttons/2.azul.fiscales.php"; ?>
             <hr class="hr-menu-lateral">
             <?php include "templates/em_empleado/_base/buttons/3.azul.imss.php"; ?>
+            <hr class="hr-menu-lateral">
+            <?php include "templates/em_empleado/_base/buttons/4.azul.cuenta_bancaria.php"; ?>
         </div>
     </div>
 </div>
