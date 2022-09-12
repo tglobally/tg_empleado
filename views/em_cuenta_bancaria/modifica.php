@@ -6,7 +6,7 @@
         <h3 class="text-center titulo-form">Hola, <?php echo $controlador->datos_session_usuario['adm_usuario_user']; ?> </h3>
 
         <div class="  form-main" id="form">
-            <form method="post" action="./index.php?seccion=em_empleado&accion=modifica_bd&session_id=<?php echo $controlador->session_id; ?>&resgistro_id=<?php echo $controlador->registro_id; ?>" class="form-additional">
+            <form method="post" action="./index.php?seccion=em_empleado&accion=modifica_bd&session_id=<?php echo $controlador->session_id; ?>&registro_id=<?php echo $controlador->registro_id; ?>" class="form-additional">
 
                 <?php echo $controlador->inputs->codigo; ?>
                 <?php echo $controlador->inputs->codigo_bis; ?>
@@ -24,7 +24,7 @@
                         <button type="submit" class="btn btn-info btn-guarda col-md-12 " name="btn_action_next" value="modifica">Guarda</button>
                     </div>
                     <div class="col-md-6 ">
-                        <a href="index.php?seccion=em_empleado&accion=fiscales&session_id=<?php echo $controlador->session_id; ?>&resgistro_id=<?php echo $controlador->registro_id; ?>"  class="btn btn-info btn-guarda col-md-12 ">Siguiente</a>
+                        <a href="index.php?seccion=em_empleado&accion=fiscales&session_id=<?php echo $controlador->session_id; ?>&registro_id=<?php echo $controlador->registro_id; ?>"  class="btn btn-info btn-guarda col-md-12 ">Siguiente</a>
                     </div>
                 </div>
             </form>

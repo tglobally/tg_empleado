@@ -23,7 +23,7 @@
                         <button type="submit" class="btn btn-info btn-guarda col-md-12 " value="modifica">Guarda</button>
                     </div>
                     <div class="col-md-6 ">
-                        <a href="index.php?seccion=em_empleado&accion=fiscales&session_id=<?php echo $controlador->session_id; ?>&resgistro_id=<?php echo $controlador->registro_id; ?>"  class="btn btn-info btn-guarda col-md-12 ">Siguiente</a>
+                        <a href="index.php?seccion=em_empleado&accion=fiscales&session_id=<?php echo $controlador->session_id; ?>&registro_id=<?php echo $controlador->registro_id; ?>"  class="btn btn-info btn-guarda col-md-12 ">Siguiente</a>
                     </div>
                 </div>
             </form>
