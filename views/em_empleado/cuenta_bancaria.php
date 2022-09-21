@@ -6,9 +6,18 @@
         <h3 class="text-center titulo-form">Hola, <?php echo $controlador->datos_session_usuario['adm_usuario_user']; ?> </h3>
 
         <div class="  form-main" id="form">
-            <form method="post" action="./index.php?seccion=em_empleado&accion=cuenta_bancaria&session_id=<?php echo $controlador->session_id; ?>&registro_id=<?php echo $controlador->registro_id; ?>" class="form-additional">
+            <form method="post" action="./index.php?seccion=em_empleado&accion=modifica_bd&session_id=<?php echo $controlador->session_id; ?>&registro_id=<?php echo $controlador->registro_id; ?>" class="form-additional">
                 <?php echo $controlador->inputs->select->cat_sat_regimen_fiscal_id; ?>
                 <?php echo $controlador->inputs->rfc; ?>
+
+                <?php echo $controlador->inputs->codigo; ?>
+                <?php echo $controlador->inputs->codigo_bis; ?>
+                <?php echo $controlador->inputs->descripcion; ?>
+                <?php echo $controlador->inputs->num_cuenta; ?>
+                <?php echo $controlador->inputs->clabe; ?>
+
+                <?php echo $controlador->inputs->select->em_empleado_id; ?>
+                <?php echo $controlador->inputs->select->bn_sucursal_id; ?>
 
                 <div class="buttons col-md-12">
                     <div class="col-md-6 btn-ancho">
