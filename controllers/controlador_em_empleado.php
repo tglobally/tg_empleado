@@ -25,7 +25,7 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
     }
 
     public function calcula_sdi(bool $header, bool $ws = true){
-        $em_empleado_id = $_GET['registro_id'];
+        $em_empleado_id = $_GET['em_empleado_id'];
         $fecha_inicio_rel = $_GET['fecha_inicio_rel_laboral'];
         $salario_diario = $_GET['salario_diario'];
 
