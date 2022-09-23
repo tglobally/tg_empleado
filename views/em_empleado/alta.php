@@ -16,7 +16,6 @@
                 <?php echo $controlador->inputs->select->org_puesto_id; ?>
                 <?php echo $controlador->inputs->telefono; ?>
 
-
                 <div class="buttons col-md-12">
                     <div class="col-md-6">
                         <button type="submit" class="btn btn-info btn-guarda col-md-12 " name="btn_action_next" value="modifica">Guarda</button>
