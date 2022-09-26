@@ -29,45 +29,41 @@
         </div>
     </div>
 
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-
-                <div class="widget widget-box box-container widget-mylistings">
-
-                    <div class="">
-                        <table class="table table-striped footable-sort" data-sorting="true">
+    <div class="lista">
+        <div class="card">
+            <div class="card-header">
+                <span class="text-header">Anticipos</span>
+            </div>
+            <div class="card-body">
+                <div class="cont_tabla_sucursal  col-md-12">
+                    <table class="table ">
+                        <thead>
+                        <tr>
                             <th>Id</th>
                             <th>Codigo</th>
                             <th>Descripcion</th>
                             <th>Empleado</th>
                             <th>Monto</th>
                             <th>Fecha Prestacion</th>
-                            <!--<th>Ver</th>
-                            <th>Modifica</th>
-                            <th>Elimina</th>-->
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <?php foreach ($controlador->anticipos->registros as $anticipo){
+                            ?>
+                            <tr>
+                                <td><?php echo $anticipo['em_anticipo_id']; ?></td>
+                                <td><?php echo $anticipo['em_anticipo_codigo']; ?></td>
+                                <td><?php echo $anticipo['em_anticipo_descripcion']; ?></td>
+                                <td><?php echo $anticipo['em_empleado_nombre']." ".$anticipo['em_empleado_ap']." ".$anticipo['em_empleado_am']; ?></td>
+                                <td><?php echo $anticipo['em_anticipo_monto']; ?></td>
+                                <td><?php echo $anticipo['em_anticipo_fecha_prestacion']; ?></td>
+                            </tr>
+                        <?php } ?>
 
-                            <tbody>
-                            <?php foreach ($controlador->anticipos->registros as $anticipo){
-                                ?>
-                                <tr>
-                                    <td><?php echo $anticipo['em_anticipo_id']; ?></td>
-                                    <td><?php echo $anticipo['em_anticipo_codigo']; ?></td>
-                                    <td><?php echo $anticipo['em_anticipo_descripcion']; ?></td>
-                                    <td><?php echo $anticipo['em_empleado_nombre']." ".$anticipo['em_empleado_ap']." ".$anticipo['em_empleado_am']; ?></td>
-                                    <td><?php echo $anticipo['em_anticipo_monto']; ?></td>
-                                    <td><?php echo $anticipo['em_anticipo_fecha_prestacion']; ?></td>
-                                </tr>
-                            <?php } ?>
-                            </tbody>
-                        </table>
-                        <div class="box-body">
-                            * Total registros: <?php echo $controlador->anticipos->n_registros; ?><br />
-                            * Fecha Hora: <?php echo $controlador->fecha_hoy; ?>
-                        </div>
-                    </div>
-                </div> <!-- /. widget-table-->
-            </div><!-- /.center-content -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 
