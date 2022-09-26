@@ -29,43 +29,39 @@
         </div>
     </div>
 
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-
-                <div class="widget widget-box box-container widget-mylistings">
-
-                    <div class="">
-                        <table class="table table-striped footable-sort" data-sorting="true">
+    <div class="lista">
+        <div class="card">
+            <div class="card-header">
+                <span class="text-header">Cuentas Bancarias</span>
+            </div>
+            <div class="card-body">
+                <div class="cont_tabla_sucursal  col-md-12">
+                    <table class="table ">
+                        <thead>
+                        <tr>
                             <th>Id</th>
                             <th>Codigo</th>
                             <th>Descripcion</th>
                             <th>Empleado</th>
                             <th>Numero de Cuenta</th>
-                            <!--<th>Ver</th>
-                            <th>Modifica</th>
-                            <th>Elimina</th>-->
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <?php foreach ($controlador->cuentas_bancarias->registros as $cuenta_bancaria){
+                            ?>
+                            <tr>
+                                <td><?php echo $cuenta_bancaria['em_cuenta_bancaria_id']; ?></td>
+                                <td><?php echo $cuenta_bancaria['em_cuenta_bancaria_codigo']; ?></td>
+                                <td><?php echo $cuenta_bancaria['em_cuenta_bancaria_descripcion']; ?></td>
+                                <td><?php echo $cuenta_bancaria['em_empleado_nombre']." ".$cuenta_bancaria['em_empleado_ap']." ".$cuenta_bancaria['em_empleado_am']; ?></td>
+                                <td><?php echo $cuenta_bancaria['em_cuenta_bancaria_num_cuenta']; ?></td>
+                            </tr>
+                        <?php } ?>
 
-                            <tbody>
-                            <?php foreach ($controlador->cuentas_bancarias->registros as $cuenta_bancaria){
-                                ?>
-                                <tr>
-                                    <td><?php echo $cuenta_bancaria['em_cuenta_bancaria_id']; ?></td>
-                                    <td><?php echo $cuenta_bancaria['em_cuenta_bancaria_codigo']; ?></td>
-                                    <td><?php echo $cuenta_bancaria['em_cuenta_bancaria_descripcion']; ?></td>
-                                    <td><?php echo $cuenta_bancaria['em_empleado_nombre']." ".$cuenta_bancaria['em_empleado_ap']." ".$cuenta_bancaria['em_empleado_am']; ?></td>
-                                    <td><?php echo $cuenta_bancaria['em_cuenta_bancaria_num_cuenta']; ?></td>
-                                </tr>
-                            <?php } ?>
-                            </tbody>
-                        </table>
-                        <div class="box-body">
-                            * Total registros: <?php echo $controlador->cuentas_bancarias->n_registros; ?><br />
-                            * Fecha Hora: <?php echo $controlador->fecha_hoy; ?>
-                        </div>
-                    </div>
-                </div> <!-- /. widget-table-->
-            </div><!-- /.center-content -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 
