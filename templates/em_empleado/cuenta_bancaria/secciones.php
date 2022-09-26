@@ -15,8 +15,6 @@
             <hr class="hr-menu-lateral">
             <?php include "templates/em_empleado/_base/buttons/4.azul.cuenta_bancaria.php"; ?>
             <hr class="hr-menu-lateral">
-            <?php include "templates/em_empleado/_base/links/tipo_anticipo.php"; ?>
-            <hr class="hr-menu-lateral">
             <?php include "templates/em_empleado/_base/links/anticipo.php"; ?>
         </div>
     </div>
