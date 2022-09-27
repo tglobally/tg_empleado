@@ -6,16 +6,12 @@
         <h3 class="text-center titulo-form">Hola, <?php echo $controlador->datos_session_usuario['adm_usuario_user']; ?> </h3>
 
         <div class="  form-main" id="form">
-            <form method="post" action="./index.php?seccion=em_empleado&accion=alta_cuenta_bancaria_bd&session_id=<?php echo $controlador->session_id; ?>&registro_id=<?php echo $controlador->registro_id; ?>" class="form-additional">
+            <form method="post" action="<?php echo $controlador->link_em_cuenta_bancaria_alta_bd; ?>" class="form-additional">
                 <?php echo $controlador->inputs->select->em_empleado_id; ?>
-                <?php echo $controlador->inputs->codigo; ?>
-                <?php echo $controlador->inputs->codigo_bis; ?>
+                <?php echo $controlador->inputs->select->bn_sucursal_id; ?>
                 <?php echo $controlador->inputs->descripcion; ?>
                 <?php echo $controlador->inputs->num_cuenta; ?>
                 <?php echo $controlador->inputs->clabe; ?>
-
-
-                <?php echo $controlador->inputs->select->bn_sucursal_id; ?>
 
                 <div class="buttons col-md-12">
                     <div class="col-md-6 btn-ancho">
@@ -45,6 +41,8 @@
                             <th>Descripcion</th>
                             <th>Empleado</th>
                             <th>Numero de Cuenta</th>
+                            <th>Modifica</th>
+                            <th>Elimina</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -56,6 +54,8 @@
                                 <td><?php echo $cuenta_bancaria['em_cuenta_bancaria_descripcion']; ?></td>
                                 <td><?php echo $cuenta_bancaria['em_empleado_nombre']." ".$cuenta_bancaria['em_empleado_ap']." ".$cuenta_bancaria['em_empleado_am']; ?></td>
                                 <td><?php echo $cuenta_bancaria['em_cuenta_bancaria_num_cuenta']; ?></td>
+                                <td><?php echo $cuenta_bancaria['link_modifica']; ?></td>
+                                <td><?php echo $cuenta_bancaria['link_elimina']; ?></td>
                             </tr>
                         <?php } ?>
 

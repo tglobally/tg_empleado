@@ -6,7 +6,7 @@
         <h3 class="text-center titulo-form">Hola, <?php echo $controlador->datos_session_usuario['adm_usuario_user']; ?> </h3>
 
         <div class="  form-main" id="form">
-            <form method="post" action="./index.php?seccion=em_empleado&accion=alta_anticipo_bd&session_id=<?php echo $controlador->session_id; ?>&registro_id=<?php echo $controlador->registro_id; ?>" class="form-additional">
+            <form method="post" action="<?php echo $controlador->link_em_anticipo_alta_bd; ?>"" class="form-additional">
 
                 <?php echo $controlador->inputs->select->em_empleado_id; ?>
                 <?php echo $controlador->inputs->select->em_tipo_anticipo_id; ?>
@@ -43,6 +43,8 @@
                             <th>Empleado</th>
                             <th>Monto</th>
                             <th>Fecha Prestacion</th>
+                            <th>Modifica</th>
+                            <th>Elimina</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -55,6 +57,8 @@
                                 <td><?php echo $anticipo['em_empleado_nombre']." ".$anticipo['em_empleado_ap']." ".$anticipo['em_empleado_am']; ?></td>
                                 <td><?php echo $anticipo['em_anticipo_monto']; ?></td>
                                 <td><?php echo $anticipo['em_anticipo_fecha_prestacion']; ?></td>
+                                <td><?php echo $anticipo['link_modifica']; ?></td>
+                                <td><?php echo $anticipo['link_elimina']; ?></td>
                             </tr>
                         <?php } ?>
 
