@@ -9,6 +9,11 @@ let txt_fecha_inicio_rel_laboral = $('#fecha_inicio_rel_laboral');
 
 txt_salario_diario.change(function (){
     let fecha_inicio_rel_laboral = txt_fecha_inicio_rel_laboral.val();
+    if(fecha_inicio_rel_laboral === ''){
+        alert("Por favor integra una fecha de inicio de relacion laborar valida")
+        let salario_diario = $(this).val('0');
+        return false;
+    }
     let salario_diario = $(this).val();
     let url = "index.php?seccion=em_empleado&ws=1&accion=calcula_sdi&em_empleado_id="+registro_id+"&fecha_inicio_rel_laboral="+fecha_inicio_rel_laboral+"&salario_diario="+salario_diario+"&session_id="+session_id;
 
