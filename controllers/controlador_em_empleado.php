@@ -22,5 +22,9 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
         $this->modelo = $modelo;
 
         $this->titulo_lista = 'Empleados';
+
+        $this->asignar_propiedad(identificador: 'im_registro_patronal_id', propiedades: ['cols'=> 12]);
+        $this->asignar_propiedad(identificador: 'em_empleado_id', propiedades: ['cols'=> 8]);
+        $this->asignar_propiedad(identificador: 'em_tipo_anticipo_id', propiedades: ['cols'=> 4]);
     }
 }
