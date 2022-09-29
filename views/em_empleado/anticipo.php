@@ -57,6 +57,7 @@
                                 <td><?php echo $anticipo['em_empleado_nombre']." ".$anticipo['em_empleado_ap']." ".$anticipo['em_empleado_am']; ?></td>
                                 <td><?php echo $anticipo['em_anticipo_monto']; ?></td>
                                 <td><?php echo $anticipo['em_anticipo_fecha_prestacion']; ?></td>
+                                <td><?php echo $anticipo['link_abono']; ?></td>
                                 <td><?php echo $anticipo['link_modifica']; ?></td>
                                 <td><?php echo $anticipo['link_elimina']; ?></td>
                             </tr>
