@@ -43,6 +43,7 @@
                             <th>Empleado</th>
                             <th>Monto</th>
                             <th>Fecha Prestacion</th>
+                            <th>Abono</th>
                             <th>Modifica</th>
                             <th>Elimina</th>
                         </tr>
