@@ -27,6 +27,8 @@ class controlador_adm_session extends \gamboamartin\controllers\controlador_adm_
     public string $link_lista_com_cliente = '';
     public string $link_alta_em_empleado = '';
     public string $link_lista_em_empleado = '';
+    public string $link_alta_em_anticipo = '';
+    public string $link_lista_em_anticipo = '';
 
     /**
      * Funcion de controlador donde se ejecutaran siempre que haya un acceso denegado
