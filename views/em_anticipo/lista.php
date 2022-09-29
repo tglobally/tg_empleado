@@ -21,9 +21,10 @@ $url_icons = (new views())->url_icons;
                             <tr>
                                 <th data-breakpoints="xs sm md" data-type="html" >Id</th>
                                 <th data-breakpoints="xs sm md" data-type="html" >Codigo</th>
-                                <th data-breakpoints="xs sm md" data-type="html" >Codigo Bis</th>
                                 <th data-breakpoints="xs sm md" data-type="html" >Descripcion</th>
-                                <th data-breakpoints="xs sm md" data-type="html" >Alias</th>
+                                <th data-breakpoints="xs sm md" data-type="html" >Empleado</th>
+                                <th data-breakpoints="xs sm md" data-type="html" >Monto</th>
+                                <th data-breakpoints="xs sm md" data-type="html" >Fecha Prestacion</th>
                                 <th data-breakpoints="xs md" class="control"  data-type="html" data-filterable="false">Modifica</th>
                                 <th data-breakpoints="xs md" class="control"  data-type="html" data-filterable="false">Elimina</th>
                             </tr>
@@ -33,9 +34,10 @@ $url_icons = (new views())->url_icons;
                                 <tr>
                                     <td><?php echo $registro->em_anticipo_id; ?></td>
                                     <td><?php echo $registro->em_anticipo_codigo; ?></td>
-                                    <td><?php echo $registro->em_anticipo_codigo_bis; ?></td>
                                     <td><?php echo $registro->em_anticipo_descripcion; ?></td>
-                                    <td><?php echo $registro->em_anticipo_alias; ?></td>
+                                    <td><?php echo $registro->em_empleado_nombre.' '.$registro->em_empleado_ap.' '.$registro->em_empleado_am; ?></td>
+                                    <td><?php echo $registro->em_anticipo_monto; ?></td>
+                                    <td><?php echo $registro->em_anticipo_fecha_prestacion; ?></td>
                                     <td><a class="btn btn-warning " href="<?php echo $registro->link_modifica; ?>">Modifica</a></td>
                                     <td><a class="btn btn-danger " href="<?php echo $registro->link_elimina_bd; ?>">Elimina</a></td>
                                 </tr>
