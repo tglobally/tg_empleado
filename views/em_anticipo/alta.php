@@ -7,11 +7,9 @@
 
         <div class="  form-main" id="form">
             <form method="post" action="./index.php?seccion=em_anticipo&accion=alta_bd&session_id=<?php echo $controlador->session_id; ?>" class="form-additional">
-
-                <?php echo $controlador->inputs->codigo; ?>
+                <?php echo $controlador->inputs->select->em_empleado_id; ?>
                 <?php echo $controlador->inputs->select->em_tipo_anticipo_id; ?>
                 <?php echo $controlador->inputs->descripcion; ?>
-                <?php echo $controlador->inputs->select->em_empleado_id; ?>
                 <?php echo $controlador->inputs->monto; ?>
                 <?php echo $controlador->inputs->fecha_prestacion; ?>
                 <div class="buttons col-md-12">

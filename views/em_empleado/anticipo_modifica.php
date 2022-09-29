@@ -1,5 +1,5 @@
 <?php /** @var \tglobally\tg_empleado\controllers\controlador_em_empleado $controlador */ ?>
-<?php include 'templates/em_empleado/cuenta_bancaria/secciones.php'; ?>
+<?php include 'templates/em_empleado/anticipo/secciones.php'; ?>
 <div class="col-md-9 formulario">
     <div class="col-lg-12">
 
