@@ -72,6 +72,8 @@ class controlador_adm_session extends \gamboamartin\controllers\controlador_adm_
         $this->link_alta_com_cliente = $hd;
         $hd = "index.php?seccion=em_empleado&accion=alta&session_id=$this->session_id";
         $this->link_alta_em_empleado = $hd;
+        $hd = "index.php?seccion=em_anticipo&accion=alta&session_id=$this->session_id";
+        $this->link_alta_em_anticipo = $hd;
 
         $hd = "index.php?seccion=org_tipo_puesto&accion=lista&session_id=$this->session_id";
         $this->link_lista_org_tipo_puesto = $hd;
@@ -81,6 +83,8 @@ class controlador_adm_session extends \gamboamartin\controllers\controlador_adm_
         $this->link_lista_com_cliente = $hd;
         $hd = "index.php?seccion=em_empleado&accion=lista&session_id=$this->session_id";
         $this->link_lista_em_empleado = $hd;
+        $hd = "index.php?seccion=em_anticipo&accion=lista&session_id=$this->session_id";
+        $this->link_lista_em_anticipo = $hd;
 
         $this->include_menu = (new generales())->path_base;
         $this->include_menu .= 'templates/inicio.php';
