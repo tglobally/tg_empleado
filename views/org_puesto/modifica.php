@@ -14,8 +14,8 @@
                 <?php echo $controlador->inputs->descripcion; ?>
                 <?php echo $controlador->inputs->descripcion_select; ?>
                 <?php echo $controlador->inputs->alias; ?>
-                <?php echo $controlador->inputs->select->org_empresa_id; ?>
                 <?php echo $controlador->inputs->select->org_tipo_puesto_id; ?>
+                <?php echo $controlador->inputs->select->org_departamento_id; ?>
                 <div class="buttons col-md-12">
                     <div class="col-md-6 btn-ancho">
                         <button type="submit" class="btn btn-info btn-guarda col-md-12 " >Modifica</button>
