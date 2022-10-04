@@ -7,7 +7,7 @@
 
         <div class="  form-main" id="form">
             <form method="post" action="./index.php?seccion=em_empleado&accion=modifica_bd&session_id=<?php echo $controlador->session_id; ?>&registro_id=<?php echo $controlador->registro_id; ?>" class="form-additional">
-                <?php echo $controlador->inputs->select->cat_sat_regimen_fiscal_id; ?>
+                <?php echo $controlador->inputs->cat_sat_regimen_fiscal_id; ?>
                 <?php echo $controlador->inputs->rfc; ?>
 
                 <div class="buttons col-md-12">

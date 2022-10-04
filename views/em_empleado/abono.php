@@ -8,10 +8,10 @@
         <div class="  form-main" id="form">
             <form method="post" action="<?php echo $controlador->link_em_abono_anticipo_alta_bd; ?>&em_anticipo_id=<?php echo $controlador->em_anticipo_id; ?>" class="form-additional">
 
-                <?php echo $controlador->inputs->select->em_anticipo_id; ?>
-                <?php echo $controlador->inputs->select->em_tipo_abono_anticipo_id; ?>
+                <?php echo $controlador->inputs->em_anticipo_id; ?>
+                <?php echo $controlador->inputs->em_tipo_abono_anticipo_id; ?>
                 <?php echo $controlador->inputs->descripcion; ?>
-                <?php echo $controlador->inputs->select->cat_sat_forma_pago_id; ?>
+                <?php echo $controlador->inputs->cat_sat_forma_pago_id; ?>
                 <?php echo $controlador->inputs->fecha; ?>
                 <?php echo $controlador->inputs->monto; ?>
 

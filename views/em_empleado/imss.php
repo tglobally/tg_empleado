@@ -7,7 +7,7 @@
 
         <div class="  form-main" id="form">
             <form method="post" action="./index.php?seccion=em_empleado&accion=modifica_bd&session_id=<?php echo $controlador->session_id; ?>&registro_id=<?php echo $controlador->registro_id; ?>" class="form-additional">
-                <?php echo $controlador->inputs->select->im_registro_patronal_id; ?>
+                <?php echo $controlador->inputs->im_registro_patronal_id; ?>
                 <?php echo $controlador->inputs->nss; ?>
                 <?php echo $controlador->inputs->fecha_inicio_rel_laboral; ?>
                 <?php echo $controlador->inputs->salario_diario; ?>

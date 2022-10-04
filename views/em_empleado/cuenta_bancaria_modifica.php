@@ -7,8 +7,8 @@
 
         <div class="  form-main" id="form">
             <form method="post" action="<?php echo $controlador->link_em_cuenta_bancaria_modifica_bd; ?>&em_cuenta_bancaria_id=<?php echo $controlador->em_cuenta_bancaria_id; ?>" class="form-additional">
-                <?php echo $controlador->inputs->select->em_empleado_id; ?>
-                <?php echo $controlador->inputs->select->bn_sucursal_id; ?>
+                <?php echo $controlador->inputs->em_empleado_id; ?>
+                <?php echo $controlador->inputs->bn_sucursal_id; ?>
                 <?php echo $controlador->inputs->descripcion; ?>
                 <?php echo $controlador->inputs->num_cuenta; ?>
                 <?php echo $controlador->inputs->clabe; ?>

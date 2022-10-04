@@ -13,8 +13,8 @@
                 <?php echo $controlador->inputs->nombre; ?>
                 <?php echo $controlador->inputs->ap; ?>
                 <?php echo $controlador->inputs->am; ?>
-                <?php echo $controlador->inputs->select->dp_calle_pertenece_id; ?>
-                <?php echo $controlador->inputs->select->org_puesto_id; ?>
+                <?php echo $controlador->inputs->dp_calle_pertenece_id; ?>
+                <?php echo $controlador->inputs->org_puesto_id; ?>
                 <?php echo $controlador->inputs->telefono; ?>
 
 

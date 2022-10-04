@@ -8,8 +8,8 @@
         <div class="  form-main" id="form">
             <form method="post" action="<?php echo $controlador->link_em_anticipo_alta_bd; ?>"" class="form-additional">
 
-                <?php echo $controlador->inputs->select->em_empleado_id; ?>
-                <?php echo $controlador->inputs->select->em_tipo_anticipo_id; ?>
+                <?php echo $controlador->inputs->em_empleado_id; ?>
+                <?php echo $controlador->inputs->em_tipo_anticipo_id; ?>
                 <?php echo $controlador->inputs->descripcion; ?>
                 <?php echo $controlador->inputs->monto; ?>
                 <?php echo $controlador->inputs->fecha_prestacion; ?>
