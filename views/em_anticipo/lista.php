@@ -20,11 +20,13 @@ $url_icons = (new views())->url_icons;
                             <thead>
                             <tr>
                                 <th data-breakpoints="xs sm md" data-type="html" >Id</th>
-                                <th data-breakpoints="xs sm md" data-type="html" >Codigo</th>
                                 <th data-breakpoints="xs sm md" data-type="html" >Descripcion</th>
+                                <th data-breakpoints="xs sm md" data-type="html" >Codigo Empleado</th>
                                 <th data-breakpoints="xs sm md" data-type="html" >Empleado</th>
                                 <th data-breakpoints="xs sm md" data-type="html" >Monto</th>
                                 <th data-breakpoints="xs sm md" data-type="html" >Fecha Prestacion</th>
+                                <th data-breakpoints="xs sm md" data-type="html" >Saldo Pendiente</th>
+                                <th data-breakpoints="xs sm md" data-type="html" >Total Abonado</th>
                                 <th data-breakpoints="xs md" class="control"  data-type="html" data-filterable="false">Ver Abonos</th>
                                 <th data-breakpoints="xs md" class="control"  data-type="html" data-filterable="false">Modifica</th>
                                 <th data-breakpoints="xs md" class="control"  data-type="html" data-filterable="false">Elimina</th>
@@ -34,11 +36,13 @@ $url_icons = (new views())->url_icons;
                             <?php foreach ($controlador->registros as $registro){?>
                                 <tr>
                                     <td><?php echo $registro->em_anticipo_id; ?></td>
-                                    <td><?php echo $registro->em_anticipo_codigo; ?></td>
                                     <td><?php echo $registro->em_anticipo_descripcion; ?></td>
+                                    <td><?php echo $registro->em_empleado_codigo; ?></td>
                                     <td><?php echo $registro->em_empleado_nombre.' '.$registro->em_empleado_ap.' '.$registro->em_empleado_am; ?></td>
                                     <td><?php echo $registro->em_anticipo_monto; ?></td>
                                     <td><?php echo $registro->em_anticipo_fecha_prestacion; ?></td>
+                                    <td><?php echo $registro->em_anticipo_saldo_pendiente; ?></td>
+                                    <td><?php echo $registro->em_anticipo_total_abonado; ?></td>
                                     <td><a class="btn btn-info " href="<?php echo $registro->link_abono; ?>">Ver Abonos</a></td>
                                     <td><a class="btn btn-warning " href="<?php echo $registro->link_modifica; ?>">Modifica</a></td>
                                     <td><a class="btn btn-danger " href="<?php echo $registro->link_elimina_bd; ?>">Elimina</a></td>

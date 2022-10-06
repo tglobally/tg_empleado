@@ -42,11 +42,11 @@
                             <th>Codigo</th>
                             <th>Descripcion</th>
                             <th>Monto</th>
-                            <th>Fecha</th>
-                            <th>Tipo Abono</th>
                             <th>Forma Pago</th>
+                            <th>Fecha</th>
                             <th>Modifica</th>
                             <th>Elimina</th>
+
                         </tr>
                         </thead>
                         <tbody>
@@ -56,9 +56,8 @@
                                 <td><?php echo $abono['em_abono_anticipo_codigo']; ?></td>
                                 <td><?php echo $abono['em_abono_anticipo_descripcion']; ?></td>
                                 <td><?php echo $abono['em_abono_anticipo_monto']; ?></td>
-                                <td><?php echo $abono['em_abono_anticipo_fecha']; ?></td>
-                                <td><?php echo $abono['em_tipo_abono_anticipo_descripcion']; ?></td>
                                 <td><?php echo $abono['cat_sat_forma_pago_descripcion']; ?></td>
+                                <td><?php echo $abono['em_abono_anticipo_fecha']; ?></td>
                                 <td><?php echo $abono['link_modifica']; ?></td>
                                 <td><?php echo $abono['link_elimina']; ?></td>
                             </tr>

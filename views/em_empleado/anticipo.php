@@ -40,12 +40,14 @@
                             <th>Id</th>
                             <th>Codigo</th>
                             <th>Descripcion</th>
-                            <th>Empleado</th>
                             <th>Monto</th>
-                            <th>Fecha Prestacion</th>
+                            <th>Fecha</th>
+                            <th>Saldo Pendiente</th>
+                            <th>Total Abonado</th>
                             <th>Abono</th>
                             <th>Modifica</th>
                             <th>Elimina</th>
+
                         </tr>
                         </thead>
                         <tbody>
@@ -55,9 +57,10 @@
                                 <td><?php echo $anticipo['em_anticipo_id']; ?></td>
                                 <td><?php echo $anticipo['em_anticipo_codigo']; ?></td>
                                 <td><?php echo $anticipo['em_anticipo_descripcion']; ?></td>
-                                <td><?php echo $anticipo['em_empleado_nombre']." ".$anticipo['em_empleado_ap']." ".$anticipo['em_empleado_am']; ?></td>
                                 <td><?php echo $anticipo['em_anticipo_monto']; ?></td>
                                 <td><?php echo $anticipo['em_anticipo_fecha_prestacion']; ?></td>
+                                <td><?php echo $anticipo['em_anticipo_saldo_pendiente']; ?></td>
+                                <td><?php echo $anticipo['em_anticipo_total_abonado']; ?></td>
                                 <td><?php echo $anticipo['link_abono']; ?></td>
                                 <td><?php echo $anticipo['link_modifica']; ?></td>
                                 <td><?php echo $anticipo['link_elimina']; ?></td>

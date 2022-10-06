@@ -38,9 +38,9 @@
                         <tr>
                             <th>Id</th>
                             <th>Codigo</th>
-                            <th>Descripcion</th>
-                            <th>Empleado</th>
+                            <th>Banco</th>
                             <th>Numero de Cuenta</th>
+                            <th>Clabe</th>
                             <th>Modifica</th>
                             <th>Elimina</th>
                         </tr>
@@ -51,9 +51,9 @@
                             <tr>
                                 <td><?php echo $cuenta_bancaria['em_cuenta_bancaria_id']; ?></td>
                                 <td><?php echo $cuenta_bancaria['em_cuenta_bancaria_codigo']; ?></td>
-                                <td><?php echo $cuenta_bancaria['em_cuenta_bancaria_descripcion']; ?></td>
-                                <td><?php echo $cuenta_bancaria['em_empleado_nombre']." ".$cuenta_bancaria['em_empleado_ap']." ".$cuenta_bancaria['em_empleado_am']; ?></td>
+                                <td><?php echo $cuenta_bancaria['bn_banco_descripcion']; ?></td>
                                 <td><?php echo $cuenta_bancaria['em_cuenta_bancaria_num_cuenta']; ?></td>
+                                <td><?php echo $cuenta_bancaria['em_cuenta_bancaria_clabe']; ?></td>
                                 <td><?php echo $cuenta_bancaria['link_modifica']; ?></td>
                                 <td><?php echo $cuenta_bancaria['link_elimina']; ?></td>
                             </tr>
