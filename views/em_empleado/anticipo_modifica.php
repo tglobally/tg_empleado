@@ -12,7 +12,7 @@
                 <?php echo $controlador->inputs->descripcion; ?>
                 <?php echo $controlador->inputs->monto; ?>
                 <?php echo $controlador->inputs->fecha_prestacion; ?>
-
+                <?php echo $controlador->inputs->fecha_inicio_descuento; ?>
                 <div class="buttons col-md-12">
                     <div class="col-md-6 btn-ancho">
                         <button type="submit" class="btn btn-info btn-guarda col-md-12 " name="btn_action_next" value="cuenta_bancaria" >Modifica</button>
