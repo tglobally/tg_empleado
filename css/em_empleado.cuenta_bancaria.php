@@ -9,6 +9,12 @@ include $ruta_template_base.'assets/css/_base_css.php';
 
 
 <style>
+    .form-control{
+        border-radius: 10px !important;
+    }
+    .color-secondary{
+        background: #f8f8f8 !important;
+    }
     .buttons {
         margin-bottom: 2.25rem;
     }
