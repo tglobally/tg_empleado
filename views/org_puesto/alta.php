@@ -9,10 +9,7 @@
             <form method="post" action="./index.php?seccion=org_puesto&accion=alta_bd&session_id=<?php echo $controlador->session_id; ?>" class="form-additional">
 
                 <?php echo $controlador->inputs->codigo; ?>
-                <?php echo $controlador->inputs->codigo_bis; ?>
                 <?php echo $controlador->inputs->descripcion; ?>
-                <?php echo $controlador->inputs->descripcion_select; ?>
-                <?php echo $controlador->inputs->alias; ?>
                 <?php echo $controlador->inputs->select->org_tipo_puesto_id; ?>
                 <?php echo $controlador->inputs->select->org_departamento_id; ?>
                 <div class="buttons col-md-12">
