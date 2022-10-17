@@ -16,34 +16,17 @@ $url_icons = (new views())->url_icons;
 
                 <div class="card-body">
                     <div class="cont_tabla_sucursal  col-md-12">
-                        <table class="table ">
+
+                        <table class="table table-striped datatable">
                             <thead>
                             <tr>
-                                <th data-breakpoints="xs sm md" data-type="html" >Id</th>
-                                <th data-breakpoints="xs sm md" data-type="html" >Codigo</th>
-                                <th data-breakpoints="xs sm md" data-type="html" >Empleado</th>
-                                <th data-breakpoints="xs sm md" data-type="html" >Rfc</th>
-                                <th data-breakpoints="xs md" class="control"  data-type="html" data-filterable="false">Anticipos</th>
-                                <th data-breakpoints="xs md" class="control"  data-type="html" data-filterable="false">Genera Anticipo</th>
-                                <th data-breakpoints="xs md" class="control"  data-type="html" data-filterable="false">Cuenta Bancaria</th>
-                                <th data-breakpoints="xs md" class="control"  data-type="html" data-filterable="false">Modifica</th>
-                                <th data-breakpoints="xs md" class="control"  data-type="html" data-filterable="false">Elimina</th>
+                                <?php foreach ($controlador->datatable["titulos"] as $item) : ?>
+                                    <th> <?php echo $item; ?> </th>
+                                <?php endforeach;?>
                             </tr>
                             </thead>
                             <tbody>
-                            <?php foreach ($controlador->registros as $registro){?>
-                                <tr>
-                                    <td><?php echo $registro->em_empleado_id; ?></td>
-                                    <td><?php echo $registro->em_empleado_codigo; ?></td>
-                                    <td><?php echo $registro->em_empleado_nombre.' '.$registro->em_empleado_ap.' '.$registro->em_empleado_am; ?></td>
-                                    <td><?php echo $registro->em_empleado_rfc; ?></td>
-                                    <td><a class="btn btn-warning " href="<?php echo $registro->link_ver_anticipos; ?>">Ver Anticipos</a></td>
-                                    <td><a class="btn btn-warning " href="<?php echo $registro->link_anticipo; ?>">Genera Anticipos</a></td>
-                                    <td><a class="btn btn-warning " href="<?php echo $registro->link_cuenta_bancaria; ?>">Ver Cuenta Bancaria</a></td>
-                                    <td><a class="btn btn-warning " href="<?php echo $registro->link_modifica; ?>">Modifica</a></td>
-                                    <td><a class="btn btn-danger " href="<?php echo $registro->link_elimina_bd; ?>">Elimina</a></td>
-                                </tr>
-                            <?php } ?>
+
 
                             </tbody>
                         </table>
