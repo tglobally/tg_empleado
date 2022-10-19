@@ -35,4 +35,20 @@ class controlador_tg_empleado_sucursal extends system
         }
     }
 
+    public function alta(bool $header, bool $ws = false): array|string
+    {
+        $r_alta =  parent::alta(header: false);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al generar template',data:  $r_alta, header: $header,ws:$ws);
+        }
+
+        $inputs = $this->genera_inputs($this->keys_selects);
+        if(errores::$error){
+            $error = $this->errores->error(mensaje: 'Error al generar inputs',data:  $inputs);
+            print_r($error);
+            die('Error');
+        }
+        return $r_alta;
+    }
+
 }
