@@ -42,12 +42,10 @@ class em_empleado extends \gamboamartin\empleado\models\em_empleado {
         $alias = $em_empleado->registro_id.$em_empleado->registro['em_empleado_alias'];
         $em_empleado_id = $em_empleado->registro_id;
         $com_sucursal_id = 1;
+        $fecha = date('Y-m-d');;
 
         return array('descripcion' => $descripcion,'codigo' => $codigo,'descripcion_select' => $descripcion_select,
             'codigo_bis' => $codigo_bis,'alias' => $alias,'em_empleado_id' => $em_empleado_id,
-            'com_sucursal_id' => $com_sucursal_id);
+            'com_sucursal_id' => $com_sucursal_id,'fecha' => $fecha);
     }
-
-
-
 }
