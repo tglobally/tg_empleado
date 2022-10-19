@@ -5,6 +5,7 @@ namespace tglobally\tg_empleado\controllers;
 use gamboamartin\errores\errores;
 use models\em_empleado;
 use models\im_conf_pres_empresa;
+use models\tg_empleado_sucursal;
 use PDO;
 use stdClass;
 use tglobally\template_tg\html;
@@ -43,9 +44,12 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
             propiedades: ['place_holder'=> 'Monto']);
         $this->controlador_em_cuenta_bancaria->asignar_propiedad(identificador: 'clabe',
             propiedades: ['place_holder'=> 'CLABE']);
+
+
     }
 
-    public function asigna_sucursal(bool $header, bool $ws = false): array|stdClass
+
+        public function asigna_sucursal(bool $header, bool $ws = false): array|stdClass
     {
         $alta = $this->controlador_tg_empleado_sucursal->alta(header: false);
         if (errores::$error) {

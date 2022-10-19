@@ -16,19 +16,7 @@ $url_icons = (new views())->url_icons;
 
                 <div class="card-body">
                     <div class="cont_tabla_sucursal  col-md-12">
-
                         <table class="table table-striped datatable">
-                            <thead>
-                            <tr>
-                                <?php foreach ($controlador->datatable["titulos"] as $item) : ?>
-                                    <th> <?php echo $item; ?> </th>
-                                <?php endforeach;?>
-                            </tr>
-                            </thead>
-                            <tbody>
-
-
-                            </tbody>
                         </table>
                     </div>
                 </div>
