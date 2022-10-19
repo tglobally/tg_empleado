@@ -9,7 +9,7 @@ class tg_empleado_sucursal extends modelo{
 
     public function __construct(PDO $link){
         $tabla = __CLASS__;
-        $columnas = array($tabla=>false);
+        $columnas = array($tabla=>false, 'em_empleado'=>$tabla,'com_sucursal'=>$tabla);
         $campos_obligatorios = array();
 
         parent::__construct(link: $link,tabla:  $tabla, campos_obligatorios: $campos_obligatorios,
