@@ -5,6 +5,7 @@ namespace tglobally\tg_empleado\controllers;
 use gamboamartin\errores\errores;
 use models\em_empleado;
 use models\im_conf_pres_empresa;
+use models\tg_empleado_sucursal;
 use PDO;
 use stdClass;
 use tglobally\template_tg\html;
@@ -12,6 +13,7 @@ use Throwable;
 
 class controlador_em_empleado extends \gamboamartin\empleado\controllers\controlador_em_empleado {
     public controlador_tg_empleado_sucursal $controlador_tg_empleado_sucursal;
+    public stdClass $tg_empleado_sucursal;
 
     public function __construct(PDO $link, stdClass $paths_conf = new stdClass())
     {
@@ -56,6 +58,11 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
             propiedades: ["id_selected" => $this->registro_id, "disabled" => true,
                 "filtro" => array('em_empleado.id' => $this->registro_id)]);
 
+        $this->controlador_tg_empleado_sucursal->asignar_propiedad(identificador: 'com_sucursal_id',
+            propiedades: ["label" => 'Sucursal Cliente']);
+
+        $this->controlador_tg_empleado_sucursal->asignar_propiedad(identificador: 'com_sucursal',propiedades: array());
+
         $this->inputs = $this->controlador_tg_empleado_sucursal->genera_inputs(
             keys_selects:  $this->controlador_tg_empleado_sucursal->keys_selects);
         if (errores::$error) {
@@ -63,23 +70,24 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
             print_r($error);
             die('Error');
         }
-/*
-        $cuentas_bancarias = (new em_asigna_sucursal($this->link))->get_cuentas_bancarias_empleado(
+
+        $tg_empleado_sucursal = (new tg_empleado_sucursal($this->link))->get_tg_empleado_sucursal_empleado(
             em_empleado_id: $this->registro_id);
         if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al obtener anticipos',data:  $cuentas_bancarias,
+            return $this->retorno_error(mensaje: 'Error al obtener anticipos',data:  $tg_empleado_sucursal,
                 header: $header,ws:$ws);
         }
 
-        foreach ($cuentas_bancarias->registros as $indice => $asigna_sucursal) {
-            $asigna_sucursal = $this->data_asigna_sucursal_btn(asigna_sucursal: $asigna_sucursal);
+        foreach ($tg_empleado_sucursal->registros as $indice => $empleado_sucursal) {
+            $empleado_sucursal_r = $this->data_empleado_sucursal_btn(empleado_sucursal: $empleado_sucursal);
             if (errores::$error) {
-                return $this->retorno_error(mensaje: 'Error al asignar botones', data: $asigna_sucursal, header: $header, ws: $ws);
+                return $this->retorno_error(mensaje: 'Error al asignar botones', data: $empleado_sucursal_r,
+                    header: $header, ws: $ws);
             }
-            $cuentas_bancarias->registros[$indice] = $asigna_sucursal;
+            $tg_empleado_sucursal->registros[$indice] = $empleado_sucursal_r;
         }
-        $this->cuentas_bancarias = $cuentas_bancarias;
-*/
+        $this->tg_empleado_sucursal = $tg_empleado_sucursal;
+
         return $this->inputs;
     }
 
@@ -217,5 +225,26 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
         $r_elimina->siguiente_view = "cuenta_bancaria";
 
         return $r_elimina;
+    }
+
+    private function data_empleado_sucursal_btn(array $empleado_sucursal): array
+    {
+        $params['tg_empleado_sucursal'] = $empleado_sucursal['tg_empleado_sucursal_id'];
+
+        $btn_elimina = $this->html_base->button_href(accion: 'empleado_sucursal_elimina_bd', etiqueta: 'Elimina',
+            registro_id: $this->registro_id, seccion: 'em_empleado', style: 'danger',params: $params);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al generar btn', data: $btn_elimina);
+        }
+        $empleado_sucursal['link_elimina'] = $btn_elimina;
+
+        $btn_modifica = $this->html_base->button_href(accion: 'empleado_sucursal_modifica', etiqueta: 'Modifica',
+            registro_id: $this->registro_id, seccion: 'em_empleado', style: 'warning',params: $params);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al generar btn', data: $btn_modifica);
+        }
+        $empleado_sucursal['link_modifica'] = $btn_modifica;
+
+        return $empleado_sucursal;
     }
 }

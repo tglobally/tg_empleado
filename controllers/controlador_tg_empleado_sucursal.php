@@ -21,6 +21,20 @@ class controlador_tg_empleado_sucursal extends system
         $obj_link = new links_menu($this->registro_id);
         parent::__construct(html: $html_, link: $link, modelo: $modelo, obj_link: $obj_link, paths_conf: $paths_conf);
 
+        $this->asignar_propiedad(identificador:'em_empleado_id', propiedades: ["label" => "Empleado"]);
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
+            print_r($error);
+            die('Error');
+        }
+
+        $this->asignar_propiedad(identificador:'com_sucursal_id', propiedades: ["label" => "Sucursal"]);
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
+            print_r($error);
+            die('Error');
+        }
+
         $this->titulo_lista = 'Manifiesto';
     }
 
