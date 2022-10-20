@@ -2,7 +2,9 @@
 namespace tglobally\tg_empleado\controllers;
 
 
+use gamboamartin\comercial\models\com_sucursal;
 use gamboamartin\errores\errores;
+use gamboamartin\system\actions;
 use models\em_empleado;
 use models\im_conf_pres_empresa;
 use models\tg_empleado_sucursal;
@@ -250,4 +252,56 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
 
         return $empleado_sucursal;
     }
+
+    public function empleado_sucursal_alta_bd(bool $header, bool $ws = false)
+    {
+        $this->link->beginTransaction();
+
+        $siguiente_view = (new actions())->init_alta_bd();
+        if (errores::$error) {
+            $this->link->rollBack();
+            return $this->retorno_error(mensaje: 'Error al obtener siguiente view', data: $siguiente_view,
+                header: $header, ws: $ws);
+        }
+
+        if (isset($_POST['btn_action_next'])) {
+            unset($_POST['btn_action_next']);
+        }
+        $_POST['em_empleado_id'] = $this->registro_id;
+
+        if (!isset($_POST['codigo'])) {
+            $_POST['codigo'] = $_POST['em_empleado_id'].' '.$_POST['com_sucursal_id'];
+        }
+
+        if (!isset($_POST['descripcion'])) {
+            $_POST['descripcion'] = $_POST['em_empleado_id'].' '.$_POST['com_sucursal_id'];
+        }
+
+        var_dump($_POST);
+
+        $alta = (new tg_empleado_sucursal($this->link))->alta_registro(registro: $_POST);
+        if (errores::$error) {
+            $this->link->rollBack();
+            return $this->retorno_error(mensaje: 'Error al dar de alta empleado sucursal bancaria', data: $alta,
+                header: $header, ws: $ws);
+        }
+
+        $this->link->commit();
+
+        if ($header) {
+            $this->retorno_base(registro_id:$this->registro_id, result: $alta,
+                siguiente_view: "cuenta_bancaria", ws:  $ws);
+        }
+        if ($ws) {
+            header('Content-Type: application/json');
+            echo json_encode($alta, JSON_THROW_ON_ERROR);
+            exit;
+        }
+        $alta->siguiente_view = "cuenta_bancaria";
+
+        return $alta;
+
+    }
+
+
 }
