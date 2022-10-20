@@ -269,15 +269,19 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
         }
         $_POST['em_empleado_id'] = $this->registro_id;
 
+        $codigo = rand(1,10000).$_POST['em_empleado_id'].' '.$_POST['com_sucursal_id'];
+
         if (!isset($_POST['codigo'])) {
-            $_POST['codigo'] = $_POST['em_empleado_id'].' '.$_POST['com_sucursal_id'];
+            $_POST['codigo'] = $codigo;
+        }
+
+        if (!isset($_POST['codigo_bis'])) {
+            $_POST['codigo_bis'] = $codigo;
         }
 
         if (!isset($_POST['descripcion'])) {
-            $_POST['descripcion'] = $_POST['em_empleado_id'].' '.$_POST['com_sucursal_id'];
+            $_POST['descripcion'] = $codigo;
         }
-
-        var_dump($_POST);
 
         $alta = (new tg_empleado_sucursal($this->link))->alta_registro(registro: $_POST);
         if (errores::$error) {
@@ -290,14 +294,14 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
 
         if ($header) {
             $this->retorno_base(registro_id:$this->registro_id, result: $alta,
-                siguiente_view: "cuenta_bancaria", ws:  $ws);
+                siguiente_view: "asigna_sucursal", ws:  $ws);
         }
         if ($ws) {
             header('Content-Type: application/json');
             echo json_encode($alta, JSON_THROW_ON_ERROR);
             exit;
         }
-        $alta->siguiente_view = "cuenta_bancaria";
+        $alta->siguiente_view = "asigna_sucursal";
 
         return $alta;
 
