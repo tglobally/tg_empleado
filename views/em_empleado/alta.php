@@ -12,7 +12,18 @@
                 <?php echo $controlador->inputs->nombre; ?>
                 <?php echo $controlador->inputs->ap; ?>
                 <?php echo $controlador->inputs->am; ?>
+                <?php echo $controlador->inputs->dp_pais_id; ?>
+                <?php echo $controlador->inputs->dp_estado_id; ?>
+                <?php echo $controlador->inputs->direccion_pendiente_pais; ?>
+                <?php echo $controlador->inputs->direccion_pendiente_estado; ?>
+                <?php echo $controlador->inputs->dp_municipio_id; ?>
+                <?php echo $controlador->inputs->dp_cp_id; ?>
+                <?php echo $controlador->inputs->direccion_pendiente_municipio; ?>
+                <?php echo $controlador->inputs->direccion_pendiente_cp; ?>
+                <?php echo $controlador->inputs->dp_colonia_postal_id; ?>
                 <?php echo $controlador->inputs->dp_calle_pertenece_id; ?>
+                <?php echo $controlador->inputs->direccion_pendiente_colonia; ?>
+                <?php echo $controlador->inputs->direccion_pendiente_calle_pertenece; ?>
                 <?php echo $controlador->inputs->org_puesto_id; ?>
                 <?php echo $controlador->inputs->telefono; ?>
 
