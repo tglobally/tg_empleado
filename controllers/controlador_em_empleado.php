@@ -3,6 +3,7 @@ namespace tglobally\tg_empleado\controllers;
 
 
 use gamboamartin\comercial\models\com_sucursal;
+use gamboamartin\empleado\models\em_cuenta_bancaria;
 use gamboamartin\errores\errores;
 use gamboamartin\system\actions;
 use models\em_empleado;
@@ -19,15 +20,18 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
 
     public function __construct(PDO $link, stdClass $paths_conf = new stdClass())
     {
+
+
         $html_base = new html();
-        parent::__construct(link: $link, html: $html_base);
+        parent::__construct(link: $link, html: $html_base, paths_conf: $paths_conf);
 
         $modelo = new em_empleado(link: $link);
         $this->modelo = $modelo;
 
         $this->titulo_lista = 'Empleados';
 
-        $this->controlador_tg_empleado_sucursal = new controlador_tg_empleado_sucursal($this->link);
+        $this->controlador_tg_empleado_sucursal = new controlador_tg_empleado_sucursal(
+            link: $this->link, paths_conf: $paths_conf);
 
         $this->asignar_propiedad(identificador: 'cat_sat_regimen_fiscal_id', propiedades: ['cols'=> 8]);
         $this->asignar_propiedad(identificador: 'im_registro_patronal_id', propiedades: ['cols'=> 12]);
@@ -96,20 +100,30 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
         return $this->inputs;
     }
 
+    /**
+     * Limpia boton de siguiente accion
+     * @return array
+     * @version 0.65.8
+     */
+    private function clean_post(): array
+    {
+        if (isset($_POST['btn_action_next'])) {
+            unset($_POST['btn_action_next']);
+        }
+        return $_POST;
+    }
+
     public function cuenta_bancaria_alta_bd(bool $header, bool $ws = false)
     {
         $this->link->beginTransaction();
 
-        $siguiente_view = (new actions())->init_alta_bd();
+        $siguiente_view = $this->inicializa_transaccion();
         if (errores::$error) {
             $this->link->rollBack();
-            return $this->retorno_error(mensaje: 'Error al obtener siguiente view', data: $siguiente_view,
-                header: $header, ws: $ws);
+            return $this->retorno_error(
+                mensaje: 'Error al inicializar', data: $siguiente_view, header: $header, ws: $ws);
         }
 
-        if (isset($_POST['btn_action_next'])) {
-            unset($_POST['btn_action_next']);
-        }
         $_POST['em_empleado_id'] = $this->registro_id;
 
         $alta = (new em_cuenta_bancaria($this->link))->alta_registro(registro: $_POST);
@@ -127,7 +141,13 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
         }
         if ($ws) {
             header('Content-Type: application/json');
-            echo json_encode($alta, JSON_THROW_ON_ERROR);
+            try {
+                echo json_encode($alta, JSON_THROW_ON_ERROR);
+            }
+            catch (Throwable $e){
+                $error = (new errores())->error(mensaje:'Error', data: $e);
+                print_r($error);
+            }
             exit;
         }
         $alta->siguiente_view = "cuenta_bancaria";
@@ -257,16 +277,14 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
     {
         $this->link->beginTransaction();
 
-        $siguiente_view = (new actions())->init_alta_bd();
+
+        $siguiente_view = $this->inicializa_transaccion();
         if (errores::$error) {
             $this->link->rollBack();
-            return $this->retorno_error(mensaje: 'Error al obtener siguiente view', data: $siguiente_view,
-                header: $header, ws: $ws);
+            return $this->retorno_error(
+                mensaje: 'Error al inicializar', data: $siguiente_view, header: $header, ws: $ws);
         }
 
-        if (isset($_POST['btn_action_next'])) {
-            unset($_POST['btn_action_next']);
-        }
         $_POST['em_empleado_id'] = $this->registro_id;
 
         $codigo = rand(1,10000).$_POST['em_empleado_id'].' '.$_POST['com_sucursal_id'];
@@ -305,6 +323,22 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
 
         return $alta;
 
+    }
+
+    private function inicializa_transaccion(): array|string
+    {
+        $siguiente_view = (new actions())->init_alta_bd();
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al obtener siguiente view', data: $siguiente_view);
+        }
+
+        $limpia = $this->clean_post();
+        if (errores::$error) {
+
+            return $this->errores->error(mensaje: 'Error al limpiar post', data: $limpia);
+        }
+
+        return $siguiente_view;
     }
 
 
