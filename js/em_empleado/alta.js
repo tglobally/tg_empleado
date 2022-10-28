@@ -110,7 +110,7 @@ function dp_asigna_colonias_postales(dp_cp_id = '',dp_colonia_postal_id = ''){
         sl_dp_colonia_postal_id.empty();
         integra_new_option("#dp_colonia_postal_id",'Seleccione una colonia','-1');
         $.each(data.registros, function( index, dp_colonia_postal ) {
-            integra_new_option("#dp_colonia_postal_id",dp_colonia_postal.dp_cp_descripcion,dp_colonia_postal.dp_colonia_postal_id,
+            integra_new_option("#dp_colonia_postal_id",dp_colonia_postal.dp_colonia_postal_descripcion,dp_colonia_postal.dp_colonia_postal_id,
                 "data-dp_colonia_postal_predeterminado", dp_colonia_postal.dp_colonia_postal_predeterminado);
         });
         sl_dp_colonia_postal_id.val(dp_colonia_postal_id);
@@ -132,7 +132,7 @@ function dp_asigna_calles_pertenece(dp_colonia_postal_id = '',dp_calle_pertenece
         sl_dp_calle_pertenece_id.empty();
         integra_new_option("#dp_calle_pertenece_id",'Seleccione una calle','-1');
         $.each(data.registros, function( index, dp_calle_pertenece ) {
-            integra_new_option("#dp_calle_pertenece_id",dp_calle_pertenece.dp_colonia_descripcion,dp_calle_pertenece.dp_calle_pertenece_id,
+            integra_new_option("#dp_calle_pertenece_id",dp_calle_pertenece.dp_calle_descripcion,dp_calle_pertenece.dp_calle_pertenece_id,
                 "data-dp_calle_pertenece_predeterminado", dp_calle_pertenece.dp_calle_pertenece_predeterminado);
         });
         sl_dp_calle_pertenece_id.val(dp_calle_pertenece_id);
