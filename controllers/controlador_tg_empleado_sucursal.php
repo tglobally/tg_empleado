@@ -18,7 +18,7 @@ class controlador_tg_empleado_sucursal extends system
     {
         $modelo = new tg_empleado_sucursal(link: $link);
         $html_ = new tg_empleado_sucursal_html(html: $html);
-        $obj_link = new links_menu($this->registro_id);
+        $obj_link = new links_menu(link:$link,registro_id: $this->registro_id);
         parent::__construct(html: $html_, link: $link, modelo: $modelo, obj_link: $obj_link, paths_conf: $paths_conf);
 
         $this->asignar_propiedad(identificador:'em_empleado_id', propiedades: ["label" => "Empleado"]);
