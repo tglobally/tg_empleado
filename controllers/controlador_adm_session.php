@@ -31,6 +31,8 @@ class controlador_adm_session extends \gamboamartin\controllers\controlador_adm_
     public string $link_lista_em_anticipo = '';
     public string $link_alta_em_tipo_anticipo = '';
     public string $link_lista_em_tipo_anticipo = '';
+    public string $link_lista_em_metodo_calculo = '';
+    public string $link_lista_em_tipo_descuento = '';
 
     /**
      * Funcion de controlador donde se ejecutaran siempre que haya un acceso denegado
@@ -91,6 +93,10 @@ class controlador_adm_session extends \gamboamartin\controllers\controlador_adm_
         $this->link_lista_em_anticipo = $hd;
         $hd = "index.php?seccion=em_tipo_anticipo&accion=lista&session_id=$this->session_id";
         $this->link_lista_em_tipo_anticipo= $hd;
+        $hd = "index.php?seccion=em_metodo_calculo&accion=lista&session_id=$this->session_id";
+        $this->link_lista_em_metodo_calculo= $hd;
+        $hd = "index.php?seccion=em_tipo_descuento&accion=lista&session_id=$this->session_id";
+        $this->link_lista_em_tipo_descuento= $hd;
 
         $this->include_menu = (new generales())->path_base;
         $this->include_menu .= 'templates/inicio.php';
