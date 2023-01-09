@@ -4,6 +4,8 @@
             <h3>Empleados</h3>
             <?php include "templates/em_empleado/_base/links/alta.php"; ?>
             <hr class="hr-menu-lateral">
+            <?php include "templates/em_empleado/_base/links/sube_archivo.php"; ?>
+            <hr class="hr-menu-lateral">
         </div>
     </div>
 </div>
