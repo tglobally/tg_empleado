@@ -33,6 +33,7 @@ class controlador_adm_session extends \gamboamartin\controllers\controlador_adm_
     public string $link_lista_em_tipo_anticipo = '';
     public string $link_lista_em_metodo_calculo = '';
     public string $link_lista_em_tipo_descuento = '';
+    public string $link_lista_em_abono_anticipo = '';
     public string $link_lista_em_tipo_abono_anticipo = '';
 
     /**
@@ -98,6 +99,8 @@ class controlador_adm_session extends \gamboamartin\controllers\controlador_adm_
         $this->link_lista_em_metodo_calculo= $hd;
         $hd = "index.php?seccion=em_tipo_descuento&accion=lista&session_id=$this->session_id";
         $this->link_lista_em_tipo_descuento= $hd;
+        $hd = "index.php?seccion=em_abono_anticipo&accion=lista&session_id=$this->session_id";
+        $this->link_lista_em_abono_anticipo= $hd;
         $hd = "index.php?seccion=em_tipo_abono_anticipo&accion=lista&session_id=$this->session_id";
         $this->link_lista_em_tipo_abono_anticipo= $hd;
 
