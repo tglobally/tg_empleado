@@ -52,6 +52,11 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
         $this->controlador_em_cuenta_bancaria->asignar_propiedad(identificador: 'clabe',
             propiedades: ['place_holder'=> 'CLABE']);
 
+        $this->asignar_propiedad(identificador: 'filtro_fecha_inicio', propiedades: ['place_holder'=> 'Fecha Inicio',
+            'cols' => 12]);
+        $this->asignar_propiedad(identificador: 'filtro_fecha_final', propiedades: ['place_holder'=> 'Fecha Final',
+            'cols' => 12]);
+
 
     }
 
