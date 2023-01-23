@@ -11,10 +11,7 @@
             <form method="post" action="./index.php?seccion=em_tipo_abono_anticipo&accion=alta_bd&session_id=<?php echo $controlador->session_id; ?>" class="form-additional">
 
                 <?php echo $controlador->inputs->codigo; ?>
-                <?php echo $controlador->inputs->codigo_bis; ?>
                 <?php echo $controlador->inputs->descripcion; ?>
-                <?php echo $controlador->inputs->descripcion_select; ?>
-                <?php echo $controlador->inputs->alias; ?>
                 <div class="buttons col-md-12">
                     <div class="col-md-6">
                         <button type="submit" class="btn btn-info btn-guarda col-md-12 " name="btn_action_next" value="modifica">Guarda</button>
