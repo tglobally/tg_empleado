@@ -18,6 +18,8 @@
             <?php include "templates/em_empleado/_base/buttons/5.azul.anticipo.php"; ?>
             <hr class="hr-menu-lateral">
             <?php include "templates/em_empleado/_base/links/asigna_sucursal.php"; ?>
+            <hr class="hr-menu-lateral">
+            <?php include "templates/em_empleado/_base/links/asigna_configuracion_nomina.php"; ?>
         </div>
     </div>
 </div>
