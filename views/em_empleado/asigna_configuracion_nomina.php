@@ -26,6 +26,44 @@
         </div>
     </div>
 
+    <div class="lista">
+        <div class="card">
+            <div class="card-header">
+                <span class="text-header">Configuraciones de Nomina Asignadas</span>
+            </div>
+            <div class="card-body">
+                <div class="cont_tabla_sucursal  col-md-12">
+                    <table class="table ">
+                        <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Codigo</th>
+                            <th>Descripcion</th>
+
+                            <th>Modifica</th>
+                            <th>Elimina</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <?php foreach ($controlador->nom_conf_empleado->registros as $conf_empleado){
+                            ?>
+                            <tr>
+                                <td><?php echo $conf_empleado['nom_conf_empleado_id']; ?></td>
+                                <td><?php echo $conf_empleado['nom_conf_empleado_codigo']; ?></td>
+                                <td><?php echo $conf_empleado['nom_conf_empleado_descripcion']; ?></td>
+
+                                <td><?php echo $conf_empleado['link_modifica']; ?></td>
+                                <td><?php echo $conf_empleado['link_elimina']; ?></td>
+                            </tr>
+                        <?php } ?>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 
 </div>

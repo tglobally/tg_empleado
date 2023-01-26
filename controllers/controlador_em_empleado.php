@@ -5,6 +5,8 @@ namespace tglobally\tg_empleado\controllers;
 use gamboamartin\comercial\models\com_sucursal;
 use gamboamartin\empleado\models\em_cuenta_bancaria;
 use gamboamartin\errores\errores;
+use gamboamartin\nomina\controllers\controlador_nom_conf_empleado;
+use gamboamartin\nomina\models\nom_conf_empleado;
 use gamboamartin\system\actions;
 use models\em_empleado;
 use models\im_conf_pres_empresa;
@@ -16,7 +18,9 @@ use Throwable;
 
 class controlador_em_empleado extends \gamboamartin\empleado\controllers\controlador_em_empleado {
     public controlador_tg_empleado_sucursal $controlador_tg_empleado_sucursal;
+    public controlador_nom_conf_empleado $controlador_nom_conf_empleado;
     public stdClass $tg_empleado_sucursal;
+    public stdClass $nom_conf_empleado;
 
     public function __construct(PDO $link, stdClass $paths_conf = new stdClass())
     {
@@ -31,6 +35,9 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
         $this->titulo_lista = 'Empleados';
 
         $this->controlador_tg_empleado_sucursal = new controlador_tg_empleado_sucursal(
+            link: $this->link, paths_conf: $paths_conf);
+
+        $this->controlador_nom_conf_empleado = new controlador_nom_conf_empleado(
             link: $this->link, paths_conf: $paths_conf);
 
         $this->asignar_propiedad(identificador: 'cat_sat_regimen_fiscal_id', propiedades: ['cols'=> 8]);
@@ -61,7 +68,52 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
     }
 
 
-        public function asigna_sucursal(bool $header, bool $ws = false): array|stdClass
+        public function asigna_configuracion_nomina(bool $header, bool $ws = false): array|stdClass
+    {
+        $alta = $this->controlador_nom_conf_empleado->alta(header: false);
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al generar template', data: $alta, header: $header, ws: $ws);
+        }
+
+        $this->controlador_nom_conf_empleado->asignar_propiedad(identificador: 'em_empleado_id',
+            propiedades: ["id_selected" => $this->registro_id, "disabled" => true,
+                "filtro" => array('em_empleado.id' => $this->registro_id)]);
+
+        $this->controlador_nom_conf_empleado->asignar_propiedad(identificador: 'em_cuenta_bancaria_id',
+            propiedades: ["id_selected" => $this->registro_id]);
+
+        $this->controlador_nom_conf_empleado->asignar_propiedad(identificador: 'nom_conf_nomina_id',
+            propiedades: ["id_selected" => $this->registro_id]);
+
+        $this->inputs = $this->controlador_nom_conf_empleado->genera_inputs(
+            keys_selects:  $this->controlador_nom_conf_empleado->keys_selects);
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al generar inputs', data: $this->inputs);
+            print_r($error);
+            die('Error');
+        }
+
+        $nom_conf_empleado = (new nom_conf_empleado($this->link))->get_configuraciones_empleado(
+            em_cuenta_bancaria_id: $this->registro_id);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al obtener conf empleado',data:  $nom_conf_empleado,
+                header: $header,ws:$ws);
+        }
+
+        foreach ($nom_conf_empleado->registros as $indice => $conf_empleado) {
+            $empleado_sucursal_r = $this->data_asigna_conf_nomina_btn(conf_nomina: $conf_empleado);
+            if (errores::$error) {
+                return $this->retorno_error(mensaje: 'Error al asignar botones', data: $empleado_sucursal_r,
+                    header: $header, ws: $ws);
+            }
+            $nom_conf_empleado->registros[$indice] = $empleado_sucursal_r;
+        }
+        $this->nom_conf_empleado = $nom_conf_empleado;
+
+        return $this->inputs;
+    }
+
+    public function asigna_sucursal(bool $header, bool $ws = false): array|stdClass
     {
         $alta = $this->controlador_tg_empleado_sucursal->alta(header: false);
         if (errores::$error) {
