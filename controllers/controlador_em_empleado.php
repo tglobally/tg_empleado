@@ -1,7 +1,6 @@
 <?php
 namespace tglobally\tg_empleado\controllers;
 
-
 use gamboamartin\comercial\models\com_sucursal;
 use gamboamartin\empleado\models\em_cuenta_bancaria;
 use gamboamartin\errores\errores;
@@ -9,7 +8,6 @@ use gamboamartin\nomina\controllers\controlador_nom_conf_empleado;
 use gamboamartin\nomina\models\nom_conf_empleado;
 use gamboamartin\system\actions;
 use models\em_empleado;
-use models\im_conf_pres_empresa;
 use models\tg_empleado_sucursal;
 use PDO;
 use stdClass;
