@@ -28,6 +28,7 @@ $url_icons = (new views())->url_icons;
                                 </div>
 
                                 <div class="filtro-categorias">
+                                    <?php echo $controlador->inputs->tg_cte_alianza_id; ?>
                                 </div>
                                 <div class="filtro-reportes">
                                     <div class="filtro-fechas">

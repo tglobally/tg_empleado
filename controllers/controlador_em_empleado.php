@@ -398,5 +398,19 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
         return $siguiente_view;
     }
 
+    public function reportes(bool $header, bool $ws = false): array|stdClass
+    {
+        $this->modelo->campos_view['tg_cte_alianza_id'] = array('type' => 'selects', 'model' => new com_sucursal($this->link));
+
+        $this->asignar_propiedad(identificador:'tg_cte_alianza_id', propiedades: ["label" => "Sucursal","required"=>false]);
+
+        $reporte = parent::reportes($header, $ws);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al obtener view reprote', data: $reporte);
+        }
+
+        return  $reporte;
+    }
+
 
 }

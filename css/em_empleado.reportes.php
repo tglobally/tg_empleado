@@ -98,6 +98,58 @@ include $ruta_template_base.'assets/css/_base_css.php';
     background-color: #0B0595;
         border: 1px solid #0B0595
     }
+
+    .filtros {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+        grid-gap: 10px;
+        grid-auto-rows: minmax(auto, auto);
+        margin-bottom: 20px;
+    }
+
+    .filtro-titulo { grid-area: 1 / 1 / 2 / 4;}
+    .filtro-categorias { grid-area: 2 / 1 / 3 / 3; }
+    .filtro-reportes { grid-area: 3 / 1 / 4 / 3; }
+
+    .filtro-titulo h3 {
+        font-weight: bold;
+        font-size: 18px;
+    }
+
+    .filtros .filtro-categorias {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .filtros .filtro-categorias label {
+        font-weight: normal;
+    }
+
+    .filtro-categorias h3 {
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    .filtro-categorias-listas {
+        display: flex;
+        align-content: center;
+        gap: 12px;
+    }
+
+
+
+    .botones {
+        margin-bottom: 20px;
+    }
+
+    .export {
+        border-radius: 5px;
+    }
+
+
+
+
 </style>
 
 
