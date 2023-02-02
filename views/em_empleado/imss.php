@@ -1,12 +1,13 @@
 <?php /** @var \tglobally\tg_empleado\controllers\controlador_em_empleado $controlador */ ?>
-<?php include 'templates/em_empleado/imss/secciones.php'; ?>
+
+<?php (new \tglobally\template_tg\template())->sidebar($controlador); ?>
 <div class="col-md-9 formulario">
     <div class="col-lg-12">
 
         <h3 class="text-center titulo-form">Hola, <?php echo $controlador->datos_session_usuario['adm_usuario_user']; ?> </h3>
 
         <div class="  form-main" id="form">
-            <form method="post" action="./index.php?seccion=em_empleado&accion=modifica_bd&session_id=<?php echo $controlador->session_id; ?>&registro_id=<?php echo $controlador->registro_id; ?>" class="form-additional">
+            <form method="post" action="<?php echo $controlador->link_modifica_bd; ?>" class="form-additional">
                 <?php echo $controlador->inputs->im_registro_patronal_id; ?>
                 <?php echo $controlador->inputs->nss; ?>
                 <?php echo $controlador->inputs->fecha_inicio_rel_laboral; ?>
@@ -18,7 +19,7 @@
                         <button type="submit" class="btn btn-info btn-guarda col-md-12 " >Modifica</button>
                     </div>
                     <div class="col-md-6 btn-ancho">
-                        <a href="index.php?seccion=em_empleado&accion=lista&session_id=<?php echo $controlador->session_id; ?>"  class="btn btn-info btn-guarda col-md-12 ">Lista</a>
+                        <a href="<?php echo $controlador->link_lista; ?>"  class="btn btn-info btn-guarda col-md-12 ">Lista</a>
                     </div>
 
                 </div>
@@ -26,5 +27,7 @@
         </div>
     </div>
 </div>
+
+
 
 

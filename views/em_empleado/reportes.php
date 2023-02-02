@@ -1,12 +1,5 @@
 <?php /** @var \tglobally\tg_empleado\controllers\controlador_em_empleado $controlador */ ?>
-<?php
-
-use config\views;
-
-$url_icons = (new views())->url_icons;
-?>
-
-<?php include 'templates/em_empleado/lista/secciones.php'; ?>
+<?php (new \tglobally\template_tg\template())->sidebar($controlador); ?>
 
 <div class="col-md-9 info-lista">
     <div class="col-lg-12 content">
@@ -28,7 +21,7 @@ $url_icons = (new views())->url_icons;
                                 </div>
 
                                 <div class="filtro-categorias">
-                                    <?php echo $controlador->inputs->tg_cte_alianza_id; ?>
+                                    
                                 </div>
                                 <div class="filtro-reportes">
                                     <div class="filtro-fechas">

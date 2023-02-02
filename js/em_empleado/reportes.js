@@ -1,6 +1,4 @@
-let sl_com_sucursal = $("#com_sucursal_id");
-
-let url = get_url("em_empleado", "get_data", {cat_sat_tipo_producto_id: "1"});
+let url = get_url("em_empleado", "data_ajax", {em_empleado_id: "1"});
 
 var datatable = $(".datatables").DataTable({
     processing: true,
@@ -11,7 +9,6 @@ var datatable = $(".datatables").DataTable({
         'data': function (data) {
             var fecha_inicio = $('#fecha_inicio').val();
             var fecha_final = $('#fecha_final').val();
-            var sucursal = $( "#com_sucursal_id option:selected" ).val();
 
             data.filtros = [
                 {
@@ -71,14 +68,6 @@ var datatable = $(".datatables").DataTable({
 
 $('.filter-checkbox,#fecha_inicio,#fecha_final').on('change', function (e) {
     datatable.draw();
-});
-
-sl_com_sucursal.change(function () {
-    let selected = $(this).find('option:selected');
-
-    if (selected.val() !== "") {
-        datatable.draw();
-    }
 });
 
 
