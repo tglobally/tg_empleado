@@ -14,15 +14,15 @@
                 <?php echo $controlador->inputs->fecha_inicio; ?>
                 <?php echo $controlador->inputs->fecha_final; ?>
 
-                <div class="buttons col-md-12">
-                    <div class="col-md-6">
-                        <button type="submit" class="btn btn-info btn-guarda col-md-12 " name="btn_action_next" value="modifica">Guarda</button>
-                    </div>
-                    <div class="col-md-6 ">
-                        <a href="index.php?seccion=em_anticipo&accion=lista&session_id=<?php echo $controlador->session_id; ?>"  class="btn btn-info btn-guarda col-md-12 ">Regresar</a>
-                    </div>
+                <div class="botones">
+                    <div class="controls">
+                        <button type="submit" class="btn btn-success export" name="btn_action_next"
+                                style="border-radius: 5px" value="exportar" form="form_export">
+                            Exportar
+                        </button>                            </div>
                 </div>
             </form>
+            <table id="em_anticipo" class="datatables table table-striped "></table>
         </div>
     </div>
 </div>
