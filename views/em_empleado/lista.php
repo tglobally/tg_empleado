@@ -1,11 +1,5 @@
 <?php /** @var \tglobally\tg_empleado\controllers\controlador_em_empleado  $controlador */ ?>
-<?php
-
-use config\views;
-$url_icons = (new views())->url_icons;
-?>
-
-<?php include 'templates/em_empleado/lista/secciones.php'; ?>
+<?php (new \tglobally\template_tg\template())->sidebar($controlador); ?>
 
 <div class="col-md-9 info-lista">
     <div class="col-lg-12 content">

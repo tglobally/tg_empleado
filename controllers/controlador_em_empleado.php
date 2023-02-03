@@ -4,8 +4,6 @@ namespace tglobally\tg_empleado\controllers;
 use gamboamartin\comercial\models\com_sucursal;
 use gamboamartin\empleado\models\em_cuenta_bancaria;
 use gamboamartin\errores\errores;
-use gamboamartin\nomina\controllers\controlador_nom_conf_empleado;
-use gamboamartin\nomina\models\nom_conf_empleado;
 use gamboamartin\system\actions;
 use models\em_empleado;
 use models\tg_empleado_sucursal;
@@ -16,100 +14,238 @@ use Throwable;
 
 class controlador_em_empleado extends \gamboamartin\empleado\controllers\controlador_em_empleado {
     public controlador_tg_empleado_sucursal $controlador_tg_empleado_sucursal;
-    public controlador_nom_conf_empleado $controlador_nom_conf_empleado;
     public stdClass $tg_empleado_sucursal;
-    public stdClass $nom_conf_empleado;
+
+    public string $link_em_empleado_fiscales = '';
+    public string $link_em_empleado_imss = '';
+    public string $link_em_empleado_cuenta_bancaria = '';
+    public string $link_em_empleado_anticipo = '';
+    public string $link_em_empleado_asigna_sucursal = '';
 
     public function __construct(PDO $link, stdClass $paths_conf = new stdClass())
     {
-
-
         $html_base = new html();
         parent::__construct(link: $link, html: $html_base, paths_conf: $paths_conf);
 
         $modelo = new em_empleado(link: $link);
         $this->modelo = $modelo;
 
-        $this->titulo_lista = 'Empleados';
-
         $this->controlador_tg_empleado_sucursal = new controlador_tg_empleado_sucursal(
             link: $this->link, paths_conf: $paths_conf);
 
-        $this->controlador_nom_conf_empleado = new controlador_nom_conf_empleado(
-            link: $this->link, paths_conf: $paths_conf);
-
-        $this->asignar_propiedad(identificador: 'cat_sat_regimen_fiscal_id', propiedades: ['cols'=> 8]);
-        $this->asignar_propiedad(identificador: 'im_registro_patronal_id', propiedades: ['cols'=> 12]);
-        $this->asignar_propiedad(identificador: 'fecha_inicio_rel_laboral', propiedades: ['cols'=> 8]);
-        $this->asignar_propiedad(identificador: 'curp', propiedades: ['cols'=> 5]);
-        $this->asignar_propiedad(identificador: 'codigo', propiedades: ['place_holder'=> 'Codigo']);
-        $this->asignar_propiedad(identificador: 'nombre', propiedades: ['place_holder'=> 'Nombre']);
-        $this->asignar_propiedad(identificador: 'ap', propiedades: ['place_holder'=> 'Apellido Paterno']);
-        $this->asignar_propiedad(identificador: 'am', propiedades: ['place_holder'=> 'Apellido Materno']);
-        $this->asignar_propiedad(identificador: 'telefono', propiedades: ['place_holder'=> 'Telefono']);
-        $this->asignar_propiedad(identificador: 'rfc', propiedades: ['place_holder'=> 'RFC']);
-        $this->asignar_propiedad(identificador: 'nss', propiedades: ['place_holder'=> 'NSS']);
-        $this->asignar_propiedad(identificador: 'curp', propiedades: ['place_holder'=> 'CURP']);
-        $this->asignar_propiedad(identificador: 'fecha_inicio_rel_laboral',
-            propiedades: ['place_holder'=> 'Fecha Inicio Relacion Laboral']);
-        $this->controlador_em_anticipo->asignar_propiedad(identificador: 'monto',
-            propiedades: ['place_holder'=> 'Monto']);
-        $this->controlador_em_cuenta_bancaria->asignar_propiedad(identificador: 'clabe',
-            propiedades: ['place_holder'=> 'CLABE']);
-
-        $this->asignar_propiedad(identificador: 'filtro_fecha_inicio', propiedades: ['place_holder'=> 'Fecha Inicio',
-            'cols' => 12]);
-        $this->asignar_propiedad(identificador: 'filtro_fecha_final', propiedades: ['place_holder'=> 'Fecha Final',
-            'cols' => 12]);
-
-
-    }
-
-
-        public function asigna_configuracion_nomina(bool $header, bool $ws = false): array|stdClass
-    {
-        $alta = $this->controlador_nom_conf_empleado->alta(header: false);
+        $this->link_em_empleado_fiscales = $this->obj_link->link_con_id(accion: "fiscales",link: $this->link,
+            registro_id: $this->registro_id,seccion: "em_empleado");
         if (errores::$error) {
-            return $this->retorno_error(mensaje: 'Error al generar template', data: $alta, header: $header, ws: $ws);
-        }
-
-        $this->controlador_nom_conf_empleado->asignar_propiedad(identificador: 'em_empleado_id',
-            propiedades: ["id_selected" => $this->registro_id, "disabled" => true,
-                "filtro" => array('em_empleado.id' => $this->registro_id)]);
-
-        $this->controlador_nom_conf_empleado->asignar_propiedad(identificador: 'em_cuenta_bancaria_id',
-            propiedades: ["id_selected" => $this->registro_id]);
-
-        $this->controlador_nom_conf_empleado->asignar_propiedad(identificador: 'nom_conf_nomina_id',
-            propiedades: ["id_selected" => $this->registro_id]);
-
-        $this->inputs = $this->controlador_nom_conf_empleado->genera_inputs(
-            keys_selects:  $this->controlador_nom_conf_empleado->keys_selects);
-        if (errores::$error) {
-            $error = $this->errores->error(mensaje: 'Error al generar inputs', data: $this->inputs);
+            $error = $this->errores->error(mensaje: 'Error al obtener link',
+                data: $this->link_em_empleado_fiscales);
             print_r($error);
-            die('Error');
+            exit;
         }
 
-        $nom_conf_empleado = (new nom_conf_empleado($this->link))->get_configuraciones_empleado(
-            em_cuenta_bancaria_id: $this->registro_id);
-        if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al obtener conf empleado',data:  $nom_conf_empleado,
-                header: $header,ws:$ws);
+        $this->link_em_empleado_imss = $this->obj_link->link_con_id(accion: "imss",link: $this->link,
+            registro_id: $this->registro_id,seccion: "em_empleado");
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al obtener link',
+                data: $this->link_em_empleado_imss);
+            print_r($error);
+            exit;
         }
 
-        foreach ($nom_conf_empleado->registros as $indice => $conf_empleado) {
-            $empleado_sucursal_r = $this->data_asigna_conf_nomina_btn(conf_nomina: $conf_empleado);
-            if (errores::$error) {
-                return $this->retorno_error(mensaje: 'Error al asignar botones', data: $empleado_sucursal_r,
-                    header: $header, ws: $ws);
-            }
-            $nom_conf_empleado->registros[$indice] = $empleado_sucursal_r;
+        $this->link_em_empleado_cuenta_bancaria = $this->obj_link->link_con_id(accion: "cuenta_bancaria",link: $this->link,
+            registro_id: $this->registro_id,seccion: "em_empleado");
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al obtener link',
+                data: $this->link_em_empleado_cuenta_bancaria);
+            print_r($error);
+            exit;
         }
-        $this->nom_conf_empleado = $nom_conf_empleado;
 
-        return $this->inputs;
+        $this->link_em_empleado_anticipo = $this->obj_link->link_con_id(accion: "anticipo",link: $this->link,
+            registro_id: $this->registro_id,seccion: "em_empleado");
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al obtener link',
+                data: $this->link_em_empleado_anticipo);
+            print_r($error);
+            exit;
+        }
+
+        $this->sidebar['lista']['titulo'] = "Empleados";
+        $this->sidebar['lista']['menu'] = array(
+            $this->menu_item(menu_item_titulo: "Alta", link: $this->link_alta,menu_seccion_active: true,
+                menu_lateral_active: true),
+            $this->menu_item(menu_item_titulo: "Sube Empleados", link: $this->link_em_empleado_sube_archivo,menu_seccion_active: true,
+                menu_lateral_active: true),
+            $this->menu_item(menu_item_titulo: "Reportes", link: $this->link_em_empleado_reportes,menu_seccion_active: true,
+                menu_lateral_active: true));
+
+        $this->sidebar['reportes']['titulo'] = "Empleados";
+        $this->sidebar['reportes']['menu'] = array(
+            $this->menu_item(menu_item_titulo: "Alta", link: $this->link_alta,menu_seccion_active: true,
+                menu_lateral_active: true),
+            $this->menu_item(menu_item_titulo: "Sube Empleados", link: $this->link_em_empleado_sube_archivo,menu_seccion_active: true,
+                menu_lateral_active: true),
+            $this->menu_item(menu_item_titulo: "Reportes", link: $this->link_em_empleado_reportes,menu_seccion_active: true,
+                menu_lateral_active: true));
+
+        $this->sidebar['alta']['titulo'] = "Empleado";
+        $this->sidebar['alta']['stepper_active'] = true;
+        $this->sidebar['alta']['menu'] = array(
+            $this->menu_item(menu_item_titulo: "Alta", link: $this->link_alta,menu_lateral_active: true));
+
+        $this->sidebar['modifica']['titulo'] = "Empleado";
+        $this->sidebar['modifica']['stepper_active'] = true;
+        $this->sidebar['modifica']['menu'] = array(
+            $this->menu_item(menu_item_titulo: "Modifica", link: $this->link_modifica),
+            $this->menu_item(menu_item_titulo: "Fiscales", link: $this->link_em_empleado_fiscales,menu_seccion_active: true,
+                menu_lateral_active: true),
+            $this->menu_item(menu_item_titulo: "Imss", link: $this->link_em_empleado_imss,menu_seccion_active: true,
+                menu_lateral_active: true),
+            $this->menu_item(menu_item_titulo: "Cuenta Bancaria", link: $this->link_em_empleado_cuenta_bancaria,
+                menu_seccion_active: true, menu_lateral_active: true),
+            $this->menu_item(menu_item_titulo: "Anticipo", link: $this->link_em_empleado_anticipo,menu_seccion_active: true,
+                menu_lateral_active: true),
+            $this->menu_item(menu_item_titulo: "Asigna Sucursal", link: $this->link_modifica,menu_seccion_active: true,
+                menu_lateral_active: true));
+
+        $this->sidebar['fiscales']['titulo'] = "Empleado";
+        $this->sidebar['fiscales']['stepper_active'] = true;
+        $this->sidebar['fiscales']['menu'] = array(
+            $this->menu_item(menu_item_titulo: "Modifica", link: $this->link_modifica,menu_seccion_active: true,
+                menu_lateral_active: true),
+            $this->menu_item(menu_item_titulo: "Fiscales", link: $this->link_em_empleado_fiscales),
+            $this->menu_item(menu_item_titulo: "Imss", link: $this->link_em_empleado_imss,menu_seccion_active: true,
+                menu_lateral_active: true),
+            $this->menu_item(menu_item_titulo: "Cuenta Bancaria", link: $this->link_em_empleado_cuenta_bancaria,menu_seccion_active: true,
+                menu_lateral_active: true),
+            $this->menu_item(menu_item_titulo: "Anticipo", link: $this->link_em_empleado_anticipo,menu_seccion_active: true,
+                menu_lateral_active: true),
+            $this->menu_item(menu_item_titulo: "Asigna Sucursal", link: $this->link_modifica,menu_seccion_active: true,
+                menu_lateral_active: true));
+
+        $this->sidebar['imss']['titulo'] = "Empleado";
+        $this->sidebar['imss']['stepper_active'] = true;
+        $this->sidebar['imss']['menu'] = array(
+            $this->menu_item(menu_item_titulo: "Modifica", link: $this->link_modifica,menu_seccion_active: true,
+                menu_lateral_active: true),
+            $this->menu_item(menu_item_titulo: "Fiscales", link: $this->link_em_empleado_fiscales,
+                menu_seccion_active: true, menu_lateral_active: true),
+            $this->menu_item(menu_item_titulo: "Imss", link: $this->link_em_empleado_imss),
+            $this->menu_item(menu_item_titulo: "Cuenta Bancaria", link: $this->link_em_empleado_cuenta_bancaria,
+                menu_seccion_active: true, menu_lateral_active: true),
+            $this->menu_item(menu_item_titulo: "Anticipo", link: $this->link_em_empleado_anticipo,menu_seccion_active: true,
+                menu_lateral_active: true),
+            $this->menu_item(menu_item_titulo: "Asigna Sucursal", link: $this->link_modifica,menu_seccion_active: true,
+                menu_lateral_active: true));
+
+        $this->sidebar['cuenta_bancaria']['titulo'] = "Empleado";
+        $this->sidebar['cuenta_bancaria']['stepper_active'] = true;
+        $this->sidebar['cuenta_bancaria']['menu'] = array(
+            $this->menu_item(menu_item_titulo: "Modifica", link: $this->link_modifica,menu_seccion_active: true,
+                menu_lateral_active: true),
+            $this->menu_item(menu_item_titulo: "Fiscales", link: $this->link_em_empleado_fiscales,
+                menu_seccion_active: true, menu_lateral_active: true),
+            $this->menu_item(menu_item_titulo: "Imss", link: $this->link_em_empleado_imss,menu_seccion_active: true,
+                menu_lateral_active: true),
+            $this->menu_item(menu_item_titulo: "Cuenta Bancaria", link: $this->link_em_empleado_cuenta_bancaria),
+            $this->menu_item(menu_item_titulo: "Anticipo", link: $this->link_em_empleado_anticipo,menu_seccion_active: true,
+                menu_lateral_active: true),
+            $this->menu_item(menu_item_titulo: "Asigna Sucursal", link: $this->link_modifica,menu_seccion_active: true,
+                menu_lateral_active: true));
+
+        $this->sidebar['anticipo']['titulo'] = "Empleado";
+        $this->sidebar['anticipo']['stepper_active'] = true;
+        $this->sidebar['anticipo']['menu'] = array(
+            $this->menu_item(menu_item_titulo: "Modifica", link: $this->link_modifica,menu_seccion_active: true,
+                menu_lateral_active: true),
+            $this->menu_item(menu_item_titulo: "Fiscales", link: $this->link_em_empleado_fiscales,
+                menu_seccion_active: true, menu_lateral_active: true),
+            $this->menu_item(menu_item_titulo: "Imss", link: $this->link_em_empleado_imss,menu_seccion_active: true,
+                menu_lateral_active: true),
+            $this->menu_item(menu_item_titulo: "Cuenta Bancaria", link: $this->link_em_empleado_cuenta_bancaria,
+                menu_seccion_active: true, menu_lateral_active: true),
+            $this->menu_item(menu_item_titulo: "Anticipo", link: $this->link_em_empleado_anticipo),
+            $this->menu_item(menu_item_titulo: "Asigna Sucursal", link: $this->link_modifica,menu_seccion_active: true,
+                menu_lateral_active: true));
+
+        $this->sidebar['asigna_sucursal']['titulo'] = "Empleado";
+        $this->sidebar['asigna_sucursal']['stepper_active'] = true;
+        $this->sidebar['asigna_sucursal']['menu'] = array(
+            $this->menu_item(menu_item_titulo: "Modifica", link: $this->link_modifica,menu_seccion_active: true,
+                menu_lateral_active: true),
+            $this->menu_item(menu_item_titulo: "Fiscales", link: $this->link_em_empleado_fiscales,
+                menu_seccion_active: true, menu_lateral_active: true),
+            $this->menu_item(menu_item_titulo: "Imss", link: $this->link_em_empleado_imss,menu_seccion_active: true,
+                menu_lateral_active: true),
+            $this->menu_item(menu_item_titulo: "Cuenta Bancaria", link: $this->link_em_empleado_cuenta_bancaria,
+                menu_seccion_active: true, menu_lateral_active: true),
+            $this->menu_item(menu_item_titulo: "Anticipo", link: $this->link_em_empleado_anticipo,
+                menu_seccion_active: true, menu_lateral_active: true),
+            $this->menu_item(menu_item_titulo: "Asigna Sucursal", link: $this->link_modifica));
     }
+
+    public function menu_item(string $menu_item_titulo, string $link, bool $menu_seccion_active = false,bool $menu_lateral_active = false): array
+    {
+        $menu_item = array();
+        $menu_item['menu_item'] = $menu_item_titulo;
+        $menu_item['menu_seccion_active'] = $menu_seccion_active;
+        $menu_item['link'] = $link;
+        $menu_item['menu_lateral_active'] = $menu_lateral_active;
+
+        return $menu_item;
+    }
+
+    public function fiscales(bool $header, bool $ws = false): array|stdClass
+    {
+        $r_modifica = $this->init_modifica();
+        if (errores::$error) {
+            return $this->retorno_error(
+                mensaje: 'Error al generar salida de template', data: $r_modifica, header: $header, ws: $ws);
+        }
+
+        $keys_selects = $this->init_selects_inputs();
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al inicializar selects', data: $keys_selects, header: $header,
+                ws: $ws);
+        }
+
+        $keys_selects['cat_sat_regimen_fiscal_id']->id_selected = $this->registro['cat_sat_regimen_fiscal_id'];
+        $keys_selects['cat_sat_regimen_fiscal_id']->cols = 12;
+
+        $base = $this->base_upd(keys_selects: $keys_selects, params: array(), params_ajustados: array());
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al integrar base', data: $base, header: $header, ws: $ws);
+        }
+
+        return $r_modifica;
+    }
+
+    public function imss(bool $header, bool $ws = false): array|stdClass
+    {
+        $r_modifica = $this->init_modifica();
+        if (errores::$error) {
+            return $this->retorno_error(
+                mensaje: 'Error al generar salida de template', data: $r_modifica, header: $header, ws: $ws);
+        }
+
+        $keys_selects = $this->init_selects_inputs();
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al inicializar selects', data: $keys_selects, header: $header,
+                ws: $ws);
+        }
+
+        $keys_selects['im_registro_patronal_id']->id_selected = $this->registro['im_registro_patronal_id'];
+        $keys_selects['im_registro_patronal_id']->cols = 12;
+
+        $base = $this->base_upd(keys_selects: $keys_selects, params: array(), params_ajustados: array());
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al integrar base', data: $base, header: $header, ws: $ws);
+        }
+
+        return $r_modifica;
+    }
+
+
+
 
     public function asigna_sucursal(bool $header, bool $ws = false): array|stdClass
     {

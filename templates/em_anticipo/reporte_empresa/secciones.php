@@ -7,7 +7,9 @@
         </div>
         <div class="col-md-8">
             <h3>Reporte Empresa</h3>
-            <?php include "templates/em_anticipo/_base/buttons/1.azul.modifica.php"; ?>
+            <?php include "templates/em_anticipo/_base/links/alta.php"; ?>
+            <hr class="hr-menu-lateral">
+            <?php include "templates/em_anticipo/_base/links/reporte_empresa.php"; ?>
         </div>
     </div>
 </div>
