@@ -52,6 +52,10 @@
     "gamboa.martin/configuraciones": "^1.0.0",
     "gamboa.martin/template": "^6.0.0",
     "gamboa.martin/template_1": "^8.0.0",
+<<<<<<< HEAD
+=======
+    "tglobally/template_tg": "^3.0.0",
+>>>>>>> b2eaedef9edf783a9d444a48e5ff8b9cddffd134
     "gamboa.martin/system": "^7.0.0",
     "gamboa.martin/services": "^6.0.0",
     "gamboa.martin/cat_sat": "^7.0.0",
@@ -59,13 +63,21 @@
     "gamboa.martin/js_base": "^2.0.0",
     "gamboa.martin/documento": "^5.0.0",
     "gamboa.martin/proceso": "^5.0.0",
+<<<<<<< HEAD
     "gamboa.martin/im_registro_patronal": "^1.0.0",
     "gamboa.martin/empleado": "dev-main",
+=======
+    "gamboa.martin/empleado": "dev-main",
+    "gamboa.martin/im_registro_patronal": "^1.0.0",
+>>>>>>> b2eaedef9edf783a9d444a48e5ff8b9cddffd134
     "gamboa.martin/organigrama": "^5.0.0",
     "gamboa.martin/comercial": "^4.0.0",
     "gamboa.martin/facturacion": "^4.0.0",
     "gamboa.martin/xml_cfdi_4": "^2.0.0",
+<<<<<<< HEAD
     "tglobally/template_tg": "^3.0.0",
+=======
+>>>>>>> b2eaedef9edf783a9d444a48e5ff8b9cddffd134
     "syamsoul/laravel-datatable-ssp": "^2.3"
 
   },
