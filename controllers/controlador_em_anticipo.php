@@ -2,7 +2,7 @@
 namespace tglobally\tg_empleado\controllers;
 
 use html\org_empresa_html;
-use models\org_empresa;
+use tglobally\tg_empleado\models\org_empresa;
 use PDO;
 use stdClass;
 use tglobally\template_tg\html;
