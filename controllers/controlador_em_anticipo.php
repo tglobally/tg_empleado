@@ -20,28 +20,45 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
         $this->sidebar['lista']['menu'] = array(
             $this->menu_item(menu_item_titulo: "Alta", link: $this->link_alta,menu_seccion_active: true,
                 menu_lateral_active: true),
-            $this->menu_item(menu_item_titulo: "Reporte Empresa", link: $this->link_em_abono_anticipo_reporte_empresa,
+            $this->menu_item(menu_item_titulo: "Reporte Empresa", link: $this->link_em_anticipo_reporte_empresa,
+                menu_seccion_active: true),
+            $this->menu_item(menu_item_titulo: "Reporte Cliente", link: $this->link_em_anticipo_reporte_cliente,
                 menu_seccion_active: true));
 
         $this->sidebar['alta']['titulo'] = "Alta Anticipo";
         $this->sidebar['alta']['stepper_active'] = true;
         $this->sidebar['alta']['menu'] = array(
             $this->menu_item(menu_item_titulo: "Alta", link: $this->link_alta,menu_lateral_active: true),
-            $this->menu_item(menu_item_titulo: "Reporte Empresa", link: $this->link_em_abono_anticipo_reporte_empresa,
+            $this->menu_item(menu_item_titulo: "Reporte Empresa", link: $this->link_em_anticipo_reporte_empresa,
+                menu_seccion_active: true),
+            $this->menu_item(menu_item_titulo: "Reporte Cliente", link: $this->link_em_anticipo_reporte_cliente,
                 menu_seccion_active: true));
 
         $this->sidebar['modifica']['titulo'] = "Modifica Anticipos";
         $this->sidebar['modifica']['stepper_active'] = true;
         $this->sidebar['modifica']['menu'] = array(
             $this->menu_item(menu_item_titulo: "Modifica", link: $this->link_alta,menu_lateral_active: true),
-            $this->menu_item(menu_item_titulo: "Reporte Empresa", link: $this->link_em_abono_anticipo_reporte_empresa,
+            $this->menu_item(menu_item_titulo: "Reporte Empresa", link: $this->link_em_anticipo_reporte_empresa,
+                menu_seccion_active: true),
+            $this->menu_item(menu_item_titulo: "Reporte Cliente", link: $this->link_em_anticipo_reporte_cliente,
                 menu_seccion_active: true));
 
         $this->sidebar['reporte_empresa']['titulo'] = "Reporte Empresa";
         $this->sidebar['reporte_empresa']['stepper_active'] = true;
         $this->sidebar['reporte_empresa']['menu'] = array(
             $this->menu_item(menu_item_titulo: "Alta", link: $this->link_alta,menu_seccion_active: true),
-            $this->menu_item(menu_item_titulo: "Reporte Empresa", link: $this->link_em_abono_anticipo_reporte_empresa,
+            $this->menu_item(menu_item_titulo: "Reporte Empresa", link: $this->link_em_anticipo_reporte_empresa,
+        menu_seccion_active: true, menu_lateral_active: true),
+            $this->menu_item(menu_item_titulo: "Reporte Cliente", link: $this->link_em_anticipo_reporte_cliente,
+        menu_seccion_active: true));
+
+        $this->sidebar['reporte_cliente']['titulo'] = "Reporte Cliente";
+        $this->sidebar['reporte_cliente']['stepper_active'] = true;
+        $this->sidebar['reporte_cliente']['menu'] = array(
+            $this->menu_item(menu_item_titulo: "Alta", link: $this->link_alta,menu_seccion_active: true),
+            $this->menu_item(menu_item_titulo: "Reporte Empresa", link: $this->link_em_anticipo_reporte_empresa,
+        menu_seccion_active: true),
+            $this->menu_item(menu_item_titulo: "Reporte Cliente", link: $this->link_em_anticipo_reporte_cliente,
         menu_seccion_active: true, menu_lateral_active: true));
 
     }
