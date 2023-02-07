@@ -114,6 +114,15 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
             $this->menu_item(menu_item_titulo: "Reportes", link: $this->link_em_empleado_reportes,menu_seccion_active: true,
                 menu_lateral_active: true));
 
+        $this->sidebar['reporte_remunerado']['titulo'] = "Empleados";
+        $this->sidebar['reporte_remunerado']['menu'] = array(
+            $this->menu_item(menu_item_titulo: "Alta", link: $this->link_alta,menu_seccion_active: true,
+                menu_lateral_active: true),
+            $this->menu_item(menu_item_titulo: "Sube Empleados", link: $this->link_em_empleado_sube_archivo,menu_seccion_active: true,
+                menu_lateral_active: true),
+            $this->menu_item(menu_item_titulo: "Reportes", link: $this->link_em_empleado_reportes,menu_seccion_active: true,
+                menu_lateral_active: true));
+
         $this->sidebar['alta']['titulo'] = "Empleado";
         $this->sidebar['alta']['stepper_active'] = true;
         $this->sidebar['alta']['menu'] = array(
