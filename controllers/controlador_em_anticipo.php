@@ -1,11 +1,8 @@
 <?php
 namespace tglobally\tg_empleado\controllers;
 
-use gamboamartin\errores\errores;
-use html\em_empleado_html;
 use html\org_empresa_html;
-use models\em_empleado;
-use models\org_empresa;
+use tglobally\tg_empleado\models\org_empresa;
 use PDO;
 use stdClass;
 use tglobally\template_tg\html;
@@ -17,7 +14,63 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
     {
         $html_base = new html();
         parent::__construct(link: $link, html: $html_base);
-        $this->titulo_lista = 'Anticipo';
+        $this->titulo_lista = 'Anticipos';
+
+        $this->sidebar['lista']['titulo'] = "Anticipos";
+        $this->sidebar['lista']['menu'] = array(
+            $this->menu_item(menu_item_titulo: "Alta", link: $this->link_alta,menu_seccion_active: true,
+                menu_lateral_active: true),
+            $this->menu_item(menu_item_titulo: "Reporte Empresa", link: $this->link_em_anticipo_reporte_empresa,
+                menu_seccion_active: true),
+            $this->menu_item(menu_item_titulo: "Reporte Cliente", link: $this->link_em_anticipo_reporte_cliente,
+                menu_seccion_active: true));
+
+        $this->sidebar['alta']['titulo'] = "Alta Anticipo";
+        $this->sidebar['alta']['stepper_active'] = true;
+        $this->sidebar['alta']['menu'] = array(
+            $this->menu_item(menu_item_titulo: "Alta", link: $this->link_alta,menu_lateral_active: true),
+            $this->menu_item(menu_item_titulo: "Reporte Empresa", link: $this->link_em_anticipo_reporte_empresa,
+                menu_seccion_active: true),
+            $this->menu_item(menu_item_titulo: "Reporte Cliente", link: $this->link_em_anticipo_reporte_cliente,
+                menu_seccion_active: true));
+
+        $this->sidebar['modifica']['titulo'] = "Modifica Anticipos";
+        $this->sidebar['modifica']['stepper_active'] = true;
+        $this->sidebar['modifica']['menu'] = array(
+            $this->menu_item(menu_item_titulo: "Modifica", link: $this->link_alta,menu_lateral_active: true),
+            $this->menu_item(menu_item_titulo: "Reporte Empresa", link: $this->link_em_anticipo_reporte_empresa,
+                menu_seccion_active: true),
+            $this->menu_item(menu_item_titulo: "Reporte Cliente", link: $this->link_em_anticipo_reporte_cliente,
+                menu_seccion_active: true));
+
+        $this->sidebar['reporte_empresa']['titulo'] = "Reporte Empresa";
+        $this->sidebar['reporte_empresa']['stepper_active'] = true;
+        $this->sidebar['reporte_empresa']['menu'] = array(
+            $this->menu_item(menu_item_titulo: "Alta", link: $this->link_alta,menu_seccion_active: true),
+            $this->menu_item(menu_item_titulo: "Reporte Empresa", link: $this->link_em_anticipo_reporte_empresa,
+        menu_seccion_active: true, menu_lateral_active: true),
+            $this->menu_item(menu_item_titulo: "Reporte Cliente", link: $this->link_em_anticipo_reporte_cliente,
+        menu_seccion_active: true));
+
+        $this->sidebar['reporte_cliente']['titulo'] = "Reporte Cliente";
+        $this->sidebar['reporte_cliente']['stepper_active'] = true;
+        $this->sidebar['reporte_cliente']['menu'] = array(
+            $this->menu_item(menu_item_titulo: "Alta", link: $this->link_alta,menu_seccion_active: true),
+            $this->menu_item(menu_item_titulo: "Reporte Empresa", link: $this->link_em_anticipo_reporte_empresa,
+        menu_seccion_active: true),
+            $this->menu_item(menu_item_titulo: "Reporte Cliente", link: $this->link_em_anticipo_reporte_cliente,
+        menu_seccion_active: true, menu_lateral_active: true));
+
     }
 
+    public function menu_item(string $menu_item_titulo, string $link, bool $menu_seccion_active = false,bool $menu_lateral_active = false): array
+    {
+        $menu_item = array();
+        $menu_item['menu_item'] = $menu_item_titulo;
+        $menu_item['menu_seccion_active'] = $menu_seccion_active;
+        $menu_item['link'] = $link;
+        $menu_item['menu_lateral_active'] = $menu_lateral_active;
+
+        return $menu_item;
+    }
 }

@@ -1,6 +1,5 @@
-<?php /** @var \tglobally\tg_empleado\controllers\controlador_em_anticipo $controlador */ ?>
-
-<?php include 'templates/em_anticipo/modifica/secciones.php'; ?>
+<?php /** @var \tglobally\tg_empleado\controllers\controlador_em_empleado $controlador */ ?>
+<?php (new \tglobally\template_tg\template())->sidebar($controlador); ?>
 <div class="col-md-9 formulario">
     <div class="col-lg-12">
 

@@ -1,68 +1,134 @@
 <?php
 namespace tglobally\tg_empleado\controllers;
 
-
+use base\controller\controler;
 use gamboamartin\errores\errores;
+use gamboamartin\system\_ctl_base;
 use gamboamartin\system\links_menu;
 use gamboamartin\system\system;
 use html\tg_empleado_sucursal_html;
-use models\tg_empleado_sucursal;
+use tglobally\tg_empleado\models\tg_empleado_sucursal;
 use PDO;
 use stdClass;
 
-class controlador_tg_empleado_sucursal extends system
+class controlador_tg_empleado_sucursal extends _ctl_base
 {
-    public array $keys_selects = array();
     public function __construct(PDO $link, \gamboamartin\template\html $html = new \gamboamartin\template_1\html(),
                                 stdClass $paths_conf = new stdClass())
     {
         $modelo = new tg_empleado_sucursal(link: $link);
         $html_ = new tg_empleado_sucursal_html(html: $html);
         $obj_link = new links_menu(link:$link,registro_id: $this->registro_id);
-        parent::__construct(html: $html_, link: $link, modelo: $modelo, obj_link: $obj_link, paths_conf: $paths_conf);
 
-        $this->asignar_propiedad(identificador:'em_empleado_id', propiedades: ["label" => "Empleado"]);
+        $datatables = $this->init_datatable();
         if (errores::$error) {
-            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
+            $error = $this->errores->error(mensaje: 'Error al inicializar datatable', data: $datatables);
             print_r($error);
             die('Error');
         }
 
-        $this->asignar_propiedad(identificador:'com_sucursal_id', propiedades: ["label" => "Sucursal"]);
+        parent::__construct(html: $html_, link: $link, modelo: $modelo, obj_link: $obj_link, datatables: $datatables,
+            paths_conf: $paths_conf);
+
+        $configuraciones = $this->init_configuraciones();
         if (errores::$error) {
-            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
+            $error = $this->errores->error(mensaje: 'Error al inicializar configuraciones', data: $configuraciones);
             print_r($error);
             die('Error');
         }
 
-        $this->titulo_lista = 'Manifiesto';
-    }
-
-    public function asignar_propiedad(string $identificador, mixed $propiedades)
-    {
-        if (!array_key_exists($identificador,$this->keys_selects)){
-            $this->keys_selects[$identificador] = new stdClass();
-        }
-
-        foreach ($propiedades as $key => $value){
-            $this->keys_selects[$identificador]->$key = $value;
-        }
     }
 
     public function alta(bool $header, bool $ws = false): array|string
     {
-        $r_alta =  parent::alta(header: false);
-        if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al generar template',data:  $r_alta, header: $header,ws:$ws);
+        $r_alta = $this->init_alta();
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al inicializar alta', data: $r_alta, header: $header, ws: $ws);
         }
 
-        $inputs = $this->genera_inputs($this->keys_selects);
-        if(errores::$error){
-            $error = $this->errores->error(mensaje: 'Error al generar inputs',data:  $inputs);
-            print_r($error);
-            die('Error');
+        $keys_selects = $this->init_selects_inputs();
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al inicializar selects', data: $keys_selects, header: $header,
+                ws: $ws);
         }
+
+        $inputs = $this->inputs(keys_selects: $keys_selects);
+        if (errores::$error) {
+            return $this->retorno_error(
+                mensaje: 'Error al obtener inputs', data: $inputs, header: $header, ws: $ws);
+        }
+
         return $r_alta;
     }
 
+    protected function campos_view(): array
+    {
+        $keys = new stdClass();
+        $keys->inputs = array();
+        $keys->selects = array();
+
+        $init_data = array();
+        $init_data['em_empleado'] = "gamboamartin\\empleado";
+        $init_data['com_sucursal'] = "gamboamartin\\comercial";
+
+        $campos_view = $this->campos_view_base(init_data: $init_data, keys: $keys);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al inicializar campo view', data: $campos_view);
+        }
+
+        return $campos_view;
+    }
+
+    private function init_configuraciones(): controler
+    {
+        $this->seccion_titulo = 'Sucursal Empleado';
+        $this->titulo_lista = 'Registro de Sucursales de Empleado';
+
+        $this->lista_get_data = true;
+
+        return $this;
+    }
+
+    private function init_datatable(): stdClass
+    {
+        $columns["tg_empleado_sucursal_id"]["titulo"] = "Id";
+        $columns["tg_empleado_sucursal_codigo"]["titulo"] = "Código ";
+
+        $filtro = array();
+
+        $datatables = new stdClass();
+        $datatables->columns = $columns;
+        $datatables->filtro = $filtro;
+
+        return $datatables;
+    }
+
+    /**
+     * Integra los selects
+     * @param array $keys_selects Key de selcta integrar
+     * @param string $key key a validar
+     * @param string $label Etiqueta a mostrar
+     * @param int $id_selected  selected
+     * @param int $cols cols css
+     * @param bool $con_registros Intrega valores
+     * @param array $filtro Filtro de datos
+     * @return array
+     */
+    private function init_selects(array $keys_selects, string $key, string $label, int $id_selected = -1, int $cols = 6,
+                                  bool  $con_registros = true, array $filtro = array()): array
+    {
+        $keys_selects = $this->key_select(cols: $cols, con_registros: $con_registros, filtro: $filtro, key: $key,
+            keys_selects: $keys_selects, id_selected: $id_selected, label: $label);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
+        }
+
+        return $keys_selects;
+    }
+
+    public function init_selects_inputs(): array
+    {
+        $keys_selects = $this->init_selects(keys_selects: array(), key: "em_empleado_id", label: "Empleado",cols: 12);
+        return $this->init_selects(keys_selects: $keys_selects, key: "com_sucursal_id", label: "Sucursal",cols: 12);
+    }
 }

@@ -14,7 +14,7 @@
     "psr-4": {
       "tglobally\\tg_empleado\\controllers\\": "controllers",
       "config\\": "config/",
-      "models\\": "orm",
+      "tglobally\\tg_empleado\\models\\": "orm",
       "tests\\": "tests/",
       "links\\": "links/",
       "html\\": "templates/directivas/"

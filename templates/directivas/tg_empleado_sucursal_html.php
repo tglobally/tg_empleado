@@ -3,7 +3,7 @@ namespace html;
 
 use gamboamartin\errores\errores;
 use gamboamartin\template\directivas;
-use models\tg_empleado_sucursal;
+use tglobally\tg_empleado\models\tg_empleado_sucursal;
 use PDO;
 use stdClass;
 use tglobally\tg_empleado\controllers\controlador_tg_empleado_sucursal;

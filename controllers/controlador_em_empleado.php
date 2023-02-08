@@ -5,8 +5,8 @@ use gamboamartin\comercial\models\com_sucursal;
 use gamboamartin\empleado\models\em_cuenta_bancaria;
 use gamboamartin\errores\errores;
 use gamboamartin\system\actions;
-use models\em_empleado;
-use models\tg_empleado_sucursal;
+use tglobally\tg_empleado\models\em_empleado;
+use tglobally\tg_empleado\models\tg_empleado_sucursal;
 use PDO;
 use stdClass;
 use tglobally\template_tg\html;
@@ -15,12 +15,12 @@ use Throwable;
 class controlador_em_empleado extends \gamboamartin\empleado\controllers\controlador_em_empleado {
     public controlador_tg_empleado_sucursal $controlador_tg_empleado_sucursal;
     public stdClass $tg_empleado_sucursal;
-
     public string $link_em_empleado_fiscales = '';
     public string $link_em_empleado_imss = '';
     public string $link_em_empleado_cuenta_bancaria = '';
     public string $link_em_empleado_anticipo = '';
     public string $link_em_empleado_asigna_sucursal = '';
+    public string $link_tg_empleado_sucursal_alta_bd = '';
 
     public function __construct(PDO $link, stdClass $paths_conf = new stdClass())
     {
@@ -69,6 +69,24 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
             exit;
         }
 
+        $this->link_em_empleado_asigna_sucursal = $this->obj_link->link_con_id(accion: "asigna_sucursal",link: $this->link,
+            registro_id: $this->registro_id,seccion: "em_empleado");
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al obtener link',
+                data: $this->link_em_empleado_asigna_sucursal);
+            print_r($error);
+            exit;
+        }
+
+        $this->link_tg_empleado_sucursal_alta_bd = $this->obj_link->link_alta_bd(link: $this->link,
+            seccion: 'tg_empleado_sucursal');
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al obtener link',
+                data: $this->link_tg_empleado_sucursal_alta_bd);
+            print_r($error);
+            exit;
+        }
+
         $this->sidebar['lista']['titulo'] = "Empleados";
         $this->sidebar['lista']['menu'] = array(
             $this->menu_item(menu_item_titulo: "Alta", link: $this->link_alta,menu_seccion_active: true,
@@ -78,8 +96,26 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
             $this->menu_item(menu_item_titulo: "Reportes", link: $this->link_em_empleado_reportes,menu_seccion_active: true,
                 menu_lateral_active: true));
 
+        $this->sidebar['sube_archivo']['titulo'] = "Empleados";
+        $this->sidebar['sube_archivo']['menu'] = array(
+            $this->menu_item(menu_item_titulo: "Alta", link: $this->link_alta,menu_seccion_active: true,
+                menu_lateral_active: true),
+            $this->menu_item(menu_item_titulo: "Sube Empleados", link: $this->link_em_empleado_sube_archivo,menu_seccion_active: true,
+                menu_lateral_active: true),
+            $this->menu_item(menu_item_titulo: "Reportes", link: $this->link_em_empleado_reportes,menu_seccion_active: true,
+                menu_lateral_active: true));
+
         $this->sidebar['reportes']['titulo'] = "Empleados";
         $this->sidebar['reportes']['menu'] = array(
+            $this->menu_item(menu_item_titulo: "Alta", link: $this->link_alta,menu_seccion_active: true,
+                menu_lateral_active: true),
+            $this->menu_item(menu_item_titulo: "Sube Empleados", link: $this->link_em_empleado_sube_archivo,menu_seccion_active: true,
+                menu_lateral_active: true),
+            $this->menu_item(menu_item_titulo: "Reportes", link: $this->link_em_empleado_reportes,menu_seccion_active: true,
+                menu_lateral_active: true));
+
+        $this->sidebar['reporte_remunerado']['titulo'] = "Empleados";
+        $this->sidebar['reporte_remunerado']['menu'] = array(
             $this->menu_item(menu_item_titulo: "Alta", link: $this->link_alta,menu_seccion_active: true,
                 menu_lateral_active: true),
             $this->menu_item(menu_item_titulo: "Sube Empleados", link: $this->link_em_empleado_sube_archivo,menu_seccion_active: true,
@@ -104,8 +140,8 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
                 menu_seccion_active: true, menu_lateral_active: true),
             $this->menu_item(menu_item_titulo: "Anticipo", link: $this->link_em_empleado_anticipo,menu_seccion_active: true,
                 menu_lateral_active: true),
-            $this->menu_item(menu_item_titulo: "Asigna Sucursal", link: $this->link_modifica,menu_seccion_active: true,
-                menu_lateral_active: true));
+            $this->menu_item(menu_item_titulo: "Asigna Sucursal", link: $this->link_em_empleado_asigna_sucursal,
+                menu_seccion_active: true, menu_lateral_active: true));
 
         $this->sidebar['fiscales']['titulo'] = "Empleado";
         $this->sidebar['fiscales']['stepper_active'] = true;
@@ -119,8 +155,8 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
                 menu_lateral_active: true),
             $this->menu_item(menu_item_titulo: "Anticipo", link: $this->link_em_empleado_anticipo,menu_seccion_active: true,
                 menu_lateral_active: true),
-            $this->menu_item(menu_item_titulo: "Asigna Sucursal", link: $this->link_modifica,menu_seccion_active: true,
-                menu_lateral_active: true));
+            $this->menu_item(menu_item_titulo: "Asigna Sucursal", link: $this->link_em_empleado_asigna_sucursal,
+                menu_seccion_active: true, menu_lateral_active: true));
 
         $this->sidebar['imss']['titulo'] = "Empleado";
         $this->sidebar['imss']['stepper_active'] = true;
@@ -134,8 +170,8 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
                 menu_seccion_active: true, menu_lateral_active: true),
             $this->menu_item(menu_item_titulo: "Anticipo", link: $this->link_em_empleado_anticipo,menu_seccion_active: true,
                 menu_lateral_active: true),
-            $this->menu_item(menu_item_titulo: "Asigna Sucursal", link: $this->link_modifica,menu_seccion_active: true,
-                menu_lateral_active: true));
+            $this->menu_item(menu_item_titulo: "Asigna Sucursal", link: $this->link_em_empleado_asigna_sucursal,
+                menu_seccion_active: true, menu_lateral_active: true));
 
         $this->sidebar['cuenta_bancaria']['titulo'] = "Empleado";
         $this->sidebar['cuenta_bancaria']['stepper_active'] = true;
@@ -149,8 +185,8 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
             $this->menu_item(menu_item_titulo: "Cuenta Bancaria", link: $this->link_em_empleado_cuenta_bancaria),
             $this->menu_item(menu_item_titulo: "Anticipo", link: $this->link_em_empleado_anticipo,menu_seccion_active: true,
                 menu_lateral_active: true),
-            $this->menu_item(menu_item_titulo: "Asigna Sucursal", link: $this->link_modifica,menu_seccion_active: true,
-                menu_lateral_active: true));
+            $this->menu_item(menu_item_titulo: "Asigna Sucursal", link: $this->link_em_empleado_asigna_sucursal,
+                menu_seccion_active: true, menu_lateral_active: true));
 
         $this->sidebar['anticipo']['titulo'] = "Empleado";
         $this->sidebar['anticipo']['stepper_active'] = true;
@@ -164,8 +200,8 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
             $this->menu_item(menu_item_titulo: "Cuenta Bancaria", link: $this->link_em_empleado_cuenta_bancaria,
                 menu_seccion_active: true, menu_lateral_active: true),
             $this->menu_item(menu_item_titulo: "Anticipo", link: $this->link_em_empleado_anticipo),
-            $this->menu_item(menu_item_titulo: "Asigna Sucursal", link: $this->link_modifica,menu_seccion_active: true,
-                menu_lateral_active: true));
+            $this->menu_item(menu_item_titulo: "Asigna Sucursal", link: $this->link_em_empleado_asigna_sucursal,
+                menu_seccion_active: true, menu_lateral_active: true));
 
         $this->sidebar['asigna_sucursal']['titulo'] = "Empleado";
         $this->sidebar['asigna_sucursal']['stepper_active'] = true;
@@ -180,7 +216,40 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
                 menu_seccion_active: true, menu_lateral_active: true),
             $this->menu_item(menu_item_titulo: "Anticipo", link: $this->link_em_empleado_anticipo,
                 menu_seccion_active: true, menu_lateral_active: true),
-            $this->menu_item(menu_item_titulo: "Asigna Sucursal", link: $this->link_modifica));
+            $this->menu_item(menu_item_titulo: "Asigna Sucursal", link: $this->link_em_empleado_asigna_sucursal));
+    }
+
+    protected function inputs_children(stdClass $registro): array|stdClass
+    {
+        $this->inputs = parent::inputs_children(registro: $registro);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al obtener inputs children', data: $this->inputs);
+        }
+
+        if ($this->accion === "asigna_sucursal"){
+            $r_template = $this->controlador_tg_empleado_sucursal->alta(header: false);
+            if (errores::$error) {
+                return $this->errores->error(mensaje: 'Error al obtener template', data: $r_template);
+            }
+
+            $keys_selects = $this->controlador_tg_empleado_sucursal->init_selects_inputs();
+            if (errores::$error) {
+                return $this->errores->error(mensaje: 'Error al inicializar selects', data: $keys_selects);
+            }
+
+            $keys_selects['em_empleado_id']->id_selected = $this->registro_id;
+            $keys_selects['em_empleado_id']->filtro = array("em_empleado.id" => $this->registro_id);
+            $keys_selects['em_empleado_id']->disabled = true;
+
+            $inputs = $this->controlador_tg_empleado_sucursal->inputs(keys_selects: $keys_selects);
+            if (errores::$error) {
+                return $this->errores->error(mensaje: 'Error al obtener inputs', data: $inputs);
+            }
+
+            $this->inputs = $inputs;
+        }
+
+        return $this->inputs;
     }
 
     public function menu_item(string $menu_item_titulo, string $link, bool $menu_seccion_active = false,bool $menu_lateral_active = false): array
@@ -244,52 +313,28 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
         return $r_modifica;
     }
 
-
-
-
-    public function asigna_sucursal(bool $header, bool $ws = false): array|stdClass
+    public function asigna_sucursal(bool $header = true, bool $ws = false, array $not_actions = array()): array|string
     {
-        $alta = $this->controlador_tg_empleado_sucursal->alta(header: false);
+        $seccion = "tg_empleado_sucursal";
+
+        $data_view = new stdClass();
+        $data_view->names = array('Id', 'Código', 'RFC Cliente', 'Razón Social Client', 'Sucursal Cliente', 'Acciones');
+        $data_view->keys_data = array($seccion . "_id", $seccion . '_codigo', 'com_cliente_rfc', 'com_cliente_razon_social',
+            'com_sucursal_descripcion');
+        $data_view->key_actions = 'acciones';
+        $data_view->namespace_model = 'tglobally\\tg_empleado\\models';
+        $data_view->name_model_children = $seccion;
+
+        $contenido_table = $this->contenido_children(data_view: $data_view, next_accion: __FUNCTION__,
+            not_actions: $not_actions);
         if (errores::$error) {
-            return $this->retorno_error(mensaje: 'Error al generar template', data: $alta, header: $header, ws: $ws);
+            return $this->retorno_error(
+                mensaje: 'Error al obtener tbody', data: $contenido_table, header: $header, ws: $ws);
         }
 
-        $this->controlador_tg_empleado_sucursal->asignar_propiedad(identificador: 'em_empleado_id',
-            propiedades: ["id_selected" => $this->registro_id, "disabled" => true,
-                "filtro" => array('em_empleado.id' => $this->registro_id)]);
-
-        $this->controlador_tg_empleado_sucursal->asignar_propiedad(identificador: 'com_sucursal_id',
-            propiedades: ["label" => 'Sucursal Cliente']);
-
-        $this->controlador_tg_empleado_sucursal->asignar_propiedad(identificador: 'com_sucursal',propiedades: array());
-
-        $this->inputs = $this->controlador_tg_empleado_sucursal->genera_inputs(
-            keys_selects:  $this->controlador_tg_empleado_sucursal->keys_selects);
-        if (errores::$error) {
-            $error = $this->errores->error(mensaje: 'Error al generar inputs', data: $this->inputs);
-            print_r($error);
-            die('Error');
-        }
-
-        $tg_empleado_sucursal = (new tg_empleado_sucursal($this->link))->get_tg_empleado_sucursal_empleado(
-            em_empleado_id: $this->registro_id);
-        if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al obtener anticipos',data:  $tg_empleado_sucursal,
-                header: $header,ws:$ws);
-        }
-
-        foreach ($tg_empleado_sucursal->registros as $indice => $empleado_sucursal) {
-            $empleado_sucursal_r = $this->data_empleado_sucursal_btn(empleado_sucursal: $empleado_sucursal);
-            if (errores::$error) {
-                return $this->retorno_error(mensaje: 'Error al asignar botones', data: $empleado_sucursal_r,
-                    header: $header, ws: $ws);
-            }
-            $tg_empleado_sucursal->registros[$indice] = $empleado_sucursal_r;
-        }
-        $this->tg_empleado_sucursal = $tg_empleado_sucursal;
-
-        return $this->inputs;
+        return $contenido_table;
     }
+
 
     /**
      * Limpia boton de siguiente accion
