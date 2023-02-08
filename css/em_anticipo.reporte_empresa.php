@@ -102,7 +102,6 @@ include $ruta_template_base.'assets/css/_base_css.php';
     .filtros {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        grid-template-rows: repeat(2, 1fr);
         grid-gap: 10px;
         grid-auto-rows: minmax(auto, auto);
         margin-bottom: 20px;
@@ -123,7 +122,7 @@ include $ruta_template_base.'assets/css/_base_css.php';
     }
 
     .filtros .filtro-categorias label {
-        font-weight: normal;
+        font-weight: bold;
     }
 
     .filtro-categorias h3 {
@@ -138,7 +137,6 @@ include $ruta_template_base.'assets/css/_base_css.php';
     }
 
 
-
     .botones {
         margin-bottom: 20px;
     }
@@ -147,6 +145,9 @@ include $ruta_template_base.'assets/css/_base_css.php';
         border-radius: 5px;
     }
 
+    .color-secondary{
+        background-color: white !important;
+    }
 
 
 
