@@ -131,6 +131,7 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
             }
 
             if ($data->n_registros >0){
+                $data->registros['com_sucursal'] = $registro['com_sucursal_descripcion'];
                 $data_exportar[] = $data->registros;
             }
         }
@@ -139,21 +140,25 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
         $registros_xls = array();
 
         foreach ($data_exportar as $anticipos){
-            foreach ($anticipos as $anticipo){
-                $row = array();
-                $row["nss"] = $anticipo['em_empleado_nss'];
-                $row["codigo_remunerado"] = $anticipo['em_empleado_codigo'];
-                $row["nombre_remunerado"] = $anticipo['em_empleado_nombre'];
-                $row["nombre_remunerado"] .= " ".$anticipo['em_empleado_ap'];
-                $row["nombre_remunerado"] .= " ".$anticipo['em_empleado_am'];
-                $row["razon_social"] = "DEFAULT";
-                $row["concepto"] = $anticipo['em_anticipo_descripcion'];
-                $row["monto_del_anticipo"] = $anticipo['em_anticipo_monto'];
-                $row["tipo_descuento_monto"] = $anticipo['em_tipo_descuento_monto'];
-                $row["sumatoria_de_abonos"] = $anticipo['total_abonado'];
-                $row["saldo"]  = $anticipo['em_anticipo_saldo'];
-                $registros_xls[] = $row;
-            }
+                foreach ($anticipos as $anticipo){
+                    if (is_array($anticipo)){
+                        $row = array();
+                        $row["nss"] = $anticipo['em_empleado_nss'];
+                        $row["codigo_remunerado"] = $anticipo['em_empleado_codigo'];
+                        $row["nombre_remunerado"] = $anticipo['em_empleado_nombre'];
+                        $row["nombre_remunerado"] .= " ".$anticipo['em_empleado_ap'];
+                        $row["nombre_remunerado"] .= " ".$anticipo['em_empleado_am'];
+                        $row["razon_social"] = $anticipos['com_sucursal'];
+                        $row["concepto"] = $anticipo['em_anticipo_descripcion'];
+                        $row["monto_del_anticipo"] = $anticipo['em_anticipo_monto'];
+                        $row["tipo_descuento_monto"] = $anticipo['em_tipo_descuento_monto'];
+                        $row["sumatoria_de_abonos"] = $anticipo['total_abonado'];
+                        $row["saldo"]  = $anticipo['em_anticipo_saldo'];
+                        $registros_xls[] = $row;
+                    }
+
+                }
+
         }
 
         $keys = array();
