@@ -25,7 +25,7 @@ $url_assets = (new views())->url_assets;
                     </div>
                     <div class="cont_text_accion">
                         <h4 class="text_seccion">Tipos de Puesto</h4>
-                        <h4 class="text_accion">Catologo</h4>
+                        <h4 class="text_accion">Catalogo</h4>
                     </div>
                 </a>
             </div>
@@ -37,7 +37,7 @@ $url_assets = (new views())->url_assets;
                     </div>
                     <div class="cont_text_accion">
                         <h4 class="text_seccion">Puestos</h4>
-                        <h4 class="text_accion">Catologo</h4>
+                        <h4 class="text_accion">Catalogo</h4>
                     </div>
                 </a>
             </div>
@@ -48,7 +48,7 @@ $url_assets = (new views())->url_assets;
                     </div>
                     <div class="cont_text_accion">
                         <h4 class="text_seccion">Empleados</h4>
-                        <h4 class="text_accion">Catologo</h4>
+                        <h4 class="text_accion">Catalogo</h4>
                     </div>
                 </a>
             </div>
@@ -59,7 +59,7 @@ $url_assets = (new views())->url_assets;
                     </div>
                     <div class="cont_text_accion">
                         <h4 class="text_seccion">Anticipo</h4>
-                        <h4 class="text_accion">Catologo</h4>
+                        <h4 class="text_accion">Catalogo</h4>
                     </div>
                 </a>
             </div>
@@ -70,7 +70,7 @@ $url_assets = (new views())->url_assets;
                     </div>
                     <div class="cont_text_accion">
                         <h4 class="text_seccion">Tipo Anticipo</h4>
-                        <h4 class="text_accion">Catologo</h4>
+                        <h4 class="text_accion">Catalogo</h4>
                     </div>
                 </a>
             </div>
@@ -81,7 +81,7 @@ $url_assets = (new views())->url_assets;
                     </div>
                     <div class="cont_text_accion">
                         <h4 class="text_seccion">Metodo Calculo</h4>
-                        <h4 class="text_accion">Catologo</h4>
+                        <h4 class="text_accion">Catalogo</h4>
                     </div>
                 </a>
             </div>
@@ -92,7 +92,7 @@ $url_assets = (new views())->url_assets;
                     </div>
                     <div class="cont_text_accion">
                         <h4 class="text_seccion">Tipo Descuento</h4>
-                        <h4 class="text_accion">Catologo</h4>
+                        <h4 class="text_accion">Catalogo</h4>
                     </div>
                 </a>
             </div>
@@ -103,7 +103,7 @@ $url_assets = (new views())->url_assets;
                     </div>
                     <div class="cont_text_accion">
                         <h4 class="text_seccion">Abono Anticipo</h4>
-                        <h4 class="text_accion">Catologo</h4>
+                        <h4 class="text_accion">Catalogo</h4>
                     </div>
                 </a>
             </div>
@@ -114,7 +114,7 @@ $url_assets = (new views())->url_assets;
                     </div>
                     <div class="cont_text_accion">
                         <h4 class="text_seccion">Tipo Abono Anticipo</h4>
-                        <h4 class="text_accion">Catologo</h4>
+                        <h4 class="text_accion">Catalogo</h4>
                     </div>
                 </a>
             </div>
@@ -125,7 +125,18 @@ $url_assets = (new views())->url_assets;
                     </div>
                     <div class="cont_text_accion">
                         <h4 class="text_seccion">Cuentas Bancarias</h4>
-                        <h4 class="text_accion">Catologo</h4>
+                        <h4 class="text_accion">Catalogo</h4>
+                    </div>
+                </a>
+            </div>
+            <div class="col-sm-2">
+                <a href="<?php echo $controlador->link_lista_em_registro_patronal; ?>">
+                    <div class="cont_imagen_accion">
+                        <img src="<?php echo $url_assets; ?>img/inicio/imagen_2.jpg">
+                    </div>
+                    <div class="cont_text_accion">
+                        <h4 class="text_seccion">Registro Patronal</h4>
+                        <h4 class="text_accion">Catalogo</h4>
                     </div>
                 </a>
             </div>
