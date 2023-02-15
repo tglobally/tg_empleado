@@ -15,6 +15,7 @@ use tglobally\tg_empleado\models\tg_empleado_sucursal;
 class controlador_em_anticipo extends \gamboamartin\empleado\controllers\controlador_em_anticipo {
 
     public string $link_em_anticipo_exportar_cliente = '';
+    public string $link_em_anticipo_exportar_empresa = '';
     public function __construct(PDO $link, stdClass $paths_conf = new stdClass())
     {
         $html_base = new html();
@@ -71,6 +72,14 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
         if (errores::$error) {
             $error = $this->errores->error(mensaje: 'Error al obtener link',
                 data: $this->link_em_anticipo_exportar_cliente);
+            print_r($error);
+            exit;
+        }
+        $this->link_em_anticipo_exportar_empresa = $this->obj_link->link_con_id(accion: "exportar_empresa",link: $this->link,
+            registro_id: $this->registro_id,seccion: "em_anticipo");
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al obtener link',
+                data: $this->link_em_anticipo_exportar_empresa);
             print_r($error);
             exit;
         }
