@@ -29,6 +29,8 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
             $this->menu_item(menu_item_titulo: "Reporte Empresa", link: $this->link_em_anticipo_reporte_empresa,
                 menu_seccion_active: true),
             $this->menu_item(menu_item_titulo: "Reporte Cliente", link: $this->link_em_anticipo_reporte_cliente,
+                menu_seccion_active: true),
+            $this->menu_item(menu_item_titulo: "Reporte Empleado", link: $this->link_em_anticipo_reporte_empleado,
                 menu_seccion_active: true));
 
         $this->sidebar['alta']['titulo'] = "Alta Anticipo";
@@ -38,6 +40,8 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
             $this->menu_item(menu_item_titulo: "Reporte Empresa", link: $this->link_em_anticipo_reporte_empresa,
                 menu_seccion_active: true),
             $this->menu_item(menu_item_titulo: "Reporte Cliente", link: $this->link_em_anticipo_reporte_cliente,
+                menu_seccion_active: true),
+            $this->menu_item(menu_item_titulo: "Reporte Empleado", link: $this->link_em_anticipo_reporte_empleado,
                 menu_seccion_active: true));
 
         $this->sidebar['modifica']['titulo'] = "Modifica Anticipos";
@@ -47,6 +51,8 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
             $this->menu_item(menu_item_titulo: "Reporte Empresa", link: $this->link_em_anticipo_reporte_empresa,
                 menu_seccion_active: true),
             $this->menu_item(menu_item_titulo: "Reporte Cliente", link: $this->link_em_anticipo_reporte_cliente,
+                menu_seccion_active: true),
+            $this->menu_item(menu_item_titulo: "Reporte Empleado", link: $this->link_em_anticipo_reporte_empleado,
                 menu_seccion_active: true));
 
         $this->sidebar['reporte_empresa']['titulo'] = "Reporte Empresa";
@@ -56,7 +62,9 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
             $this->menu_item(menu_item_titulo: "Reporte Empresa", link: $this->link_em_anticipo_reporte_empresa,
         menu_seccion_active: true, menu_lateral_active: true),
             $this->menu_item(menu_item_titulo: "Reporte Cliente", link: $this->link_em_anticipo_reporte_cliente,
-        menu_seccion_active: true));
+        menu_seccion_active: true),
+            $this->menu_item(menu_item_titulo: "Reporte Empleado", link: $this->link_em_anticipo_reporte_empleado,
+                menu_seccion_active: true));
 
         $this->sidebar['reporte_cliente']['titulo'] = "Reporte Cliente";
         $this->sidebar['reporte_cliente']['stepper_active'] = true;
@@ -65,6 +73,19 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
             $this->menu_item(menu_item_titulo: "Reporte Empresa", link: $this->link_em_anticipo_reporte_empresa,
         menu_seccion_active: true),
             $this->menu_item(menu_item_titulo: "Reporte Cliente", link: $this->link_em_anticipo_reporte_cliente,
+        menu_seccion_active: true, menu_lateral_active: true),
+            $this->menu_item(menu_item_titulo: "Reporte Empleado", link: $this->link_em_anticipo_reporte_empleado,
+                menu_seccion_active: true));
+
+        $this->sidebar['reporte_empleado']['titulo'] = "Reporte Empleado";
+        $this->sidebar['reporte_empleado']['stepper_active'] = true;
+        $this->sidebar['reporte_empleado']['menu'] = array(
+            $this->menu_item(menu_item_titulo: "Alta", link: $this->link_alta,menu_seccion_active: true),
+            $this->menu_item(menu_item_titulo: "Reporte Empresa", link: $this->link_em_anticipo_reporte_empresa,
+        menu_seccion_active: true),
+            $this->menu_item(menu_item_titulo: "Reporte Cliente", link: $this->link_em_anticipo_reporte_cliente,
+        menu_seccion_active: true),
+            $this->menu_item(menu_item_titulo: "Reporte Empleado", link: $this->link_em_anticipo_reporte_empleado,
         menu_seccion_active: true, menu_lateral_active: true));
 
         $this->link_em_anticipo_exportar_cliente = $this->obj_link->link_con_id(accion: "exportar_cliente",link: $this->link,
