@@ -15,6 +15,8 @@
                 <?php echo $controlador->inputs->monto; ?>
                 <?php echo $controlador->inputs->n_pagos; ?>
                 <?php echo $controlador->inputs->fecha_prestacion; ?>
+                <?php echo $controlador->inputs->fecha_inicio_descuento; ?>
+                <?php echo $controlador->inputs->comentarios; ?>
                 <div class="buttons col-md-12">
                     <div class="col-md-6 btn-ancho">
                         <button type="submit" class="btn btn-info btn-guarda col-md-12 " >Modifica</button>
