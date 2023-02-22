@@ -219,6 +219,43 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
             $this->menu_item(menu_item_titulo: "Asigna Sucursal", link: $this->link_em_empleado_asigna_sucursal));
     }
 
+    public function init_selects_inputs(): array
+    {
+        $keys_selects = parent::init_selects_inputs();
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
+        }
+
+        $keys_selects['em_centro_costo_id']->cols = 6;
+
+
+        return $keys_selects;
+    }
+
+    protected function key_selects_txt(array $keys_selects): array
+    {
+        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 4, key: 'codigo',
+            keys_selects: $keys_selects, place_holder: 'Código');
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
+        }
+
+        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 8, key: 'nombre',
+            keys_selects: $keys_selects, place_holder: 'Nombre');
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
+        }
+
+        $keys_selects = parent::key_selects_txt(keys_selects: $keys_selects);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
+        }
+
+
+
+        return $keys_selects;
+    }
+
     protected function inputs_children(stdClass $registro): array|stdClass
     {
         $this->inputs = parent::inputs_children(registro: $registro);

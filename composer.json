@@ -52,7 +52,7 @@
     "gamboa.martin/configuraciones": "^1.0.0",
     "gamboa.martin/template": "^6.0.0",
     "gamboa.martin/template_1": "^8.0.0",
-    "tglobally/template_tg": "^3.0.0",
+    "tglobally/template_tg": "dev-main",
     "gamboa.martin/system": "^7.0.0",
     "gamboa.martin/services": "^6.0.0",
     "gamboa.martin/cat_sat": "^7.0.0",

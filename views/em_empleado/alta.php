@@ -7,8 +7,8 @@
 
         <div class="  form-main" id="form">
             <form method="post" action="<?php echo $controlador->link_alta_bd; ?>" class="form-additional">
+                <?php echo $controlador->inputs->codigo; ?>
                 <?php echo $controlador->inputs->nombre; ?>
-                <?php echo $controlador->inputs->telefono; ?>
                 <?php echo $controlador->inputs->ap; ?>
                 <?php echo $controlador->inputs->am; ?>
                 <?php echo $controlador->inputs->dp_pais_id; ?>
@@ -24,10 +24,12 @@
                 <?php echo $controlador->inputs->rfc; ?>
                 <?php echo $controlador->inputs->nss; ?>
                 <?php echo $controlador->inputs->curp; ?>
-                <?php echo $controlador->inputs->im_registro_patronal_id; ?>
+                <?php echo $controlador->inputs->telefono; ?>
+                <?php echo $controlador->inputs->em_registro_patronal_id; ?>
                 <?php echo $controlador->inputs->em_centro_costo_id; ?>
                 <?php echo $controlador->inputs->salario_diario; ?>
                 <?php echo $controlador->inputs->salario_diario_integrado; ?>
+                <?php echo $controlador->inputs->salario_total; ?>
                 <div class="buttons col-md-12">
                     <div class="col-md-6">
                         <button type="submit" class="btn btn-info btn-guarda col-md-12 " name="btn_action_next" value="modifica">Guarda</button>
