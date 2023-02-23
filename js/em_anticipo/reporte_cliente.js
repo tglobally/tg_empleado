@@ -1,6 +1,4 @@
-let sl_com_sucursal = $("#com_sucursal_id");
-
-let url = get_url("em_anticipo", "data_ajax", {em_empleado_id: "1"});
+let url = get_url("em_anticipo", "data_ajax", {em_anticipo_id: "1"});
 
 var datatable = $(".datatables").DataTable({
     processing: true,
@@ -11,28 +9,54 @@ var datatable = $(".datatables").DataTable({
         'data': function (data) {
             var fecha_inicio = $('#fecha_inicio').val();
             var fecha_final = $('#fecha_final').val();
-            //var com_sucursal_id = $( "#com_sucursal_id option:selected" ).val();
+            var com_sucursal_id = $('#com_sucursal_id').val();
+            var em_tipo_anticipo_id = $('#em_tipo_anticipo_id').val();
 
-            data.filtros = [
-                {
-                    "key": "em_empleado.fecha_inicio_rel_laboral",
-                    "valor": fecha_inicio,
-                    "operador": "<=",
-                    "comparacion": "AND"
-                },
-                {
-                    "key": "em_empleado.fecha_inicio_rel_laboral",
-                    "valor": fecha_final,
-                    "operador": ">=",
-                    "comparacion": "AND"
-                },
-                /*{
-                    "key": "tg_empleado_sucursal.com_sucursal_id",
-                    "valor": com_sucursal_id,
-                    "operador": "=",
-                    "comparacion": "AND"
-                }*/
-            ]
+            data.filtros = {
+                filtro_especial: [
+                    {
+                        "key": "em_anticipo.fecha_prestacion",
+                        "valor": fecha_inicio,
+                        "operador": "<=",
+                        "comparacion": "AND"
+                    },
+                    {
+                        "key": "em_anticipo.fecha_prestacion",
+                        "valor": fecha_final,
+                        "operador": ">=",
+                        "comparacion": "AND"
+                    }
+                ],
+                filtro: []
+            }
+
+            if (em_tipo_anticipo_id !== "") {
+                data.filtros.filtro.push(
+                    {
+                        "key": "em_tipo_anticipo.id",
+                        "valor": em_tipo_anticipo_id
+                    })
+            }
+
+            if (com_sucursal_id !== "") {
+                data.filtros.extra_join = [
+                    {
+                        "entidad": "tg_empleado_sucursal",
+                        "key": "em_empleado_id",
+                        "enlace": "em_empleado",
+                        "key_enlace": "id",
+                        "renombre": "tg_empleado_sucursal"
+                    },
+                ];
+                data.filtros.filtro.push(
+                    {
+                        "key": "tg_empleado_sucursal.com_sucursal_id",
+                        "valor": com_sucursal_id,
+                    }
+                )
+
+
+            }
         },
         "error": function (jqXHR, textStatus, errorThrown) {
             let response = jqXHR.responseText;
@@ -42,14 +66,14 @@ var datatable = $(".datatables").DataTable({
     columns: [
         {
             title: 'Id',
-            data: 'em_empleado_id'
+            data: 'em_anticipo_id'
         },
         {
-            title: 'Empleado',
-            data: 'em_empleado_nombre'
+            title: 'Codigo',
+            data: 'em_anticipo_codigo'
         },
         {
-            title: 'Concepto',
+            title: 'Descripcion',
             data: 'em_anticipo_descripcion'
         },
         {
@@ -57,25 +81,19 @@ var datatable = $(".datatables").DataTable({
             data: 'em_anticipo_monto'
         },
         {
-            title: 'Fecha Prestación',
+            title: 'Fecha Prestacion',
             data: 'em_anticipo_fecha_prestacion'
-        }
+        },
+        {
+            title: 'Fecha Inicio Descuento',
+            data: 'em_anticipo_fecha_inicio_descuento'
+        },
     ],
 });
-/*
-$('.filter-checkbox,#fecha_inicio,#fecha_final').on('change', function (e) {
+
+$('.filter-checkbox,#fecha_inicio,#fecha_final,#com_sucursal_id,#em_tipo_anticipo_id').on('change', function (e) {
     datatable.draw();
 });
-
-sl_com_sucursal.change(function () {
-    let selected = $(this).find('option:selected');
-
-    if (selected.val() !== ""){
-        datatable.draw();
-    }
-});*/
-
-
 
 
 
