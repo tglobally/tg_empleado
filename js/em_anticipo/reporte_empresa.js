@@ -9,32 +9,54 @@ var datatable = $(".datatables").DataTable({
         'data': function (data) {
             var fecha_inicio = $('#fecha_inicio').val();
             var fecha_final = $('#fecha_final').val();
-            var org_sucursal_id = $('#org_sucursal_id').val();
+            var com_sucursal_id = $('#com_sucursal_id').val();
             var em_tipo_anticipo_id = $('#em_tipo_anticipo_id').val();
 
-            data.data = {"org_sucursal.id": org_sucursal_id,"em_tipo_anticipo.id": em_tipo_anticipo_id}
-            if(org_sucursal_id !== ''){
-                data.data = {"org_sucursal.id": org_sucursal_id}
-            }
-            if(em_tipo_anticipo_id !== ''){
-                data.data = {"em_tipo_anticipo.id": em_tipo_anticipo_id}
+            data.filtros = {
+                filtro_especial: [
+                    {
+                        "key": "em_anticipo.fecha_prestacion",
+                        "valor": fecha_inicio,
+                        "operador": "<=",
+                        "comparacion": "AND"
+                    },
+                    {
+                        "key": "em_anticipo.fecha_prestacion",
+                        "valor": fecha_final,
+                        "operador": ">=",
+                        "comparacion": "AND"
+                    }
+                ],
+                filtro: []
             }
 
-            data.filtros = [
-                {
-                    "key": "em_anticipo.fecha_prestacion",
-                    "valor": fecha_inicio,
-                    "operador": "<=",
-                    "comparacion": "AND"
-                },
-                {
-                    "key": "em_anticipo.fecha_prestacion",
-                    "valor": fecha_final,
-                    "operador": ">=",
-                    "comparacion": "AND"
-                },
-            ]
+            if (em_tipo_anticipo_id !== "") {
+                data.filtros.filtro.push(
+                    {
+                    "key": "em_tipo_anticipo.id",
+                    "valor": em_tipo_anticipo_id
+                })
+            }
 
+            if (com_sucursal_id !== "") {
+                data.filtros.extra_join = [
+                    {
+                        "entidad": "tg_empleado_sucursal",
+                        "key": "em_empleado_id",
+                        "enlace": "em_empleado",
+                        "key_enlace": "id",
+                        "renombre": "tg_empleado_sucursal"
+                    },
+                ];
+                data.filtros.filtro.push(
+                    {
+                        "key": "tg_empleado_sucursal.com_sucursal_id",
+                        "valor": com_sucursal_id,
+                    }
+                )
+
+
+            }
         },
         "error": function (jqXHR, textStatus, errorThrown) {
             let response = jqXHR.responseText;
@@ -69,6 +91,11 @@ var datatable = $(".datatables").DataTable({
     ],
 });
 
-$('.filter-checkbox,#fecha_inicio,#fecha_final,#org_sucursal_id,#em_tipo_anticipo_id').on('change', function (e) {
+$('.filter-checkbox,#fecha_inicio,#fecha_final,#com_sucursal_id,#em_tipo_anticipo_id').on('change', function (e) {
     datatable.draw();
 });
+
+
+
+
+

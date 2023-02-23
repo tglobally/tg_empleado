@@ -1,8 +1,6 @@
 <?php
 namespace tglobally\tg_empleado\models;
 use base\orm\_modelo_parent;
-use base\orm\modelo;
-use gamboamartin\comercial\models\com_sucursal;
 use gamboamartin\errores\errores;
 use PDO;
 use stdClass;
