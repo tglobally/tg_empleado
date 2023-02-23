@@ -372,6 +372,49 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
         return $contenido_table;
     }
 
+    public function asigna_sucursal_bd(bool $header = true, bool $ws = false, array $not_actions = array()): array|string
+    {
+        $this->link->beginTransaction();
+
+        $siguiente_view = $this->inicializa_transaccion();
+        if (errores::$error) {
+            $this->link->rollBack();
+            return $this->retorno_error(
+                mensaje: 'Error al inicializar', data: $siguiente_view, header: $header, ws: $ws);
+        }
+
+        $registro['em_empleado_id'] = $this->registro_id;
+        $registro['com_sucursal_id'] = $_POST['com_sucursal_id'];
+
+        $alta = (new tg_empleado_sucursal($this->link))->alta_registro(registro: $registro);
+        if (errores::$error) {
+            $this->link->rollBack();
+            return $this->retorno_error(mensaje: 'Error al dar de alta cuenta bancaria', data: $alta,
+                header: $header, ws: $ws);
+        }
+
+        $this->link->commit();
+
+        if ($header) {
+            $this->retorno_base(registro_id:$this->registro_id, result: $alta,
+                siguiente_view: "asigna_sucursal", ws:  $ws);
+        }
+        if ($ws) {
+            header('Content-Type: application/json');
+            try {
+                echo json_encode($alta, JSON_THROW_ON_ERROR);
+            }
+            catch (Throwable $e){
+                $error = (new errores())->error(mensaje:'Error', data: $e);
+                print_r($error);
+            }
+            exit;
+        }
+        $alta->siguiente_view = "asigna_sucursal";
+
+        return $alta;
+    }
+
 
     /**
      * Limpia boton de siguiente accion
