@@ -4,6 +4,7 @@ var datatable = $(".datatables").DataTable({
     processing: true,
     serverSide: true,
     responsive: true,
+    "searching": false,
     ajax: {
         "url": url,
         'data': function (data) {
@@ -69,12 +70,16 @@ var datatable = $(".datatables").DataTable({
             data: 'em_anticipo_id'
         },
         {
-            title: 'Codigo',
+            title: 'Código',
             data: 'em_anticipo_codigo'
         },
         {
             title: 'Descripcion',
             data: 'em_anticipo_descripcion'
+        },
+        {
+            title: 'Empleado',
+            data: 'em_empleado_nombre'
         },
         {
             title: 'Monto',
@@ -83,11 +88,7 @@ var datatable = $(".datatables").DataTable({
         {
             title: 'Fecha Prestacion',
             data: 'em_anticipo_fecha_prestacion'
-        },
-        {
-            title: 'Fecha Inicio Descuento',
-            data: 'em_anticipo_fecha_inicio_descuento'
-        },
+        }
     ],
 });
 
