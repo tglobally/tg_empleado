@@ -26,7 +26,7 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
         $this->sidebar['lista']['menu'] = array(
             $this->menu_item(menu_item_titulo: "Alta", link: $this->link_alta, menu_seccion_active: true,
                 menu_lateral_active: true),
-            $this->menu_item(menu_item_titulo: "Reporte Empresa", link: $this->link_em_anticipo_reporte_empresa,
+            $this->menu_item(menu_item_titulo: "Reportes", link: $this->link_em_anticipo_reporte_empresa,
                 menu_seccion_active: true, menu_lateral_active: true));
 
         $this->sidebar['alta']['titulo'] = "Alta Anticipo";
@@ -47,12 +47,21 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
             $this->menu_item(menu_item_titulo: "Reporte Empleado", link: $this->link_em_anticipo_reporte_empleado,
                 menu_seccion_active: true));
 
-        $this->sidebar['reporte_empresa']['titulo'] = "Reporte Empresa";
+
+        $this->sidebar['reporte_empresa']['titulo'] = "Reportes";
         $this->sidebar['reporte_empresa']['stepper_active'] = true;
         $this->sidebar['reporte_empresa']['menu'] = array(
-            $this->menu_item(menu_item_titulo: "Alta", link: $this->link_alta,menu_seccion_active: true),
-            $this->menu_item(menu_item_titulo: "Reporte Empresa", link: $this->link_em_anticipo_reporte_empresa,
+            $this->menu_item(menu_item_titulo: "Inicio", link: $this->link_lista,menu_seccion_active: true,
+                menu_lateral_active: true), $this->menu_item(menu_item_titulo: "Reporte por Ejecutivo",
+                link: $this->link_em_anticipo_reporte_empresa, menu_seccion_active: true, menu_lateral_active: true),
+            $this->menu_item(menu_item_titulo: "Reporte por Empresa", link: $this->link_em_anticipo_reporte_empresa,
+                menu_seccion_active: true, menu_lateral_active: true),
+            $this->menu_item(menu_item_titulo: "Reporte por Cliente", link: $this->link_em_anticipo_reporte_empresa,
+                menu_seccion_active: true, menu_lateral_active: true),
+            $this->menu_item(menu_item_titulo: "Reporte por Trabajador", link: $this->link_em_anticipo_reporte_empresa,
                 menu_seccion_active: true, menu_lateral_active: true));
+
+
 
         $this->sidebar['reporte_cliente']['titulo'] = "Reporte Cliente";
         $this->sidebar['reporte_cliente']['stepper_active'] = true;
