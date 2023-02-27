@@ -147,7 +147,7 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
         $menu_items->reportes['menu_lateral_active'] = true;
 
         $this->sidebar['lista']['titulo'] = "Anticipos";
-        $this->sidebar['lista']['menu'] = array($menu_items->alta, $menu_items->importar);
+        $this->sidebar['lista']['menu'] = array($menu_items->alta, $menu_items->importar, $menu_items->reportes);
 
         $menu_items->alta['menu_seccion_active'] = false;
 
@@ -564,10 +564,10 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
         }
 
         $keys = array_reduce($registros, 'array_merge', array());
-        $keys = array_change_key_case($keys, CASE_UPPER);
-        $keys = array_keys($keys);
-        $keys = preg_replace("/[^a-zA-Z 0-9]+/", " ", $keys );
-
+        $keys_value = array_change_key_case($keys, CASE_UPPER);
+        $keys_value = array_keys($keys_value);
+        $keys_value = preg_replace("/[^a-zA-Z 0-9]+/", " ",$keys_value);
+        $keys = array_combine(array_keys($keys),$keys_value);
 
         foreach ($registros as $row) {
             $salida_excel[] = array_combine(preg_replace(array_map(function ($s) {
