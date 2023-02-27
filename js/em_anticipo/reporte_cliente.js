@@ -66,8 +66,8 @@ var datatable = $(".datatables").DataTable({
     },
     columns: [
         {
-            title: 'Id',
-            data: 'em_anticipo_id'
+            title: 'NSS',
+            data: 'em_empleado_nss'
         },
         {
             title: 'Código',
