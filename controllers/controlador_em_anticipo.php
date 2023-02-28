@@ -18,6 +18,7 @@ use tglobally\tg_empleado\models\em_empleado;
 class controlador_em_anticipo extends \gamboamartin\empleado\controllers\controlador_em_anticipo
 {
 
+    public string $link_em_anticipo_reporte_ejecutivo = '';
     public string $link_em_anticipo_importar_anticipos = '';
     public string $link_em_anticipo_exportar_cliente = '';
     public string $link_em_anticipo_exportar_empresa = '';
@@ -28,6 +29,13 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
         parent::__construct(link: $link, html: $html_base);
         $this->titulo_lista = 'Anticipos';
 
+        $this->link_em_anticipo_reporte_ejecutivo = $this->obj_link->link_con_id(accion: 'reporte_ejecutivo', link: $link,
+            registro_id: $this->registro_id, seccion: "em_anticipo");
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al generar link', data: $this->link_em_anticipo_reporte_ejecutivo);
+            print_r($error);
+            die('Error');
+        }
 
         $this->link_em_anticipo_importar_anticipos = $this->obj_link->link_con_id(accion: "sube_archivo", link: $this->link,
             registro_id: $this->registro_id, seccion: "em_anticipo");
@@ -130,7 +138,7 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
         $menu_items->modifica = $this->menu_item(menu_item_titulo: "Modifica", link: $this->link_modifica);
         $menu_items->importar = $this->menu_item(menu_item_titulo: "Importar Anticipos", link: $this->link_em_anticipo_importar_anticipos);
         $menu_items->reportes = $this->menu_item(menu_item_titulo: "Reportes", link: $this->link_em_anticipo_reporte_cliente);
-        $menu_items->reporte_ejecutivo = $this->menu_item(menu_item_titulo: "Reporte por Ejecutivo", link: $this->link_em_anticipo_reporte_empresa);
+        $menu_items->reporte_ejecutivo = $this->menu_item(menu_item_titulo: "Reporte por Ejecutivo", link: $this->link_em_anticipo_reporte_ejecutivo);
         $menu_items->reporte_empresa = $this->menu_item(menu_item_titulo: "Reporte por Empresa", link: $this->link_em_anticipo_reporte_empresa);
         $menu_items->reporte_cliente = $this->menu_item(menu_item_titulo: "Reporte por Cliente", link: $this->link_em_anticipo_reporte_cliente);
         $menu_items->reporte_trabajador = $this->menu_item(menu_item_titulo: "Reporte por Empleado", link: $this->link_em_anticipo_reporte_empleado);
@@ -150,6 +158,8 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
         $menu_items->reporte_cliente['menu_lateral_active'] = true;
         $menu_items->reporte_empresa['menu_lateral_active'] = true;
         $menu_items->reporte_empresa['menu_seccion_active'] = true;
+        $menu_items->reporte_ejecutivo['menu_lateral_active'] = true;
+        $menu_items->reporte_ejecutivo['menu_seccion_active'] = true;
 
         $this->sidebar['lista']['titulo'] = "Anticipos";
         $this->sidebar['lista']['menu'] = array($menu_items->alta, $menu_items->importar, $menu_items->reportes);
@@ -172,18 +182,23 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
 
         $this->sidebar['reporte_empresa']['titulo'] = "Reportes";
         $this->sidebar['reporte_empresa']['stepper_active'] = true;
-        $this->sidebar['reporte_empresa']['menu'] = array($menu_items->lista, $menu_items->reporte_trabajador,
-            $menu_items->reporte_cliente, $menu_items->reporte_empresa);
+        $this->sidebar['reporte_empresa']['menu'] = array($menu_items->lista, $menu_items->reporte_ejecutivo,
+            $menu_items->reporte_cliente, $menu_items->reporte_empresa, $menu_items->reporte_trabajador);
 
         $this->sidebar['reporte_cliente']['titulo'] = "Reportes";
         $this->sidebar['reporte_cliente']['stepper_active'] = true;
-        $this->sidebar['reporte_cliente']['menu'] = array($menu_items->lista, $menu_items->reporte_trabajador,
-            $menu_items->reporte_cliente, $menu_items->reporte_empresa);
+        $this->sidebar['reporte_cliente']['menu'] = array($menu_items->lista, $menu_items->reporte_ejecutivo,
+            $menu_items->reporte_cliente, $menu_items->reporte_empresa, $menu_items->reporte_trabajador);
 
         $this->sidebar['reporte_empleado']['titulo'] = "Reportes";
         $this->sidebar['reporte_empleado']['stepper_active'] = true;
-        $this->sidebar['reporte_empleado']['menu'] = array($menu_items->lista, $menu_items->reporte_trabajador,
-            $menu_items->reporte_cliente, $menu_items->reporte_empresa);
+        $this->sidebar['reporte_empleado']['menu'] = array($menu_items->lista, $menu_items->reporte_ejecutivo,
+            $menu_items->reporte_cliente, $menu_items->reporte_empresa, $menu_items->reporte_trabajador);
+
+        $this->sidebar['reporte_ejecutivo']['titulo'] = "Reportes";
+        $this->sidebar['reporte_ejecutivo']['stepper_active'] = true;
+        $this->sidebar['reporte_ejecutivo']['menu'] = array($menu_items->lista, $menu_items->reporte_ejecutivo,
+            $menu_items->reporte_cliente, $menu_items->reporte_empresa, $menu_items->reporte_trabajador);
 
         return $menu_items;
     }
@@ -579,5 +594,50 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
         return $menu_item;
     }
 
+    public function reporte_ejecutivo(bool $header, bool $ws = false){
 
+        $this->asignar_propiedad(identificador:'fecha_inicio', propiedades: ["place_holder" => "Fecha Inicio",'required'=>false]);
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
+            print_r($error);
+            die('Error');
+        }
+
+        $this->asignar_propiedad(identificador:'fecha_final', propiedades: ["place_holder" => "Fecha Final",
+            date(format:'Y-m-d'),'required'=>false]);
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
+            print_r($error);
+            die('Error');
+        }
+
+        $this->asignar_propiedad(identificador:'em_tipo_anticipo_id', propiedades: ["label" => "Tipo Anticipo", "cols" => 12,'required'=>false]);
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
+            print_r($error);
+            die('Error');
+        }
+
+        $this->asignar_propiedad(identificador:'em_empleado_id', propiedades: ["label" => "Empleado", "cols" => 12,'required'=>false]);
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
+            print_r($error);
+            die('Error');
+        }
+
+
+        $r_alta =  parent::alta(header: false);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al generar template',data:  $r_alta, header: $header,ws:$ws);
+        }
+
+        $inputs = $this->genera_inputs(keys_selects: $this->keys_selects);
+        if(errores::$error){
+            $error = $this->errores->error(mensaje: 'Error al generar inputs',data:  $inputs);
+            print_r($error);
+            die('Error');
+        }
+
+        return $this->inputs;
+    }
 }
