@@ -14,7 +14,6 @@ use PhpOffice\PhpSpreadsheet\Shared\Date;
 use stdClass;
 use tglobally\template_tg\html;
 use tglobally\tg_empleado\models\em_empleado;
-use tglobally\tg_empleado\models\tg_empleado_sucursal;
 
 class controlador_em_anticipo extends \gamboamartin\empleado\controllers\controlador_em_anticipo
 {
@@ -134,7 +133,7 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
         $menu_items->reporte_ejecutivo = $this->menu_item(menu_item_titulo: "Reporte por Ejecutivo", link: $this->link_em_anticipo_reporte_empresa);
         $menu_items->reporte_empresa = $this->menu_item(menu_item_titulo: "Reporte por Empresa", link: $this->link_em_anticipo_reporte_empresa);
         $menu_items->reporte_cliente = $this->menu_item(menu_item_titulo: "Reporte por Cliente", link: $this->link_em_anticipo_reporte_cliente);
-        $menu_items->reporte_trabajador = $this->menu_item(menu_item_titulo: "Reporte por Trabajador", link: $this->link_em_anticipo_reporte_empresa);
+        $menu_items->reporte_trabajador = $this->menu_item(menu_item_titulo: "Reporte por Empleado", link: $this->link_em_anticipo_reporte_empleado);
 
         $menu_items->lista['menu_seccion_active'] = true;
         $menu_items->lista['menu_lateral_active'] = true;
@@ -145,6 +144,8 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
         $menu_items->importar['menu_lateral_active'] = true;
         $menu_items->reportes['menu_seccion_active'] = true;
         $menu_items->reportes['menu_lateral_active'] = true;
+        $menu_items->reporte_trabajador['menu_lateral_active'] = true;
+        $menu_items->reporte_trabajador['menu_seccion_active'] = true;
         $menu_items->reporte_cliente['menu_seccion_active'] = true;
         $menu_items->reporte_cliente['menu_lateral_active'] = true;
         $menu_items->reporte_empresa['menu_lateral_active'] = true;
@@ -171,27 +172,18 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
 
         $this->sidebar['reporte_empresa']['titulo'] = "Reportes";
         $this->sidebar['reporte_empresa']['stepper_active'] = true;
-        $this->sidebar['reporte_empresa']['menu'] = array($menu_items->lista, $menu_items->reporte_cliente,
-            $menu_items->reporte_empresa);
+        $this->sidebar['reporte_empresa']['menu'] = array($menu_items->lista, $menu_items->reporte_trabajador,
+            $menu_items->reporte_cliente, $menu_items->reporte_empresa);
 
         $this->sidebar['reporte_cliente']['titulo'] = "Reportes";
         $this->sidebar['reporte_cliente']['stepper_active'] = true;
-        $this->sidebar['reporte_cliente']['menu'] = array($menu_items->lista, $menu_items->reporte_cliente,
-            $menu_items->reporte_empresa);
+        $this->sidebar['reporte_cliente']['menu'] = array($menu_items->lista, $menu_items->reporte_trabajador,
+            $menu_items->reporte_cliente, $menu_items->reporte_empresa);
 
-
-
-
-        $this->sidebar['reporte_empleado']['titulo'] = "Reporte Empleado";
+        $this->sidebar['reporte_empleado']['titulo'] = "Reportes";
         $this->sidebar['reporte_empleado']['stepper_active'] = true;
-        $this->sidebar['reporte_empleado']['menu'] = array(
-            $this->menu_item(menu_item_titulo: "Alta", link: $this->link_alta, menu_seccion_active: true),
-            $this->menu_item(menu_item_titulo: "Reporte Empresa", link: $this->link_em_anticipo_reporte_empresa,
-                menu_seccion_active: true),
-            $this->menu_item(menu_item_titulo: "Reporte Cliente", link: $this->link_em_anticipo_reporte_cliente,
-                menu_seccion_active: true),
-            $this->menu_item(menu_item_titulo: "Reporte Empleado", link: $this->link_em_anticipo_reporte_empleado,
-                menu_seccion_active: true, menu_lateral_active: true));
+        $this->sidebar['reporte_empleado']['menu'] = array($menu_items->lista, $menu_items->reporte_trabajador,
+            $menu_items->reporte_cliente, $menu_items->reporte_empresa);
 
         return $menu_items;
     }

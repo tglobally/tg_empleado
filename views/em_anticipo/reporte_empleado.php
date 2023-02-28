@@ -15,32 +15,21 @@
                               class="form-additional" id="form_export">
 
                             <div class="filtros">
-
                                 <div class="filtro-titulo">
                                     <h3>Estimado usuario, por favor seleccione una opción de busqueda:</h3>
                                 </div>
 
-                                <div class="filtro-categorias">
-                                    <div>
-                                        <label>Por Empleado</label>
-                                        <?php echo $controlador->inputs->em_empleado_id; ?>
-                                    </div>
-                                    <div>
-                                        <label>Por Tipo de Anticipo</label><br>
-                                        <?php echo $controlador->inputs->em_tipo_anticipo_id; ?>
-                                    </div>
-                                </div>
                                 <div class="filtro-reportes">
                                     <div class="filtro-fechas">
-                                        <label>Rango Fechas</label>
                                         <div class="fechas form-main widget-form-cart">
-
+                                            <?php echo $controlador->inputs->em_empleado_id; ?>
+                                            <?php echo $controlador->inputs->em_tipo_anticipo_id; ?>
                                             <?php echo $controlador->inputs->fecha_inicio; ?>
                                             <?php echo $controlador->inputs->fecha_final; ?>
                                         </div>
                                     </div>
-
                                 </div>
+
                             </div>
 
                             <div class="botones">

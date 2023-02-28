@@ -16,7 +16,7 @@
 
                             <div class="filtros">
                                 <div class="filtro-titulo">
-                                    <h3>Reporte de anticipos por Cliente</h3>
+                                    <h3>Estimado usuario, por favor seleccione una opción de busqueda:</h3>
                                 </div>
 
                                 <div class="filtro-reportes">
