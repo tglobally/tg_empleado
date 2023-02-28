@@ -133,7 +133,7 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
         $menu_items->reportes = $this->menu_item(menu_item_titulo: "Reportes", link: $this->link_em_anticipo_reporte_cliente);
         $menu_items->reporte_ejecutivo = $this->menu_item(menu_item_titulo: "Reporte por Ejecutivo", link: $this->link_em_anticipo_reporte_empresa);
         $menu_items->reporte_empresa = $this->menu_item(menu_item_titulo: "Reporte por Empresa", link: $this->link_em_anticipo_reporte_empresa);
-        $menu_items->reporte_cliente = $this->menu_item(menu_item_titulo: "Reporte por Cliente", link: $this->link_em_anticipo_reporte_empresa);
+        $menu_items->reporte_cliente = $this->menu_item(menu_item_titulo: "Reporte por Cliente", link: $this->link_em_anticipo_reporte_cliente);
         $menu_items->reporte_trabajador = $this->menu_item(menu_item_titulo: "Reporte por Trabajador", link: $this->link_em_anticipo_reporte_empresa);
 
         $menu_items->lista['menu_seccion_active'] = true;
@@ -360,112 +360,93 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
 
     public function exportar_empresa(bool $header, bool $ws = false): array|stdClass
     {
-        $com_sucursal_id = "";
-        $em_tipo_anticipo_id = "";
-        $fecha_inicio = date('Y-m-d');
-        $fecha_fin = date('Y-m-d');
+        $filtros = new stdClass();
+        $anticipos = array();
+        $registros = array();
+        $salida_excel = array();
 
-        if (isset($_POST['com_sucursal_id'])) {
-            $com_sucursal_id = $_POST['com_sucursal_id'];
+        $filtro = array();
+        $filtro_especial = array();
+        $index = 0;
+        $exportador = (new exportador());
+
+        if (isset($_POST['org_sucursal_id'])) {
+            $filtros->org_sucursal_id = $_POST['org_sucursal_id'];
         }
 
         if (isset($_POST['em_tipo_anticipo_id'])) {
-            $em_tipo_anticipo_id = $_POST['em_tipo_anticipo_id'];
+            $filtros->em_tipo_anticipo_id = $_POST['em_tipo_anticipo_id'];
         }
 
         if (isset($_POST['fecha_inicio'])) {
-            $fecha_inicio = $_POST['fecha_inicio'];
+            $filtros->fecha_inicio = $_POST['fecha_inicio'];
         }
 
         if (isset($_POST['fecha_final'])) {
-            $fecha_fin = $_POST['fecha_final'];
+            $filtros->fecha_final = $_POST['fecha_final'];
         }
 
-        $filtro['com_sucursal_id'] = $com_sucursal_id;
-        $tg_empleado_sucursal = (new tg_empleado_sucursal($this->link))->filtro_and(filtro: $filtro);
+        if (!empty($filtros->org_sucursal_id)){
+            $filtro["org_sucursal.id"]  = $filtros->org_sucursal_id;
+        }
+
+        if (!empty($filtros->em_tipo_anticipo_id)){
+            $filtro["em_tipo_anticipo.id"]  = $filtros->em_tipo_anticipo_id;
+        }
+
+        if (!empty($filtros->fecha_inicio)){
+            $filtro_especial[$index][$filtros->fecha_final]['operador'] = '>=';
+            $filtro_especial[$index][$filtros->fecha_final]['valor'] = 'em_anticipo.fecha_prestacion';
+            $filtro_especial[$index][$filtros->fecha_final]['comparacion'] = 'AND';
+            $filtro_especial[$index][$filtros->fecha_final]['valor_es_campo'] = true;
+
+            $index += 1;
+        }
+
+        if (!empty($filtros->fecha_final)){
+            $filtro_especial[$index][$filtros->fecha_inicio]['operador'] = '<=';
+            $filtro_especial[$index][$filtros->fecha_inicio]['valor'] = 'em_anticipo.fecha_prestacion';
+            $filtro_especial[$index][$filtros->fecha_inicio]['comparacion'] = 'AND';
+            $filtro_especial[$index][$filtros->fecha_inicio]['valor_es_campo'] = true;
+        }
+
+        $anticipos = (new em_anticipo($this->link))->filtro_and(filtro: $filtro, filtro_especial: $filtro_especial);
         if (errores::$error) {
-            $error = $this->errores->error(mensaje: 'Error al obtener registros', data: $tg_empleado_sucursal);
+            $error = $this->errores->error(mensaje: 'Error al obtener registros', data: $anticipos);
             print_r($error);
             die('Error');
         }
 
-        $data_exportar = array();
-
-        foreach ($tg_empleado_sucursal->registros as $registro) {
-            $filtro_anticipo['em_empleado.id'] = $registro['em_empleado_id'];
-            $filtro_especial = array();
-
-            if ($em_tipo_anticipo_id !== "") {
-                $filtro_anticipo['em_tipo_anticipo.id'] = $em_tipo_anticipo_id;
-            }
-
-            if ($fecha_fin !== "" && $fecha_inicio !== "") {
-                $filtro_especial[0][$fecha_fin]['operador'] = '>=';
-                $filtro_especial[0][$fecha_fin]['valor'] = 'em_anticipo.fecha_prestacion';
-                $filtro_especial[0][$fecha_fin]['comparacion'] = 'AND';
-                $filtro_especial[0][$fecha_fin]['valor_es_campo'] = true;
-
-                $filtro_especial[1][$fecha_inicio]['operador'] = '<=';
-                $filtro_especial[1][$fecha_inicio]['valor'] = 'em_anticipo.fecha_prestacion';
-                $filtro_especial[1][$fecha_inicio]['comparacion'] = 'AND';
-                $filtro_especial[1][$fecha_inicio]['valor_es_campo'] = true;
-            }
-
-            $data = (new em_anticipo($this->link))->filtro_and(filtro: $filtro_anticipo, filtro_especial: $filtro_especial);
-            if (errores::$error) {
-                $error = $this->errores->error(mensaje: 'Error al obtener registros', data: $data);
-                print_r($error);
-                die('Error');
-            }
-
-            if ($data->n_registros > 0) {
-                $data->registros['com_sucursal'] = $registro['com_sucursal_descripcion'];
-                $data_exportar[] = $data->registros;
-            }
+        foreach ($anticipos->registros as $anticipo) {
+            $row = array();
+            $row["nss"] = $anticipo['em_empleado_nss'];
+            $row["codigo_remunerado"] = $anticipo['em_empleado_codigo'];
+            $row["nombre_remunerado"] = $anticipo['em_empleado_nombre'];
+            $row["nombre_remunerado"] .= " " . $anticipo['em_empleado_ap'];
+            $row["nombre_remunerado"] .= " " . $anticipo['em_empleado_am'];
+            $row["razon_social"] = $anticipo['org_sucursal_descripcion'] ?? "";
+            $row["concepto"] = $anticipo['em_anticipo_descripcion'];
+            $row["monto_del_anticipo"] = $anticipo['em_anticipo_monto'];
+            $row["tipo_descuento_monto"] = $anticipo['em_tipo_descuento_monto'];
+            $row["sumatoria_de_abonos"] = $anticipo['total_abonado'];
+            $row["saldo"] = $anticipo['em_anticipo_saldo'];
+            $registros[] = $row;
         }
 
-        $exportador = (new exportador());
-        $registros_xls = array();
+        $keys = array_reduce($registros, 'array_merge', array());
+        $keys_value = array_change_key_case($keys, CASE_UPPER);
+        $keys_value = array_keys($keys_value);
+        $keys_value = preg_replace("/[^a-zA-Z 0-9]+/", " ",$keys_value);
+        $keys = array_combine(array_keys($keys),$keys_value);
 
-        foreach ($data_exportar as $anticipos) {
-            foreach ($anticipos as $anticipo) {
-                if (is_array($anticipo)) {
-                    $row = array();
-                    $row["nss"] = $anticipo['em_empleado_nss'];
-                    $row["codigo_remunerado"] = $anticipo['em_empleado_codigo'];
-                    $row["nombre_remunerado"] = $anticipo['em_empleado_nombre'];
-                    $row["nombre_remunerado"] .= " " . $anticipo['em_empleado_ap'];
-                    $row["nombre_remunerado"] .= " " . $anticipo['em_empleado_am'];
-                    $row["razon_social"] = $anticipos['com_sucursal'];
-                    $row["concepto"] = $anticipo['em_anticipo_descripcion'];
-                    $row["monto_del_anticipo"] = $anticipo['em_anticipo_monto'];
-                    $row["tipo_descuento_monto"] = $anticipo['em_tipo_descuento_monto'];
-                    $row["sumatoria_de_abonos"] = $anticipo['total_abonado'];
-                    $row["saldo"] = $anticipo['em_anticipo_saldo'];
-                    $registros_xls[] = $row;
-                }
-
-            }
-
-        }
-
-        $keys = array();
-
-        foreach (array_keys($registros_xls[0]) as $key) {
-            $keys[$key] = strtoupper(str_replace('_', ' ', $key));
-        }
-
-        $registros = array();
-
-        foreach ($registros_xls as $row) {
-            $registros[] = array_combine(preg_replace(array_map(function ($s) {
+        foreach ($registros as $row) {
+            $salida_excel[] = array_combine(preg_replace(array_map(function ($s) {
                 return "/^$s$/";
-            },
-                array_keys($keys)), $keys, array_keys($row)), $row);
+            }, array_keys($keys)), $keys, array_keys($row)), $row);
         }
 
         $resultado = $exportador->listado_base_xls(header: $header, name: $this->seccion, keys: $keys,
-            path_base: $this->path_base, registros: $registros, totales: array());
+            path_base: $this->path_base, registros: $salida_excel, totales: array());
         if (errores::$error) {
             $error = $this->errores->error('Error al generar xls', $resultado);
             if (!$header) {
@@ -491,9 +472,7 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
         $filtro_especial = array();
 
         $index = 0;
-
         $exportador = (new exportador());
-
 
         if (isset($_POST['com_sucursal_id'])) {
             $filtros->com_sucursal_id = $_POST['com_sucursal_id'];
