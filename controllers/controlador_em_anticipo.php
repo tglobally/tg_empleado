@@ -145,6 +145,10 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
         $menu_items->importar['menu_lateral_active'] = true;
         $menu_items->reportes['menu_seccion_active'] = true;
         $menu_items->reportes['menu_lateral_active'] = true;
+        $menu_items->reporte_cliente['menu_seccion_active'] = true;
+        $menu_items->reporte_cliente['menu_lateral_active'] = true;
+        $menu_items->reporte_empresa['menu_lateral_active'] = true;
+        $menu_items->reporte_empresa['menu_seccion_active'] = true;
 
         $this->sidebar['lista']['titulo'] = "Anticipos";
         $this->sidebar['lista']['menu'] = array($menu_items->alta, $menu_items->importar, $menu_items->reportes);
@@ -167,11 +171,13 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
 
         $this->sidebar['reporte_empresa']['titulo'] = "Reportes";
         $this->sidebar['reporte_empresa']['stepper_active'] = true;
-        $this->sidebar['reporte_empresa']['menu'] = array($menu_items->lista, $menu_items->reporte_ejecutivo);
+        $this->sidebar['reporte_empresa']['menu'] = array($menu_items->lista, $menu_items->reporte_cliente,
+            $menu_items->reporte_empresa);
 
         $this->sidebar['reporte_cliente']['titulo'] = "Reportes";
         $this->sidebar['reporte_cliente']['stepper_active'] = true;
-        $this->sidebar['reporte_cliente']['menu'] = array($menu_items->lista, $menu_items->reporte_cliente);
+        $this->sidebar['reporte_cliente']['menu'] = array($menu_items->lista, $menu_items->reporte_cliente,
+            $menu_items->reporte_empresa);
 
 
 

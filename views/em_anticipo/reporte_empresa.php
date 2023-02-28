@@ -17,13 +17,13 @@
                             <div class="filtros">
 
                                 <div class="filtro-titulo">
-                                    <h3>Reporte Empresa</h3>
+                                    <h3>Reporte de anticipos por Empresa</h3>
                                 </div>
 
                                 <div class="filtro-reportes">
                                     <div class="filtro-fechas">
                                         <div class="fechas form-main widget-form-cart">
-                                            <?php echo $controlador->inputs->com_sucursal_id; ?>
+                                            <?php echo $controlador->inputs->org_sucursal_id; ?>
                                             <?php echo $controlador->inputs->em_tipo_anticipo_id; ?>
                                             <?php echo $controlador->inputs->fecha_inicio; ?>
                                             <?php echo $controlador->inputs->fecha_final; ?>
