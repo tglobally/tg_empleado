@@ -137,7 +137,7 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
         $menu_items->alta = $this->menu_item(menu_item_titulo: "Alta", link: $this->link_alta);
         $menu_items->modifica = $this->menu_item(menu_item_titulo: "Modifica", link: $this->link_modifica);
         $menu_items->importar = $this->menu_item(menu_item_titulo: "Importar Anticipos", link: $this->link_em_anticipo_importar_anticipos);
-        $menu_items->reportes = $this->menu_item(menu_item_titulo: "Reportes", link: $this->link_em_anticipo_reporte_cliente);
+        $menu_items->reportes = $this->menu_item(menu_item_titulo: "Reportes", link: $this->link_em_anticipo_reporte_empleado);
         $menu_items->reporte_ejecutivo = $this->menu_item(menu_item_titulo: "Reporte por Ejecutivo", link: $this->link_em_anticipo_reporte_ejecutivo);
         $menu_items->reporte_empresa = $this->menu_item(menu_item_titulo: "Reporte por Empresa", link: $this->link_em_anticipo_reporte_empresa);
         $menu_items->reporte_cliente = $this->menu_item(menu_item_titulo: "Reporte por Cliente", link: $this->link_em_anticipo_reporte_cliente);
@@ -152,14 +152,10 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
         $menu_items->importar['menu_lateral_active'] = true;
         $menu_items->reportes['menu_seccion_active'] = true;
         $menu_items->reportes['menu_lateral_active'] = true;
-        $menu_items->reporte_trabajador['menu_lateral_active'] = true;
-        $menu_items->reporte_trabajador['menu_seccion_active'] = true;
-        $menu_items->reporte_cliente['menu_seccion_active'] = true;
-        $menu_items->reporte_cliente['menu_lateral_active'] = true;
-        $menu_items->reporte_empresa['menu_lateral_active'] = true;
-        $menu_items->reporte_empresa['menu_seccion_active'] = true;
-        $menu_items->reporte_ejecutivo['menu_lateral_active'] = true;
         $menu_items->reporte_ejecutivo['menu_seccion_active'] = true;
+        $menu_items->reporte_cliente['menu_seccion_active'] = true;
+        $menu_items->reporte_empresa['menu_seccion_active'] = true;
+        $menu_items->reporte_trabajador['menu_seccion_active'] = true;
 
         $this->sidebar['lista']['titulo'] = "Anticipos";
         $this->sidebar['lista']['menu'] = array($menu_items->alta, $menu_items->importar, $menu_items->reportes);
@@ -180,25 +176,35 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
         $this->sidebar['sube_archivo']['stepper_active'] = true;
         $this->sidebar['sube_archivo']['menu'] = array($menu_items->importar);
 
-        $this->sidebar['reporte_empresa']['titulo'] = "Reportes";
-        $this->sidebar['reporte_empresa']['stepper_active'] = true;
-        $this->sidebar['reporte_empresa']['menu'] = array($menu_items->lista, $menu_items->reporte_ejecutivo,
-            $menu_items->reporte_cliente, $menu_items->reporte_empresa, $menu_items->reporte_trabajador);
-
-        $this->sidebar['reporte_cliente']['titulo'] = "Reportes";
-        $this->sidebar['reporte_cliente']['stepper_active'] = true;
-        $this->sidebar['reporte_cliente']['menu'] = array($menu_items->lista, $menu_items->reporte_ejecutivo,
-            $menu_items->reporte_cliente, $menu_items->reporte_empresa, $menu_items->reporte_trabajador);
-
-        $this->sidebar['reporte_empleado']['titulo'] = "Reportes";
-        $this->sidebar['reporte_empleado']['stepper_active'] = true;
-        $this->sidebar['reporte_empleado']['menu'] = array($menu_items->lista, $menu_items->reporte_ejecutivo,
-            $menu_items->reporte_cliente, $menu_items->reporte_empresa, $menu_items->reporte_trabajador);
+        $menu_items->lista['menu_lateral_active'] = false;
 
         $this->sidebar['reporte_ejecutivo']['titulo'] = "Reportes";
         $this->sidebar['reporte_ejecutivo']['stepper_active'] = true;
         $this->sidebar['reporte_ejecutivo']['menu'] = array($menu_items->lista, $menu_items->reporte_ejecutivo,
             $menu_items->reporte_cliente, $menu_items->reporte_empresa, $menu_items->reporte_trabajador);
+        $this->sidebar['reporte_ejecutivo']['menu'][1]['menu_lateral_active'] = true;
+        $this->sidebar['reporte_ejecutivo']['menu'][1]['menu_seccion_active'] = false;
+
+        $this->sidebar['reporte_cliente']['titulo'] = "Reportes";
+        $this->sidebar['reporte_cliente']['stepper_active'] = true;
+        $this->sidebar['reporte_cliente']['menu'] = array($menu_items->lista, $menu_items->reporte_ejecutivo,
+            $menu_items->reporte_cliente, $menu_items->reporte_empresa, $menu_items->reporte_trabajador);
+        $this->sidebar['reporte_cliente']['menu'][2]['menu_lateral_active'] = true;
+        $this->sidebar['reporte_cliente']['menu'][2]['menu_seccion_active'] = false;
+
+        $this->sidebar['reporte_empresa']['titulo'] = "Reportes";
+        $this->sidebar['reporte_empresa']['stepper_active'] = true;
+        $this->sidebar['reporte_empresa']['menu'] = array($menu_items->lista, $menu_items->reporte_ejecutivo,
+            $menu_items->reporte_cliente, $menu_items->reporte_empresa, $menu_items->reporte_trabajador);
+        $this->sidebar['reporte_empresa']['menu'][3]['menu_lateral_active'] = true;
+        $this->sidebar['reporte_empresa']['menu'][3]['menu_seccion_active'] = false;
+
+        $this->sidebar['reporte_empleado']['titulo'] = "Reportes";
+        $this->sidebar['reporte_empleado']['stepper_active'] = true;
+        $this->sidebar['reporte_empleado']['menu'] = array($menu_items->lista, $menu_items->reporte_ejecutivo,
+            $menu_items->reporte_cliente, $menu_items->reporte_empresa, $menu_items->reporte_trabajador);
+        $this->sidebar['reporte_empleado']['menu'][4]['menu_lateral_active'] = true;
+        $this->sidebar['reporte_empleado']['menu'][4]['menu_seccion_active'] = false;
 
         return $menu_items;
     }

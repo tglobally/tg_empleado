@@ -1,5 +1,5 @@
 <?php /** @var \tglobally\tg_empleado\controllers\controlador_em_anticipo $controlador */ ?>
-<?php (new \tglobally\template_tg\template())->sidebar($controlador, 2); ?>
+<?php (new \tglobally\template_tg\template())->sidebar(controlador: $controlador, seccion_step: 4); ?>
 
 <div class="col-md-9 info-lista">
     <div class="col-lg-12 content">
