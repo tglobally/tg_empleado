@@ -11,7 +11,7 @@
 
                 <div class="card-body">
                     <div class="cont_tabla_sucursal  col-md-12">
-                        <form method="post" action="<?php echo $controlador->link_em_anticipo_exportar_empleado; ?> "
+                        <form method="post" action="<?php echo $controlador->link_em_anticipo_reporte_empleado_exportar; ?> "
                               class="form-additional" id="form_export">
 
                             <div class="filtros">
