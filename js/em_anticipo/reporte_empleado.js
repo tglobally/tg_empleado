@@ -1,5 +1,9 @@
 let url = get_url("em_anticipo", "data_ajax", {em_anticipo_id: "1"});
 
+let sl_com_sucursal = $("#com_sucursal_id");
+let sl_em_empleado = $("#em_empleado_id");
+
+
 var datatable = $(".datatables").DataTable({
     processing: true,
     serverSide: true,
@@ -40,10 +44,11 @@ var datatable = $(".datatables").DataTable({
             }
 
             if (em_empleado_id !== "") {
+                let id = sl_em_empleado.find('option:selected').data(`em_empleado_id`);
                 data.filtros.filtro.push(
                     {
                         "key": "em_empleado.id",
-                        "valor": em_empleado_id,
+                        "valor": id,
                     }
                 )
 
@@ -85,6 +90,15 @@ var datatable = $(".datatables").DataTable({
 
 $('.filter-checkbox,#fecha_inicio,#fecha_final,#em_empleado_id,#em_tipo_anticipo_id').on('change', function (e) {
     datatable.draw();
+});
+
+sl_com_sucursal.change(function () {
+    let selected = $(this).find('option:selected');
+
+    get_data2("tg_empleado_sucursal",
+        "get_empleados",
+        {com_sucursal_id: selected.val()},
+        sl_em_empleado, ["em_empleado_id"]);
 });
 
 

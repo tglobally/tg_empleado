@@ -2,7 +2,6 @@
 
 namespace tglobally\tg_empleado\controllers;
 
-use gamboamartin\comercial\models\com_sucursal;
 use gamboamartin\documento\models\doc_documento;
 use gamboamartin\empleado\models\em_anticipo;
 use gamboamartin\empleado\models\em_tipo_anticipo;
