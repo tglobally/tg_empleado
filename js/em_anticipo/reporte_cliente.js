@@ -55,8 +55,6 @@ var datatable = $(".datatables").DataTable({
                         "valor": com_sucursal_id,
                     }
                 )
-
-
             }
         },
         "error": function (jqXHR, textStatus, errorThrown) {
