@@ -747,9 +747,10 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
             die('Error');
         }
 
-        $valida = $this->validacion->valida_existencia_keys(keys: array("em_empleado_id"), registro: $filtros);
+        $valida = $this->validacion->valida_existencia_keys(keys: array("com_sucursal_id","em_empleado_id"),
+            registro: $filtros);
         if (errores::$error) {
-            $error = $this->errores->error(mensaje: 'Error al validar el empleado', data: $valida);
+            $error = $this->errores->error(mensaje: 'Error al validar el filtros requeridos', data: $valida);
             print_r($error);
             die('Error');
         }
@@ -763,7 +764,6 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
             $filtro_especial[$index][$filtros->fecha_final]['valor'] = 'em_anticipo.fecha_prestacion';
             $filtro_especial[$index][$filtros->fecha_final]['comparacion'] = 'AND';
             $filtro_especial[$index][$filtros->fecha_final]['valor_es_campo'] = true;
-
             $index += 1;
         }
 
@@ -774,7 +774,14 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
             $filtro_especial[$index][$filtros->fecha_inicio]['valor_es_campo'] = true;
         }
 
-        $tipos_anticipos = (new em_tipo_anticipo($this->link))->get_tipo_anticipos(em_empleado_id: $filtros->em_empleado_id);
+        $em_empleado = (new tg_empleado_sucursal($this->link))->registro(registro_id: $filtros->em_empleado_id);
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al obtener datos del empleado', data: $em_empleado);
+            print_r($error);
+            die('Error');
+        }
+
+        $tipos_anticipos = (new em_tipo_anticipo($this->link))->get_tipo_anticipos(em_empleado_id: $em_empleado['em_empleado_id']);
         if (errores::$error) {
             $error = $this->errores->error(mensaje: 'Error al obtener los tipos de anticipo del empleado',
                 data: $tipos_anticipos);
@@ -795,8 +802,8 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
             }
 
             if ($anticipos->n_registros > 0) {
-                $data[$tipo_anticipo['em_tipo_anticipo_descripcion']] = $this->maqueta_salida(com_sucursal_id: 1,
-                    em_empleado_id: $filtros->em_empleado_id, anticipos: $anticipos->registros);
+                $data[$tipo_anticipo['em_tipo_anticipo_descripcion']] = $this->maqueta_salida(com_sucursal_id: $filtros->com_sucursal_id,
+                    em_empleado_id: $em_empleado['em_empleado_id'], anticipos: $anticipos->registros);
                 if (errores::$error) {
                     $error = $this->errores->error(mensaje: 'Error al maquetar salida de datos', data: $data);
                     print_r($error);
@@ -805,7 +812,9 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
             }
         }
 
-        $resultado = $exportador->exportar_template(header: $header, path_base: $this->path_base, name: "reporte", data: $data);
+        $name = $em_empleado['em_empleado_nombre_completo'] . "_REPORTE POR TRABAJADOR";
+
+        $resultado = $exportador->exportar_template(header: $header, path_base: $this->path_base, name: $name, data: $data);
         if (errores::$error) {
             $error = $this->errores->error('Error al generar xls', $resultado);
             if (!$header) {
