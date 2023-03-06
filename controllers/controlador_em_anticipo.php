@@ -2,6 +2,7 @@
 
 namespace tglobally\tg_empleado\controllers;
 
+use gamboamartin\administrador\models\adm_usuario;
 use gamboamartin\documento\models\doc_documento;
 use gamboamartin\empleado\models\em_anticipo;
 use gamboamartin\empleado\models\em_tipo_anticipo;
@@ -873,10 +874,18 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
             die('Error');
         }
 
-
         $r_alta = parent::alta(header: false);
         if (errores::$error) {
             return $this->retorno_error(mensaje: 'Error al generar template', data: $r_alta, header: $header, ws: $ws);
+        }
+
+        $this->modelo->campos_view['adm_usuario_id'] = array("type" => "selects", "model" => new adm_usuario($this->link));
+
+        $this->asignar_propiedad(identificador: 'adm_usuario_id', propiedades: ["label" => "Ejecutivo", "cols" => 12, 'required' => false]);
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
+            print_r($error);
+            die('Error');
         }
 
         $inputs = $this->genera_inputs(keys_selects: $this->keys_selects);

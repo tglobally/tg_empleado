@@ -10,7 +10,7 @@ var datatable = $(".datatables").DataTable({
         'data': function (data) {
             var fecha_inicio = $('#fecha_inicio').val();
             var fecha_final = $('#fecha_final').val();
-            var em_empleado_id = $('#em_empleado_id').val();
+            var adm_usuario_id = $('#adm_usuario_id').val();
             var em_tipo_anticipo_id = $('#em_tipo_anticipo_id').val();
 
             data.filtros = {
@@ -39,11 +39,11 @@ var datatable = $(".datatables").DataTable({
                     })
             }
 
-            if (em_empleado_id !== "") {
+            if (adm_usuario_id !== "") {
                 data.filtros.filtro.push(
                     {
-                        "key": "em_empleado.id",
-                        "valor": em_empleado_id,
+                        "key": "em_anticipo.usuario_alta_id",
+                        "valor": adm_usuario_id,
                     }
                 )
 
@@ -83,7 +83,7 @@ var datatable = $(".datatables").DataTable({
     ],
 });
 
-$('.filter-checkbox,#fecha_inicio,#fecha_final,#em_empleado_id,#em_tipo_anticipo_id').on('change', function (e) {
+$('.filter-checkbox,#fecha_inicio,#fecha_final,#adm_usuario_id,#em_tipo_anticipo_id').on('change', function (e) {
     datatable.draw();
 });
 
