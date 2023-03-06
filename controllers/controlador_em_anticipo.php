@@ -755,8 +755,15 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
             die('Error');
         }
 
+        $em_empleado = (new tg_empleado_sucursal($this->link))->registro(registro_id: $filtros->em_empleado_id);
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al obtener datos del empleado', data: $em_empleado);
+            print_r($error);
+            die('Error');
+        }
+
         if (!empty($filtros->em_empleado_id)) {
-            $filtro["em_empleado.id"] = $filtros->em_empleado_id;
+            $filtro["em_empleado.id"] = $em_empleado['em_empleado_id'];
         }
 
         if (!empty($filtros->fecha_inicio)) {
@@ -772,13 +779,6 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
             $filtro_especial[$index][$filtros->fecha_inicio]['valor'] = 'em_anticipo.fecha_prestacion';
             $filtro_especial[$index][$filtros->fecha_inicio]['comparacion'] = 'AND';
             $filtro_especial[$index][$filtros->fecha_inicio]['valor_es_campo'] = true;
-        }
-
-        $em_empleado = (new tg_empleado_sucursal($this->link))->registro(registro_id: $filtros->em_empleado_id);
-        if (errores::$error) {
-            $error = $this->errores->error(mensaje: 'Error al obtener datos del empleado', data: $em_empleado);
-            print_r($error);
-            die('Error');
         }
 
         $tipos_anticipos = (new em_tipo_anticipo($this->link))->get_tipo_anticipos(em_empleado_id: $em_empleado['em_empleado_id']);
