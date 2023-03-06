@@ -5,7 +5,6 @@ use base\controller\controler;
 use gamboamartin\errores\errores;
 use gamboamartin\system\_ctl_base;
 use gamboamartin\system\links_menu;
-use gamboamartin\system\system;
 use html\tg_empleado_sucursal_html;
 use tglobally\tg_empleado\models\tg_empleado_sucursal;
 use PDO;
@@ -77,6 +76,18 @@ class controlador_tg_empleado_sucursal extends _ctl_base
         }
 
         return $campos_view;
+    }
+
+    public function get_empleados(bool $header, bool $ws = true): array|stdClass
+    {
+        $keys['com_sucursal'] = array('id', 'descripcion', 'codigo', 'codigo_bis');
+
+        $salida = $this->get_out(header: $header, keys: $keys, ws: $ws);
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al generar salida', data: $salida, header: $header, ws: $ws);
+        }
+
+        return $salida;
     }
 
     private function init_configuraciones(): controler
