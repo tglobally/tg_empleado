@@ -623,12 +623,12 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
 
     public function monto_capturado(array $anticipos): float
     {
-        return 0.0;
+        return 2.0;
     }
 
     public function suma_descuentos(array $anticipos): float
     {
-        return 0.0;
+        return 1.0;
     }
 
     private function get_datos_remunerado(int $com_sucursal_id, int $em_empleado_id, array $anticipos): array
@@ -747,7 +747,7 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
             die('Error');
         }
 
-        $valida = $this->validacion->valida_existencia_keys(keys: array("com_sucursal_id","em_empleado_id"),
+        $valida = $this->validacion->valida_existencia_keys(keys: array("com_sucursal_id", "em_empleado_id"),
             registro: $filtros);
         if (errores::$error) {
             $error = $this->errores->error(mensaje: 'Error al validar el filtros requeridos', data: $valida);
@@ -814,7 +814,8 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
 
         $name = $em_empleado['em_empleado_nombre_completo'] . "_REPORTE POR TRABAJADOR";
 
-        $resultado = $exportador->exportar_template(header: $header, path_base: $this->path_base, name: $name, data: $data);
+        $resultado = $exportador->exportar_template(header: $header, path_base: $this->path_base, name: $name, data: $data,
+            styles: Reporte_Anticipo::REPORTE_EMPLEADOS);
         if (errores::$error) {
             $error = $this->errores->error('Error al generar xls', $resultado);
             if (!$header) {
