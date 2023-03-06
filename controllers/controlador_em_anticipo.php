@@ -724,9 +724,9 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
             ['109926', '01-01-2023', '15-01-2023', 'TIMBRADO', 508.94, 'DUAL', 'Zaida Ivonne'],
             ['109926', '01-01-2023', '15-01-2023', 'TIMBRADO', 508.94, 'DUAL', 'Zaida Ivonne'],
         ];
-        $tabla_2['totales'] = array("titulo" => 'SUMA DESCUENTOS:', 'valor' => 1017.88, 'columna' => "H");
+        $tabla_2['totales'] = array("titulo" => 'SUMA DESCUENTOS:', 'valor' => 1017.88, 'columna' => "G");
         $tabla_2['startRow'] = 2;
-        $tabla_2['startColumn'] = "E";
+        $tabla_2['startColumn'] = "D";
 
         return array($tabla_1, $tabla_2);
     }

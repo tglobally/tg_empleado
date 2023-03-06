@@ -23,7 +23,7 @@ class Reporte_Anticipo
                 'vertical' => 'center',
             ]
         ],
-        "E2" => [
+        "D2" => [
             'font' => [
                 'bold' => true,
                 'color' => ['rgb' => 'FFFFFF'],
@@ -38,7 +38,7 @@ class Reporte_Anticipo
                 'vertical' => 'center',
             ]
         ],
-        "E3:k3" => [
+        "D3:J3" => [
             'font' => [
                 'bold' => true,
                 'color' => ['rgb' => '000000'],
