@@ -8,6 +8,7 @@ use gamboamartin\empleado\models\em_anticipo;
 use gamboamartin\empleado\models\em_tipo_anticipo;
 use gamboamartin\empleado\models\em_tipo_descuento;
 use gamboamartin\errores\errores;
+use gamboamartin\organigrama\models\org_sucursal;
 use gamboamartin\plugins\exportador;
 use PDO;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -19,9 +20,9 @@ use tglobally\tg_empleado\models\tg_empleado_sucursal;
 
 class controlador_em_anticipo extends \gamboamartin\empleado\controllers\controlador_em_anticipo
 {
-
     public string $link_em_anticipo_reporte_ejecutivo = '';
     public string $link_em_anticipo_importar_anticipos = '';
+    public string $link_em_anticipo_exportar_ejecutivo = '';
     public string $link_em_anticipo_exportar_cliente = '';
     public string $link_em_anticipo_exportar_empresa = '';
 
@@ -47,6 +48,13 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
             exit;
         }
 
+        $this->link_em_anticipo_exportar_ejecutivo = $this->obj_link->link_con_id(accion: "exportar_ejecutivo", link: $this->link,
+            registro_id: $this->registro_id, seccion: "em_anticipo");
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al obtener link', data: $this->link_em_anticipo_exportar_ejecutivo);
+            print_r($error);
+            exit;
+        }
 
         $this->link_em_anticipo_exportar_cliente = $this->obj_link->link_con_id(accion: "exportar_cliente", link: $this->link,
             registro_id: $this->registro_id, seccion: "em_anticipo");
@@ -592,7 +600,6 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
 
     private function get_filtros(array $post)
     {
-
         $filtros = new stdClass();
 
         if (isset($post['org_sucursal_id'])) {
@@ -605,6 +612,10 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
 
         if (isset($post['em_empleado_id'])) {
             $filtros->em_empleado_id = $post['em_empleado_id'];
+        }
+
+        if (isset($this->datos_session_usuario['adm_usuario_id'])) {
+            $filtros->adm_usuario_id = $this->datos_session_usuario['adm_usuario_id'];
         }
 
         if (isset($post['em_tipo_anticipo_id'])) {
@@ -816,7 +827,105 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
         $name = $em_empleado['em_empleado_nombre_completo'] . "_REPORTE POR TRABAJADOR";
 
         $resultado = $exportador->exportar_template(header: $header, path_base: $this->path_base, name: $name, data: $data,
-            styles: Reporte_Anticipo::REPORTE_EMPLEADOS);
+            styles: Reporte_Template::REPORTE_EMPLEADOS);
+        if (errores::$error) {
+            $error = $this->errores->error('Error al generar xls', $resultado);
+            if (!$header) {
+                return $error;
+            }
+            print_r($error);
+            die('Error');
+        }
+
+        header('Location:' . $this->link_em_anticipo_reporte_empleado);
+        exit;
+    }
+
+    public function exportar_ejecutivo(bool $header, bool $ws = false): array|stdClass
+    {
+        $exportador = (new exportador());
+
+        $filtro = array();
+        $filtro_especial = array();
+
+        $index = 0;
+
+        $filtros = $this->get_filtros(post: $_POST);
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al obtener filtros', data: $filtros);
+            print_r($error);
+            die('Error');
+        }
+
+        $valida = $this->validacion->valida_existencia_keys(keys: array("adm_usuario_id"),
+            registro: $filtros);
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al validar el filtros requeridos', data: $valida);
+            print_r($error);
+            die('Error');
+        }
+
+        $em_empleado = (new tg_empleado_sucursal($this->link))->registro(registro_id: $filtros->em_empleado_id);
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al obtener datos del empleado', data: $em_empleado);
+            print_r($error);
+            die('Error');
+        }
+
+        if (!empty($filtros->em_empleado_id)) {
+            $filtro["em_empleado.id"] = $em_empleado['em_empleado_id'];
+        }
+
+        if (!empty($filtros->fecha_inicio)) {
+            $filtro_especial[$index][$filtros->fecha_final]['operador'] = '>=';
+            $filtro_especial[$index][$filtros->fecha_final]['valor'] = 'em_anticipo.fecha_prestacion';
+            $filtro_especial[$index][$filtros->fecha_final]['comparacion'] = 'AND';
+            $filtro_especial[$index][$filtros->fecha_final]['valor_es_campo'] = true;
+            $index += 1;
+        }
+
+        if (!empty($filtros->fecha_final)) {
+            $filtro_especial[$index][$filtros->fecha_inicio]['operador'] = '<=';
+            $filtro_especial[$index][$filtros->fecha_inicio]['valor'] = 'em_anticipo.fecha_prestacion';
+            $filtro_especial[$index][$filtros->fecha_inicio]['comparacion'] = 'AND';
+            $filtro_especial[$index][$filtros->fecha_inicio]['valor_es_campo'] = true;
+        }
+
+        $tipos_anticipos = (new em_tipo_anticipo($this->link))->get_tipo_anticipos(em_empleado_id: $em_empleado['em_empleado_id']);
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al obtener los tipos de anticipo del empleado',
+                data: $tipos_anticipos);
+            print_r($error);
+            die('Error');
+        }
+
+        $data = array();
+
+        foreach ($tipos_anticipos->registros as $tipo_anticipo) {
+            $filtro["em_anticipo.em_tipo_anticipo_id"] = $tipo_anticipo['em_tipo_anticipo_id'];
+
+            $anticipos = (new em_anticipo($this->link))->filtro_and(filtro: $filtro, filtro_especial: $filtro_especial);
+            if (errores::$error) {
+                $error = $this->errores->error(mensaje: 'Error al obtener registros', data: $anticipos);
+                print_r($error);
+                die('Error');
+            }
+
+            if ($anticipos->n_registros > 0) {
+                $data[$tipo_anticipo['em_tipo_anticipo_descripcion']] = $this->maqueta_salida(com_sucursal_id: $filtros->com_sucursal_id,
+                    em_empleado_id: $em_empleado['em_empleado_id'], anticipos: $anticipos->registros);
+                if (errores::$error) {
+                    $error = $this->errores->error(mensaje: 'Error al maquetar salida de datos', data: $data);
+                    print_r($error);
+                    die('Error');
+                }
+            }
+        }
+
+        $name = $em_empleado['em_empleado_nombre_completo'] . "_REPORTE POR TRABAJADOR";
+
+        $resultado = $exportador->exportar_template(header: $header, path_base: $this->path_base, name: $name, data: $data,
+            styles: Reporte_Template::REPORTE_EMPLEADOS);
         if (errores::$error) {
             $error = $this->errores->error('Error al generar xls', $resultado);
             if (!$header) {
@@ -880,15 +989,14 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
         }
 
         $this->modelo->campos_view['adm_usuario_id'] = array("type" => "selects", "model" => new adm_usuario($this->link));
+        $this->modelo->campos_view['org_sucursal_id'] = array("type" => "selects", "model" => new org_sucursal($this->link));
 
         $this->asignar_propiedad(identificador: 'adm_usuario_id', propiedades: ["label" => "Ejecutivo", "cols" => 12,
             'required' => false, 'disabled' => true, "id_selected" => $this->datos_session_usuario['adm_usuario_id'],
             "filtro" => array("adm_usuario.id" => $this->datos_session_usuario['adm_usuario_id'])]);
-        if (errores::$error) {
-            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
-            print_r($error);
-            die('Error');
-        }
+
+        $this->asignar_propiedad(identificador: 'org_sucursal_id', propiedades: ['required' => true]);
+
 
         $inputs = $this->genera_inputs(keys_selects: $this->keys_selects);
         if (errores::$error) {

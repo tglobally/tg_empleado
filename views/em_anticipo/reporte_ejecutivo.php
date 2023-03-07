@@ -11,7 +11,7 @@
 
                 <div class="card-body">
                     <div class="cont_tabla_sucursal  col-md-12">
-                        <form method="post" action="<?php echo $controlador->link_em_anticipo_exportar_empleado; ?> "
+                        <form method="post" action="<?php echo $controlador->link_em_anticipo_exportar_ejecutivo; ?> "
                               class="form-additional" id="form_export">
 
                             <div class="filtros">
@@ -23,6 +23,7 @@
                                     <div class="filtro-fechas">
                                         <div class="fechas form-main widget-form-cart">
                                             <?php echo $controlador->inputs->adm_usuario_id; ?>
+                                            <?php echo $controlador->inputs->org_sucursal_id; ?>
                                             <?php echo $controlador->inputs->em_tipo_anticipo_id; ?>
                                             <?php echo $controlador->inputs->fecha_inicio; ?>
                                             <?php echo $controlador->inputs->fecha_final; ?>
