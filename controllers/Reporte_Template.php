@@ -114,6 +114,22 @@ class Reporte_Template
 
     ];
 
-    const REPORTE_GENERAL = [];
+    const REPORTE_GENERAL = [
+        "A4:M4" => [
+            'font' => [
+                'bold' => true,
+                'color' => ['rgb' => 'FFFFFF'],
+                'size' => 11,
+            ],
+            'fill' => array(
+                'fillType' => Fill::FILL_SOLID,
+                'startColor' => array('rgb' => '0070C0')
+            ),
+            'alignment' => [
+                'horizontal' => 'center',
+                'vertical' => 'center',
+            ]
+        ],
+    ];
 
 }

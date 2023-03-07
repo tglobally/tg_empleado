@@ -8,10 +8,13 @@ var datatable = $(".datatables").DataTable({
     ajax: {
         "url": url,
         'data': function (data) {
+            var adm_usuario_id = $('#adm_usuario_id').val();
+            var org_sucursal_id = $('#org_sucursal_id').val();
+            var em_tipo_anticipo_id = $('#em_tipo_anticipo_id').val();
+
             var fecha_inicio = $('#fecha_inicio').val();
             var fecha_final = $('#fecha_final').val();
-            var adm_usuario_id = $('#adm_usuario_id').val();
-            var em_tipo_anticipo_id = $('#em_tipo_anticipo_id').val();
+
 
             data.filtros = {
                 filtro_especial: [
@@ -31,14 +34,6 @@ var datatable = $(".datatables").DataTable({
                 filtro: []
             }
 
-            if (em_tipo_anticipo_id !== "") {
-                data.filtros.filtro.push(
-                    {
-                        "key": "em_tipo_anticipo.id",
-                        "valor": em_tipo_anticipo_id
-                    })
-            }
-
             if (adm_usuario_id !== "") {
                 data.filtros.filtro.push(
                     {
@@ -46,8 +41,24 @@ var datatable = $(".datatables").DataTable({
                         "valor": adm_usuario_id,
                     }
                 )
+            }
 
+            if (org_sucursal_id !== "") {
+                data.filtros.filtro.push(
+                    {
+                        "key": "org_sucursal.id",
+                        "valor": org_sucursal_id,
+                    }
+                )
+            }
 
+            if (em_tipo_anticipo_id !== "") {
+                data.filtros.filtro.push(
+                    {
+                        "key": "em_tipo_anticipo.id",
+                        "valor": em_tipo_anticipo_id
+                    }
+                )
             }
         },
         "error": function (jqXHR, textStatus, errorThrown) {
@@ -59,6 +70,10 @@ var datatable = $(".datatables").DataTable({
         {
             title: 'Id',
             data: 'em_anticipo_id'
+        },
+        {
+            title: 'Empresa',
+            data: 'org_sucursal_descripcion'
         },
         {
             title: 'Empleado',
@@ -83,7 +98,7 @@ var datatable = $(".datatables").DataTable({
     ],
 });
 
-$('.filter-checkbox,#fecha_inicio,#fecha_final,#adm_usuario_id,#em_tipo_anticipo_id').on('change', function (e) {
+$('#adm_usuario_id, #org_sucursal_id, #em_tipo_anticipo_id, #fecha_inicio, #fecha_final').on('change', () => {
     datatable.draw();
 });
 

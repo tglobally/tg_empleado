@@ -857,7 +857,7 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
             die('Error');
         }
 
-        $valida = $this->validacion->valida_existencia_keys(keys: array("adm_usuario_id"),
+        $valida = $this->validacion->valida_existencia_keys(keys: array("adm_usuario_id", "org_sucursal_id"),
             registro: $filtros);
         if (errores::$error) {
             $error = $this->errores->error(mensaje: 'Error al validar el filtros requeridos', data: $valida);
@@ -865,15 +865,16 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
             die('Error');
         }
 
-        $em_empleado = (new tg_empleado_sucursal($this->link))->registro(registro_id: $filtros->em_empleado_id);
-        if (errores::$error) {
-            $error = $this->errores->error(mensaje: 'Error al obtener datos del empleado', data: $em_empleado);
-            print_r($error);
-            die('Error');
+        if (!empty($filtros->adm_usuario_id)) {
+            $filtro["em_anticipo.usuario_alta_id"] = $filtros->adm_usuario_id;
         }
 
-        if (!empty($filtros->em_empleado_id)) {
-            $filtro["em_empleado.id"] = $em_empleado['em_empleado_id'];
+        if (!empty($filtros->org_sucursal_id)) {
+            $filtro["org_sucursal.id"] = $filtros->org_sucursal_id;
+        }
+
+        if (!empty($filtros->em_tipo_anticipo_id)) {
+            $filtro["em_tipo_anticipo.id"] = $filtros->em_tipo_anticipo_id;
         }
 
         if (!empty($filtros->fecha_inicio)) {
@@ -891,41 +892,54 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
             $filtro_especial[$index][$filtros->fecha_inicio]['valor_es_campo'] = true;
         }
 
-        $tipos_anticipos = (new em_tipo_anticipo($this->link))->get_tipo_anticipos(em_empleado_id: $em_empleado['em_empleado_id']);
+        $empresa = (new org_sucursal($this->link))->registro(registro_id: $filtros->org_sucursal_id,
+            columnas: array("org_sucursal_descripcion"));
         if (errores::$error) {
-            $error = $this->errores->error(mensaje: 'Error al obtener los tipos de anticipo del empleado',
-                data: $tipos_anticipos);
+            $error = $this->errores->error(mensaje: 'Error al obtener registros de empresa', data: $empresa);
             print_r($error);
             die('Error');
         }
 
-        $data = array();
-
-        foreach ($tipos_anticipos->registros as $tipo_anticipo) {
-            $filtro["em_anticipo.em_tipo_anticipo_id"] = $tipo_anticipo['em_tipo_anticipo_id'];
-
-            $anticipos = (new em_anticipo($this->link))->filtro_and(filtro: $filtro, filtro_especial: $filtro_especial);
-            if (errores::$error) {
-                $error = $this->errores->error(mensaje: 'Error al obtener registros', data: $anticipos);
-                print_r($error);
-                die('Error');
-            }
-
-            if ($anticipos->n_registros > 0) {
-                $data[$tipo_anticipo['em_tipo_anticipo_descripcion']] = $this->maqueta_salida(com_sucursal_id: $filtros->com_sucursal_id,
-                    em_empleado_id: $em_empleado['em_empleado_id'], anticipos: $anticipos->registros);
-                if (errores::$error) {
-                    $error = $this->errores->error(mensaje: 'Error al maquetar salida de datos', data: $data);
-                    print_r($error);
-                    die('Error');
-                }
-            }
+        $anticipos = (new em_anticipo($this->link))->filtro_and(filtro: $filtro, filtro_especial: $filtro_especial);
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al obtener registros', data: $anticipos);
+            print_r($error);
+            die('Error');
         }
 
-        $name = $em_empleado['em_empleado_nombre_completo'] . "_REPORTE POR TRABAJADOR";
+        $registros = array();
+
+        foreach ($anticipos->registros as $anticipo) {
+            $registro = [
+                $anticipo['em_empleado_nss'],
+                $anticipo['em_empleado_id'],
+                $anticipo['em_empleado_nombre_completo'],
+                $anticipo['em_registro_patronal_descripcion'],
+                $anticipo['em_tipo_anticipo_descripcion'],
+                $anticipo['em_anticipo_monto'],
+                $anticipo['em_tipo_descuento_monto'],
+                $anticipo['total_abonado'],
+                $anticipo['em_anticipo_saldo'],
+                $this->datos_session_usuario['adm_usuario_nombre'],
+                $anticipo['em_anticipo_fecha_alta'],
+                $anticipo['em_anticipo_comentarios'],
+                "CLIENTE"
+            ];
+            $registros[] = $registro;
+        }
+
+        $tabla['headers'] = ['NSS', 'ID', 'NOMBRE', 'REGISTRO PATRONAL', 'CONCEPTO', 'IMPORTE', 'MONTO A DESCONTAR PROPUESTA',
+            'PAGOS', 'SALDO', 'EJECUTIVO IMSS', 'FECHA/HORA CAPTURA', 'COMENTARIOS', 'CLIENTE'];
+        $tabla['data'] = $registros;
+        $tabla['startRow'] = 4;
+        $tabla['startColumn'] = "A";
+
+        $data["REPORTE GENERAL"] = [$tabla];
+
+        $name = $empresa['org_sucursal_descripcion'] . "_REPORTE DE ANTICIPOS";
 
         $resultado = $exportador->exportar_template(header: $header, path_base: $this->path_base, name: $name, data: $data,
-            styles: Reporte_Template::REPORTE_EMPLEADOS);
+            styles: Reporte_Template::REPORTE_GENERAL);
         if (errores::$error) {
             $error = $this->errores->error('Error al generar xls', $resultado);
             if (!$header) {
@@ -935,7 +949,7 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
             die('Error');
         }
 
-        header('Location:' . $this->link_em_anticipo_reporte_empleado);
+        header('Location:' . $this->link_em_anticipo_reporte_ejecutivo);
         exit;
     }
 
