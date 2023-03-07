@@ -8,10 +8,10 @@ var datatable = $(".datatables").DataTable({
     ajax: {
         "url": url,
         'data': function (data) {
-            var fecha_inicio = $('#fecha_inicio').val();
-            var fecha_final = $('#fecha_final').val();
             var com_sucursal_id = $('#com_sucursal_id').val();
             var em_tipo_anticipo_id = $('#em_tipo_anticipo_id').val();
+            var fecha_inicio = $('#fecha_inicio').val();
+            var fecha_final = $('#fecha_final').val();
 
             data.filtros = {
                 filtro_especial: [
@@ -31,14 +31,6 @@ var datatable = $(".datatables").DataTable({
                 filtro: []
             }
 
-            if (em_tipo_anticipo_id !== "") {
-                data.filtros.filtro.push(
-                    {
-                        "key": "em_tipo_anticipo.id",
-                        "valor": em_tipo_anticipo_id
-                    })
-            }
-
             if (com_sucursal_id !== "") {
                 data.filtros.extra_join = [
                     {
@@ -56,6 +48,14 @@ var datatable = $(".datatables").DataTable({
                     }
                 )
             }
+
+            if (em_tipo_anticipo_id !== "") {
+                data.filtros.filtro.push(
+                    {
+                        "key": "em_tipo_anticipo.id",
+                        "valor": em_tipo_anticipo_id
+                    })
+            }
         },
         "error": function (jqXHR, textStatus, errorThrown) {
             let response = jqXHR.responseText;
@@ -64,27 +64,31 @@ var datatable = $(".datatables").DataTable({
     },
     columns: [
         {
-            title: 'NSS',
-            data: 'em_empleado_nss'
+            title: 'Id',
+            data: 'em_anticipo_id'
         },
         {
-            title: 'Código',
-            data: 'em_anticipo_codigo'
-        },
-        {
-            title: 'Descripcion',
-            data: 'em_anticipo_descripcion'
+            title: 'Empresa',
+            data: 'org_sucursal_descripcion'
         },
         {
             title: 'Empleado',
-            data: 'em_empleado_nombre'
+            data: 'em_empleado_nombre_completo'
+        },
+        {
+            title: 'Tipo Anticipo',
+            data: 'em_tipo_anticipo_descripcion'
+        },
+        {
+            title: 'Descripción',
+            data: 'em_anticipo_descripcion'
         },
         {
             title: 'Monto',
             data: 'em_anticipo_monto'
         },
         {
-            title: 'Fecha Prestacion',
+            title: 'Fecha Prestación',
             data: 'em_anticipo_fecha_prestacion'
         }
     ],
