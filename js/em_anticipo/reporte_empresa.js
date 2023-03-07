@@ -61,23 +61,27 @@ var datatable = $(".datatables").DataTable({
             data: 'em_anticipo_id'
         },
         {
-            title: 'Código',
-            data: 'em_anticipo_codigo'
-        },
-        {
-            title: 'Descripcion',
-            data: 'em_anticipo_descripcion'
+            title: 'Empresa',
+            data: 'org_sucursal_descripcion'
         },
         {
             title: 'Empleado',
-            data: 'em_empleado_nombre'
+            data: 'em_empleado_nombre_completo'
+        },
+        {
+            title: 'Tipo Anticipo',
+            data: 'em_tipo_anticipo_descripcion'
+        },
+        {
+            title: 'Descripción',
+            data: 'em_anticipo_descripcion'
         },
         {
             title: 'Monto',
             data: 'em_anticipo_monto'
         },
         {
-            title: 'Fecha Prestacion',
+            title: 'Fecha Prestación',
             data: 'em_anticipo_fecha_prestacion'
         }
     ],

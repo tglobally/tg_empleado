@@ -383,30 +383,18 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
 
     public function exportar_empresa(bool $header, bool $ws = false): array|stdClass
     {
-        $filtros = new stdClass();
-        $anticipos = array();
-        $registros = array();
-        $salida_excel = array();
+        $exportador = (new exportador());
 
         $filtro = array();
         $filtro_especial = array();
+
         $index = 0;
-        $exportador = (new exportador());
 
-        if (isset($_POST['org_sucursal_id'])) {
-            $filtros->org_sucursal_id = $_POST['org_sucursal_id'];
-        }
-
-        if (isset($_POST['em_tipo_anticipo_id'])) {
-            $filtros->em_tipo_anticipo_id = $_POST['em_tipo_anticipo_id'];
-        }
-
-        if (isset($_POST['fecha_inicio'])) {
-            $filtros->fecha_inicio = $_POST['fecha_inicio'];
-        }
-
-        if (isset($_POST['fecha_final'])) {
-            $filtros->fecha_final = $_POST['fecha_final'];
+        $filtros = $this->get_filtros(post: $_POST);
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al obtener filtros', data: $filtros);
+            print_r($error);
+            die('Error');
         }
 
         if (!empty($filtros->org_sucursal_id)) {
@@ -433,6 +421,14 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
             $filtro_especial[$index][$filtros->fecha_inicio]['valor_es_campo'] = true;
         }
 
+        $empresa = (new org_sucursal($this->link))->registro(registro_id: $filtros->org_sucursal_id,
+            columnas: array("org_sucursal_descripcion"));
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al obtener registros de empresa', data: $empresa);
+            print_r($error);
+            die('Error');
+        }
+
         $anticipos = (new em_anticipo($this->link))->filtro_and(filtro: $filtro, filtro_especial: $filtro_especial);
         if (errores::$error) {
             $error = $this->errores->error(mensaje: 'Error al obtener registros', data: $anticipos);
@@ -440,36 +436,58 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
             die('Error');
         }
 
+        $registros = array();
+
         foreach ($anticipos->registros as $anticipo) {
-            $row = array();
-            $row["nss"] = $anticipo['em_empleado_nss'];
-            $row["codigo_remunerado"] = $anticipo['em_empleado_codigo'];
-            $row["nombre_remunerado"] = $anticipo['em_empleado_nombre'];
-            $row["nombre_remunerado"] .= " " . $anticipo['em_empleado_ap'];
-            $row["nombre_remunerado"] .= " " . $anticipo['em_empleado_am'];
-            $row["razon_social"] = $anticipo['org_sucursal_descripcion'] ?? "";
-            $row["concepto"] = $anticipo['em_anticipo_descripcion'];
-            $row["monto_del_anticipo"] = $anticipo['em_anticipo_monto'];
-            $row["tipo_descuento_monto"] = $anticipo['em_tipo_descuento_monto'];
-            $row["sumatoria_de_abonos"] = $anticipo['total_abonado'];
-            $row["saldo"] = $anticipo['em_anticipo_saldo'];
-            $registros[] = $row;
+            $filtro_cliente['em_empleado_id'] = $anticipo['em_empleado_id'];
+            $empleado_sucursal = (new tg_empleado_sucursal($this->link))->filtro_and(filtro: $filtro_cliente,limit: 1);
+            if (errores::$error) {
+                $error = $this->errores->error(mensaje: 'Error al obtener registros del cliente', data: $empleado_sucursal);
+                print_r($error);
+                die('Error');
+            }
+
+            $cliente = "No presenta un cliente relacionado";
+
+            if($empleado_sucursal->n_registros > 0){
+                $cliente = $empleado_sucursal->registros[0]['com_sucursal_descripcion'];
+            }
+
+            $registro = [
+                $anticipo['em_empleado_nss'],
+                $anticipo['em_empleado_id'],
+                $anticipo['em_empleado_nombre_completo'],
+                $anticipo['em_registro_patronal_descripcion'],
+                $anticipo['em_tipo_anticipo_descripcion'],
+                $anticipo['em_anticipo_monto'],
+                $anticipo['em_tipo_descuento_monto'],
+                $anticipo['total_abonado'],
+                $anticipo['em_anticipo_saldo'],
+                $this->datos_session_usuario['adm_usuario_nombre'],
+                $anticipo['em_anticipo_fecha_alta'],
+                $anticipo['em_anticipo_comentarios'],
+                $cliente
+            ];
+            $registros[] = $registro;
         }
 
-        $keys = array_reduce($registros, 'array_merge', array());
-        $keys_value = array_change_key_case($keys, CASE_UPPER);
-        $keys_value = array_keys($keys_value);
-        $keys_value = preg_replace("/[^a-zA-Z 0-9]+/", " ", $keys_value);
-        $keys = array_combine(array_keys($keys), $keys_value);
+        $tabla['detalles'] = [
+            ["titulo" => 'EMPRESA:', 'valor' => $empresa['org_sucursal_descripcion']],
+            ["titulo" => 'PERIODO:', 'valor' => 12],
+            ["titulo" => 'No.Registros:', 'valor' => $anticipos->n_registros]
+        ];
+        $tabla['headers'] = ['NSS', 'ID', 'NOMBRE', 'REGISTRO PATRONAL', 'CONCEPTO', 'IMPORTE', 'MONTO A DESCONTAR PROPUESTA',
+            'PAGOS', 'SALDO', 'EJECUTIVO IMSS', 'FECHA/HORA CAPTURA', 'COMENTARIOS', 'CLIENTE'];
+        $tabla['data'] = $registros;
+        $tabla['startRow'] = 4;
+        $tabla['startColumn'] = "A";
 
-        foreach ($registros as $row) {
-            $salida_excel[] = array_combine(preg_replace(array_map(function ($s) {
-                return "/^$s$/";
-            }, array_keys($keys)), $keys, array_keys($row)), $row);
-        }
+        $data["REPORTE GENERAL"] = [$tabla];
 
-        $resultado = $exportador->listado_base_xls(header: $header, name: $this->seccion, keys: $keys,
-            path_base: $this->path_base, registros: $salida_excel, totales: array());
+        $name = "REPORTE DE ANTICIPOS";
+
+        $resultado = $exportador->exportar_template(header: $header, path_base: $this->path_base, name: $name, data: $data,
+            styles: Reporte_Template::REPORTE_GENERAL);
         if (errores::$error) {
             $error = $this->errores->error('Error al generar xls', $resultado);
             if (!$header) {
@@ -479,7 +497,7 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
             die('Error');
         }
 
-        header('Location:' . $this->link_lista);
+        header('Location:' . $this->link_em_anticipo_reporte_empresa);
         exit;
     }
 
