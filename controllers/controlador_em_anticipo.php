@@ -910,6 +910,21 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
         $registros = array();
 
         foreach ($anticipos->registros as $anticipo) {
+
+            $filtro_cliente['em_empleado_id'] = $anticipo['em_empleado_id'];
+            $empleado_sucursal = (new tg_empleado_sucursal($this->link))->filtro_and(filtro: $filtro_cliente,limit: 1);
+            if (errores::$error) {
+                $error = $this->errores->error(mensaje: 'Error al obtener registros del cliente', data: $cliente);
+                print_r($error);
+                die('Error');
+            }
+
+            $cliente = "No presenta un cliente relacionado";
+
+            if($empleado_sucursal->n_registros > 0){
+                $cliente = $empleado_sucursal->registros[0]['com_sucursal_descripcion'];
+            }
+
             $registro = [
                 $anticipo['em_empleado_nss'],
                 $anticipo['em_empleado_id'],
@@ -923,7 +938,7 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
                 $this->datos_session_usuario['adm_usuario_nombre'],
                 $anticipo['em_anticipo_fecha_alta'],
                 $anticipo['em_anticipo_comentarios'],
-                "CLIENTE"
+                $cliente
             ];
             $registros[] = $registro;
         }
