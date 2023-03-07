@@ -881,7 +881,9 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
 
         $this->modelo->campos_view['adm_usuario_id'] = array("type" => "selects", "model" => new adm_usuario($this->link));
 
-        $this->asignar_propiedad(identificador: 'adm_usuario_id', propiedades: ["label" => "Ejecutivo", "cols" => 12, 'required' => false]);
+        $this->asignar_propiedad(identificador: 'adm_usuario_id', propiedades: ["label" => "Ejecutivo", "cols" => 12,
+            'required' => false, 'disabled' => true, "id_selected" => $this->datos_session_usuario['adm_usuario_id'],
+            "filtro" => array("adm_usuario.id" => $this->datos_session_usuario['adm_usuario_id'])]);
         if (errores::$error) {
             $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
             print_r($error);

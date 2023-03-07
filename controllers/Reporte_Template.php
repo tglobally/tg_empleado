@@ -5,7 +5,7 @@ namespace tglobally\tg_empleado\controllers;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 
-class Reporte_Anticipo
+class Reporte_Template
 {
     const REPORTE_EMPLEADOS = [
         "A2" => [
@@ -113,5 +113,7 @@ class Reporte_Anticipo
         ]
 
     ];
+
+    const REPORTE_GENERAL = [];
 
 }
