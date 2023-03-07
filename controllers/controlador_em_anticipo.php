@@ -928,6 +928,11 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
             $registros[] = $registro;
         }
 
+        $tabla['detalles'] = [
+            ["titulo" => 'EMPRESA:', 'valor' => $empresa['org_sucursal_descripcion']],
+            ["titulo" => 'PERIODO:', 'valor' => 12],
+            ["titulo" => 'No.Registros:', 'valor' => $anticipos->n_registros]
+        ];
         $tabla['headers'] = ['NSS', 'ID', 'NOMBRE', 'REGISTRO PATRONAL', 'CONCEPTO', 'IMPORTE', 'MONTO A DESCONTAR PROPUESTA',
             'PAGOS', 'SALDO', 'EJECUTIVO IMSS', 'FECHA/HORA CAPTURA', 'COMENTARIOS', 'CLIENTE'];
         $tabla['data'] = $registros;
