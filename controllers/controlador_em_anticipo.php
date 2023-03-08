@@ -10,6 +10,7 @@ use gamboamartin\empleado\models\em_tipo_descuento;
 use gamboamartin\errores\errores;
 use gamboamartin\organigrama\models\org_sucursal;
 use gamboamartin\plugins\exportador;
+use IntlDateFormatter;
 use PDO;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
@@ -440,7 +441,7 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
 
         foreach ($anticipos->registros as $anticipo) {
             $filtro_cliente['em_empleado_id'] = $anticipo['em_empleado_id'];
-            $empleado_sucursal = (new tg_empleado_sucursal($this->link))->filtro_and(filtro: $filtro_cliente,limit: 1);
+            $empleado_sucursal = (new tg_empleado_sucursal($this->link))->filtro_and(filtro: $filtro_cliente, limit: 1);
             if (errores::$error) {
                 $error = $this->errores->error(mensaje: 'Error al obtener registros del cliente', data: $empleado_sucursal);
                 print_r($error);
@@ -449,7 +450,7 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
 
             $cliente = "No presenta un cliente relacionado";
 
-            if($empleado_sucursal->n_registros > 0){
+            if ($empleado_sucursal->n_registros > 0) {
                 $cliente = $empleado_sucursal->registros[0]['com_sucursal_descripcion'];
             }
 
@@ -851,8 +852,6 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
 
     public function exportar_ejecutivo(bool $header, bool $ws = false): array|stdClass
     {
-        $exportador = (new exportador());
-
         $filtro = array();
         $filtro_especial = array();
 
@@ -865,7 +864,7 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
             die('Error');
         }
 
-        $valida = $this->validacion->valida_existencia_keys(keys: array("adm_usuario_id", "org_sucursal_id"),
+        $valida = $this->validacion->valida_existencia_keys(keys: array("adm_usuario_id"),
             registro: $filtros);
         if (errores::$error) {
             $error = $this->errores->error(mensaje: 'Error al validar el filtros requeridos', data: $valida);
@@ -900,14 +899,6 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
             $filtro_especial[$index][$filtros->fecha_inicio]['valor_es_campo'] = true;
         }
 
-        $empresa = (new org_sucursal($this->link))->registro(registro_id: $filtros->org_sucursal_id,
-            columnas: array("org_sucursal_descripcion"));
-        if (errores::$error) {
-            $error = $this->errores->error(mensaje: 'Error al obtener registros de empresa', data: $empresa);
-            print_r($error);
-            die('Error');
-        }
-
         $anticipos = (new em_anticipo($this->link))->filtro_and(filtro: $filtro, filtro_especial: $filtro_especial);
         if (errores::$error) {
             $error = $this->errores->error(mensaje: 'Error al obtener registros', data: $anticipos);
@@ -920,7 +911,7 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
         foreach ($anticipos->registros as $anticipo) {
 
             $filtro_cliente['em_empleado_id'] = $anticipo['em_empleado_id'];
-            $empleado_sucursal = (new tg_empleado_sucursal($this->link))->filtro_and(filtro: $filtro_cliente,limit: 1);
+            $empleado_sucursal = (new tg_empleado_sucursal($this->link))->filtro_and(filtro: $filtro_cliente, limit: 1);
             if (errores::$error) {
                 $error = $this->errores->error(mensaje: 'Error al obtener registros del cliente', data: $empleado_sucursal);
                 print_r($error);
@@ -929,7 +920,7 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
 
             $cliente = "No presenta un cliente relacionado";
 
-            if($empleado_sucursal->n_registros > 0){
+            if ($empleado_sucursal->n_registros > 0) {
                 $cliente = $empleado_sucursal->registros[0]['com_sucursal_descripcion'];
             }
 
@@ -943,7 +934,7 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
                 $anticipo['em_tipo_descuento_monto'],
                 $anticipo['total_abonado'],
                 $anticipo['em_anticipo_saldo'],
-                $this->datos_session_usuario['adm_usuario_nombre'],
+                $anticipo['org_sucursal_descripcion'],
                 $anticipo['em_anticipo_fecha_alta'],
                 $anticipo['em_anticipo_comentarios'],
                 $cliente
@@ -951,23 +942,44 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
             $registros[] = $registro;
         }
 
+        $ejecutivo = $this->datos_session_usuario['adm_usuario_nombre'] . " ";
+        $ejecutivo .= $this->datos_session_usuario['adm_usuario_ap'];
+
+        $inicio_sistema = gettimeofday(true);
+        $fecha_inicio = date('1970-01-01');
+        $fecha_fin = date('Y-m-d');
+
+        if (!empty($filtros->fecha_inicio)){
+            $fecha_inicio = $filtros->fecha_inicio;
+        }
+
+        if (!empty($filtros->fecha_final)){
+            $fecha_fin = $filtros->fecha_final;
+        }
+
+        $formatter = new IntlDateFormatter('es_ES', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
+        $fecha_inicio = $formatter->format(strtotime($fecha_inicio));
+        $fecha_fin = $formatter->format(strtotime($fecha_fin));
+
+        $periodo = "$fecha_inicio - $fecha_fin";
+
         $tabla['detalles'] = [
-            ["titulo" => 'EMPRESA:', 'valor' => $empresa['org_sucursal_descripcion']],
-            ["titulo" => 'PERIODO:', 'valor' => 12],
+            ["titulo" => 'EJECUTIVO:', 'valor' => $ejecutivo],
+            ["titulo" => 'PERIODO:', 'valor' => $periodo],
             ["titulo" => 'No.Registros:', 'valor' => $anticipos->n_registros]
         ];
         $tabla['headers'] = ['NSS', 'ID', 'NOMBRE', 'REGISTRO PATRONAL', 'CONCEPTO', 'IMPORTE', 'MONTO A DESCONTAR PROPUESTA',
-            'PAGOS', 'SALDO', 'EJECUTIVO IMSS', 'FECHA/HORA CAPTURA', 'COMENTARIOS', 'CLIENTE'];
+            'PAGOS', 'SALDO', 'EMPRESA', 'FECHA/HORA CAPTURA', 'COMENTARIOS', 'CLIENTE'];
         $tabla['data'] = $registros;
         $tabla['startRow'] = 4;
         $tabla['startColumn'] = "A";
 
         $data["REPORTE GENERAL"] = [$tabla];
 
-        $name = $empresa['org_sucursal_descripcion'] . "_REPORTE DE ANTICIPOS";
+        $name = $ejecutivo . "_REPORTE DE ANTICIPOS";
 
-        $resultado = $exportador->exportar_template(header: $header, path_base: $this->path_base, name: $name, data: $data,
-            styles: Reporte_Template::REPORTE_GENERAL);
+        $resultado = (new exportador())->exportar_template(header: $header, path_base: $this->path_base, name: $name,
+            data: $data, styles: Reporte_Template::REPORTE_GENERAL);
         if (errores::$error) {
             $error = $this->errores->error('Error al generar xls', $resultado);
             if (!$header) {
@@ -1036,9 +1048,6 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
         $this->asignar_propiedad(identificador: 'adm_usuario_id', propiedades: ["label" => "Ejecutivo", "cols" => 12,
             'required' => false, 'disabled' => true, "id_selected" => $this->datos_session_usuario['adm_usuario_id'],
             "filtro" => array("adm_usuario.id" => $this->datos_session_usuario['adm_usuario_id'])]);
-
-        $this->asignar_propiedad(identificador: 'org_sucursal_id', propiedades: ['required' => true]);
-
 
         $inputs = $this->genera_inputs(keys_selects: $this->keys_selects);
         if (errores::$error) {

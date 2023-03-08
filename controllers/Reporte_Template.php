@@ -145,6 +145,12 @@ class Reporte_Template
                 'vertical' => 'center',
             ]
         ],
+        "M" => [
+            'alignment' => [
+                'horizontal' => 'left',
+                'vertical' => 'center',
+            ]
+        ],
         "F:I" => [
             'numberFormat' => [
                 'formatCode' => "$#,##0.00;-$#,##0.00",
@@ -161,7 +167,7 @@ class Reporte_Template
                 'startColor' => array('rgb' => '0070C0')
             ),
             'alignment' => [
-                'horizontal' => 'center',
+                'horizontal' => 'right',
                 'vertical' => 'center',
             ]
         ],
