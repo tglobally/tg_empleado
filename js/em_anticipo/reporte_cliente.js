@@ -48,15 +48,7 @@ var datatable = $(".datatables").DataTable({
             }
 
             if (com_sucursal_id !== "") {
-                data.filtros.extra_join = [
-                    {
-                        "entidad": "tg_empleado_sucursal",
-                        "key": "em_empleado_id",
-                        "enlace": "em_empleado",
-                        "key_enlace": "id",
-                        "renombre": "tg_empleado_sucursal"
-                    },
-                ];
+
                 data.filtros.filtro.push(
                     {
                         "key": "tg_empleado_sucursal.com_sucursal_id",

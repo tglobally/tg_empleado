@@ -95,7 +95,7 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
             die('Error');
         }
 
-        $this->asignar_propiedad(identificador:'com_sucursal_id', propiedades: ["required" => true]);
+        $this->asignar_propiedad(identificador: 'com_sucursal_id', propiedades: ["required" => true]);
         if (errores::$error) {
             $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
             print_r($error);
@@ -509,110 +509,6 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
         exit;
     }
 
-    public function exportar_cliente(bool $header, bool $ws = false): array|stdClass
-    {
-        $exportador = (new exportador());
-
-        $filtro = array();
-        $extra_join = array();
-        $filtro_especial = array();
-
-        $index = 0;
-
-        $filtros = $this->get_filtros(post: $_POST);
-        if (errores::$error) {
-            $error = $this->errores->error(mensaje: 'Error al obtener filtros', data: $filtros);
-            print_r($error);
-            die('Error');
-        }
-
-        if (!empty($filtros->com_sucursal_id)) {
-            $extra_join["tg_empleado_sucursal"]['key'] = "em_empleado_id";
-            $extra_join["tg_empleado_sucursal"]['enlace'] = "em_empleado";
-            $extra_join["tg_empleado_sucursal"]['key_enlace'] = "id";
-            $extra_join["tg_empleado_sucursal"]['renombre'] = "tg_empleado_sucursal";
-
-            $extra_join["com_sucursal"]['key'] = "id";
-            $extra_join["com_sucursal"]['enlace'] = "tg_empleado_sucursal";
-            $extra_join["com_sucursal"]['key_enlace'] = "com_sucursal_id";
-            $extra_join["com_sucursal"]['renombre'] = "com_sucursal";
-
-            $filtro["tg_empleado_sucursal.com_sucursal_id"] = $filtros->com_sucursal_id;
-        }
-
-        if (!empty($filtros->em_tipo_anticipo_id)) {
-            $filtro["em_tipo_anticipo.id"] = $filtros->em_tipo_anticipo_id;
-        }
-
-        if (!empty($filtros->fecha_inicio)) {
-            $filtro_especial[$index][$filtros->fecha_final]['operador'] = '>=';
-            $filtro_especial[$index][$filtros->fecha_final]['valor'] = 'em_anticipo.fecha_prestacion';
-            $filtro_especial[$index][$filtros->fecha_final]['comparacion'] = 'AND';
-            $filtro_especial[$index][$filtros->fecha_final]['valor_es_campo'] = true;
-
-            $index += 1;
-        }
-
-        if (!empty($filtros->fecha_final)) {
-            $filtro_especial[$index][$filtros->fecha_inicio]['operador'] = '<=';
-            $filtro_especial[$index][$filtros->fecha_inicio]['valor'] = 'em_anticipo.fecha_prestacion';
-            $filtro_especial[$index][$filtros->fecha_inicio]['comparacion'] = 'AND';
-            $filtro_especial[$index][$filtros->fecha_inicio]['valor_es_campo'] = true;
-        }
-
-        $anticipos = (new em_anticipo($this->link))->filtro_and(extra_join: $extra_join, filtro: $filtro,
-            filtro_especial: $filtro_especial);
-        if (errores::$error) {
-            $error = $this->errores->error(mensaje: 'Error al obtener registros', data: $anticipos);
-            print_r($error);
-            die('Error');
-        }
-
-        $registros = array();
-
-        foreach ($anticipos->registros as $anticipo) {
-            $registro = [
-                $anticipo['em_empleado_nss'],
-                $anticipo['em_empleado_id'],
-                $anticipo['em_empleado_nombre_completo'],
-                $anticipo['em_registro_patronal_descripcion'],
-                $anticipo['em_tipo_anticipo_descripcion'],
-                $anticipo['em_anticipo_monto'],
-                $anticipo['em_tipo_descuento_monto'],
-                $anticipo['total_abonado'],
-                $anticipo['em_anticipo_saldo'],
-                $this->datos_session_usuario['adm_usuario_nombre'],
-                $anticipo['em_anticipo_fecha_alta'],
-                $anticipo['em_anticipo_comentarios'],
-                $anticipo['com_sucursal_descripcion']
-            ];
-            $registros[] = $registro;
-        }
-
-        $tabla['headers'] = ['NSS', 'ID', 'NOMBRE', 'REGISTRO PATRONAL', 'CONCEPTO', 'IMPORTE', 'MONTO A DESCONTAR PROPUESTA',
-            'PAGOS', 'SALDO', 'EJECUTIVO IMSS', 'FECHA/HORA CAPTURA', 'COMENTARIOS', 'CLIENTE'];
-        $tabla['data'] = $registros;
-        $tabla['startRow'] = 1;
-        $tabla['startColumn'] = "A";
-
-        $data["REPORTE GENERAL"] = [$tabla];
-
-        $name = "REPORTE DE ANTICIPOS";
-
-        $resultado = $exportador->exportar_template(header: $header, path_base: $this->path_base, name: $name, data: $data,
-            styles: Reporte_Template::REPORTE_GENERAL_SIN_DETALLE);
-        if (errores::$error) {
-            $error = $this->errores->error('Error al generar xls', $resultado);
-            if (!$header) {
-                return $error;
-            }
-            print_r($error);
-            die('Error');
-        }
-
-        header('Location:' . $this->link_em_anticipo_reporte_cliente);
-        exit;
-    }
 
     private function get_filtros(array $post)
     {
@@ -760,6 +656,123 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
         $tabla_2['startColumn'] = "D";
 
         return array($tabla_1, $tabla_2);
+    }
+
+    public function exportar_cliente(bool $header, bool $ws = false): array|stdClass
+    {
+        $filtro = array();
+        $extra_join = array();
+
+        $filtros = $this->get_filtros(post: $_POST);
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al obtener filtros', data: $filtros);
+            print_r($error);
+            die('Error');
+        }
+
+        $valida = $this->validacion->valida_existencia_keys(keys: array("com_sucursal_id"),
+            registro: $filtros);
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al validar el filtros requeridos', data: $valida);
+            print_r($error);
+            die('Error');
+        }
+
+        if (!empty($filtros->com_sucursal_id)) {
+            $extra_join["tg_empleado_sucursal"]['key'] = "em_empleado_id";
+            $extra_join["tg_empleado_sucursal"]['enlace'] = "em_empleado";
+            $extra_join["tg_empleado_sucursal"]['key_enlace'] = "id";
+            $extra_join["tg_empleado_sucursal"]['renombre'] = "tg_empleado_sucursal";
+
+            $extra_join["com_sucursal"]['key'] = "id";
+            $extra_join["com_sucursal"]['enlace'] = "tg_empleado_sucursal";
+            $extra_join["com_sucursal"]['key_enlace'] = "com_sucursal_id";
+            $extra_join["com_sucursal"]['renombre'] = "com_sucursal";
+
+            $filtro["tg_empleado_sucursal.com_sucursal_id"] = $filtros->com_sucursal_id;
+        }
+
+        $filtro_cliente['tg_empleado_sucursal.com_sucursal_id'] = $filtros->com_sucursal_id;
+        $cliente = (new tg_empleado_sucursal($this->link))->filtro_and(filtro: $filtro_cliente);
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al obtener datos del cliente', data: $cliente);
+            print_r($error);
+            die('Error');
+        }
+
+        if ($cliente->n_registros <= 0) {
+            $error = $this->errores->error(mensaje: 'Error no existe un empleado relacionado para la sucursal', data: $cliente);
+            print_r($error);
+            die('Error');
+        }
+
+        $filtro_rango['em_anticipo.fecha_prestacion'] = ['valor1' => $filtros->fecha_inicio, 'valor2' => $filtros->fecha_final];
+
+        $anticipos = (new em_anticipo($this->link))->filtro_and(extra_join: $extra_join, filtro: $filtro, filtro_rango: $filtro_rango);
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al obtener registros', data: $anticipos);
+            print_r($error);
+            die('Error');
+        }
+
+        $registros = array();
+
+        foreach ($anticipos->registros as $anticipo) {
+            $registro = [
+                $anticipo['em_empleado_nss'],
+                $anticipo['em_empleado_id'],
+                $anticipo['em_empleado_nombre_completo'],
+                $anticipo['em_registro_patronal_descripcion'],
+                $anticipo['em_tipo_anticipo_descripcion'],
+                $anticipo['em_anticipo_monto'],
+                $anticipo['em_tipo_descuento_monto'],
+                $anticipo['total_abonado'],
+                $anticipo['em_anticipo_saldo'],
+                $this->datos_session_usuario['adm_usuario_nombre'],
+                $anticipo['em_anticipo_fecha_alta'],
+                $anticipo['em_anticipo_comentarios'],
+                $anticipo['org_sucursal_descripcion']
+            ];
+            $registros[] = $registro;
+        }
+
+        $cliente = $cliente->registros[0]['com_sucursal_descripcion'];
+
+        $formatter = new IntlDateFormatter('es_ES', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
+        $filtros->fecha_inicio = $formatter->format(strtotime($filtros->fecha_inicio));
+        $filtros->fecha_final = $formatter->format(strtotime($filtros->fecha_final));
+
+        $periodo = "$filtros->fecha_inicio - $filtros->fecha_final";
+
+        $tabla['detalles'] = [
+            ["titulo" => 'CLIENTE:', 'valor' => $cliente],
+            ["titulo" => 'PERIODO:', 'valor' => $periodo],
+            ["titulo" => 'No.Registros:', 'valor' => $anticipos->n_registros]
+        ];
+
+        $tabla['headers'] = ['NSS', 'ID', 'NOMBRE', 'REGISTRO PATRONAL', 'CONCEPTO', 'IMPORTE', 'MONTO A DESCONTAR PROPUESTA',
+            'PAGOS', 'SALDO', 'EJECUTIVO IMSS', 'FECHA/HORA CAPTURA', 'COMENTARIOS', 'EMPRESA'];
+        $tabla['data'] = $registros;
+        $tabla['startRow'] = 4;
+        $tabla['startColumn'] = "A";
+
+        $data["REPORTE GENERAL"] = [$tabla];
+
+        $name = $cliente . "_REPORTE DE ANTICIPOS";
+
+        $resultado = (new exportador())->exportar_template(header: $header, path_base: $this->path_base, name: $name, data: $data,
+            styles: Reporte_Template::REPORTE_GENERAL);
+        if (errores::$error) {
+            $error = $this->errores->error('Error al generar xls', $resultado);
+            if (!$header) {
+                return $error;
+            }
+            print_r($error);
+            die('Error');
+        }
+
+        header('Location:' . $this->link_em_anticipo_reporte_cliente);
+        exit;
     }
 
     public function exportar_empleado(bool $header, bool $ws = false): array|stdClass
