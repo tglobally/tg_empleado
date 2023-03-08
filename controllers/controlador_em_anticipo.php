@@ -496,6 +496,24 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
         return array();
     }
 
+    private function suma_totales(array $registros, array $campo_sumar): stdClass
+    {
+        $totales = new stdClass();
+
+        foreach ($campo_sumar as $campo) {
+            $totales->$campo = 0.0;
+        }
+
+        foreach ($registros as $registro) {
+            foreach ($campo_sumar as $campo) {
+                $valor = $registro[$campo];
+                $totales->$campo += $valor;
+            }
+        }
+
+        return $totales;
+    }
+
     private function maqueta_salida(int $com_sucursal_id, int $em_empleado_id, array $anticipos): array
     {
         $datos_remunerado = $this->get_datos_remunerado(com_sucursal_id: $com_sucursal_id, em_empleado_id: $em_empleado_id,
@@ -629,6 +647,14 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
 
         $periodo = "$filtros->fecha_inicio - $filtros->fecha_final";
 
+        $totales = $this->suma_totales(registros: $anticipos->registros, campo_sumar: array('em_anticipo_monto',
+            'em_tipo_descuento_monto', 'total_abonado', 'em_anticipo_saldo'));
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al obtener totales', data: $totales);
+            print_r($error);
+            die('Error');
+        }
+
         $tabla['detalles'] = [
             ["titulo" => 'CLIENTE:', 'valor' => $cliente],
             ["titulo" => 'PERIODO:', 'valor' => $periodo],
@@ -639,6 +665,12 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
         $tabla['data'] = $registros;
         $tabla['startRow'] = 4;
         $tabla['startColumn'] = "A";
+        $tabla['totales'] = [
+            ["columna" => 'F', 'valor' => $totales->em_anticipo_monto],
+            ["columna" => 'G', 'valor' => $totales->em_tipo_descuento_monto],
+            ["columna" => 'H', 'valor' => $totales->total_abonado],
+            ["columna" => 'I', 'valor' => $totales->em_anticipo_saldo]
+        ];
 
         $data["REPORTE GENERAL"] = [$tabla];
 
@@ -740,6 +772,14 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
 
         $periodo = "$filtros->fecha_inicio - $filtros->fecha_final";
 
+        $totales = $this->suma_totales(registros: $anticipos->registros, campo_sumar: array('em_anticipo_monto',
+            'em_tipo_descuento_monto', 'total_abonado', 'em_anticipo_saldo'));
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al obtener totales', data: $totales);
+            print_r($error);
+            die('Error');
+        }
+
         $tabla['detalles'] = [
             ["titulo" => 'EJECUTIVO:', 'valor' => $ejecutivo],
             ["titulo" => 'PERIODO:', 'valor' => $periodo],
@@ -750,6 +790,12 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
         $tabla['data'] = $registros;
         $tabla['startRow'] = 4;
         $tabla['startColumn'] = "A";
+        $tabla['totales'] = [
+            ["columna" => 'F', 'valor' => $totales->em_anticipo_monto],
+            ["columna" => 'G', 'valor' => $totales->em_tipo_descuento_monto],
+            ["columna" => 'H', 'valor' => $totales->total_abonado],
+            ["columna" => 'I', 'valor' => $totales->em_anticipo_saldo]
+        ];
 
         $data["REPORTE GENERAL"] = [$tabla];
 
@@ -952,6 +998,14 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
 
         $periodo = "$filtros->fecha_inicio - $filtros->fecha_final";
 
+        $totales = $this->suma_totales(registros: $anticipos->registros, campo_sumar: array('em_anticipo_monto',
+            'em_tipo_descuento_monto', 'total_abonado', 'em_anticipo_saldo'));
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al obtener totales', data: $totales);
+            print_r($error);
+            die('Error');
+        }
+
         $tabla['detalles'] = [
             ["titulo" => 'EMPRESA:', 'valor' => $empresa],
             ["titulo" => 'PERIODO:', 'valor' => $periodo],
@@ -962,6 +1016,12 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
         $tabla['data'] = $registros;
         $tabla['startRow'] = 4;
         $tabla['startColumn'] = "A";
+        $tabla['totales'] = [
+            ["columna" => 'F', 'valor' => $totales->em_anticipo_monto],
+            ["columna" => 'G', 'valor' => $totales->em_tipo_descuento_monto],
+            ["columna" => 'H', 'valor' => $totales->total_abonado],
+            ["columna" => 'I', 'valor' => $totales->em_anticipo_saldo]
+        ];
 
         $data["REPORTE GENERAL"] = [$tabla];
 
