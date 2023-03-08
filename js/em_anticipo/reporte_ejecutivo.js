@@ -84,10 +84,6 @@ var datatable = $(".datatables").DataTable({
             data: 'em_tipo_anticipo_descripcion'
         },
         {
-            title: 'Descripción',
-            data: 'em_anticipo_descripcion'
-        },
-        {
             title: 'Monto',
             data: 'em_anticipo_monto'
         },

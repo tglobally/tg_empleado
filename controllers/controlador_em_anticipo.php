@@ -95,6 +95,13 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
             die('Error');
         }
 
+        $this->asignar_propiedad(identificador:'com_sucursal_id', propiedades: ["required" => true]);
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
+            print_r($error);
+            die('Error');
+        }
+
     }
 
     public function get_datos_excel(string $ruta_absoluta)

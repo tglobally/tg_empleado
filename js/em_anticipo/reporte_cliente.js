@@ -14,7 +14,7 @@ var datatable = $(".datatables").DataTable({
             var fecha_final = $('#fecha_final').val();
 
             data.filtros = {
-                filtro_especial: [
+                filtro_especial : [
                     {
                         "key": "em_anticipo.fecha_prestacion",
                         "valor": fecha_inicio,
@@ -26,6 +26,22 @@ var datatable = $(".datatables").DataTable({
                         "valor": fecha_final,
                         "operador": ">=",
                         "comparacion": "AND"
+                    }
+                ],
+                extra_join : [
+                    {
+                        "entidad": "tg_empleado_sucursal",
+                        "key": "em_empleado_id",
+                        "enlace": "em_empleado",
+                        "key_enlace": "id",
+                        "renombre": "tg_empleado_sucursal"
+                    },
+                    {
+                        "entidad": "com_sucursal",
+                        "key": "id",
+                        "enlace": "tg_empleado_sucursal",
+                        "key_enlace": "com_sucursal_id",
+                        "renombre": "com_sucursal"
                     }
                 ],
                 filtro: []
@@ -80,16 +96,16 @@ var datatable = $(".datatables").DataTable({
             data: 'em_tipo_anticipo_descripcion'
         },
         {
-            title: 'Descripción',
-            data: 'em_anticipo_descripcion'
-        },
-        {
             title: 'Monto',
             data: 'em_anticipo_monto'
         },
         {
             title: 'Fecha Prestación',
             data: 'em_anticipo_fecha_prestacion'
+        },
+        {
+            title: 'Cliente',
+            data: 'com_sucursal_descripcion'
         }
     ],
 });
