@@ -611,6 +611,9 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
     {
         $filtros = new stdClass();
 
+        $filtros->fecha_inicio = date('1970-01-01');
+        $filtros->fecha_final = date('Y-m-d');
+
         if (isset($post['org_sucursal_id'])) {
             $filtros->org_sucursal_id = $post['org_sucursal_id'];
         }
@@ -631,11 +634,11 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
             $filtros->em_tipo_anticipo_id = $post['em_tipo_anticipo_id'];
         }
 
-        if (isset($post['fecha_inicio'])) {
+        if (isset($post['fecha_inicio']) && !empty($post['fecha_inicio'])) {
             $filtros->fecha_inicio = $post['fecha_inicio'];
         }
 
-        if (isset($post['fecha_final'])) {
+        if (isset($post['fecha_final']) && !empty($post['fecha_final'])) {
             $filtros->fecha_final = $post['fecha_final'];
         }
 
@@ -853,9 +856,6 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
     public function exportar_ejecutivo(bool $header, bool $ws = false): array|stdClass
     {
         $filtro = array();
-        $filtro_especial = array();
-
-        $index = 0;
 
         $filtros = $this->get_filtros(post: $_POST);
         if (errores::$error) {
@@ -884,22 +884,9 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
             $filtro["em_tipo_anticipo.id"] = $filtros->em_tipo_anticipo_id;
         }
 
-        if (!empty($filtros->fecha_inicio)) {
-            $filtro_especial[$index][$filtros->fecha_final]['operador'] = '>=';
-            $filtro_especial[$index][$filtros->fecha_final]['valor'] = 'em_anticipo.fecha_prestacion';
-            $filtro_especial[$index][$filtros->fecha_final]['comparacion'] = 'AND';
-            $filtro_especial[$index][$filtros->fecha_final]['valor_es_campo'] = true;
-            $index += 1;
-        }
+        $filtro_rango['em_anticipo.fecha_prestacion'] = ['valor1' => $filtros->fecha_inicio, 'valor2' => $filtros->fecha_final];
 
-        if (!empty($filtros->fecha_final)) {
-            $filtro_especial[$index][$filtros->fecha_inicio]['operador'] = '<=';
-            $filtro_especial[$index][$filtros->fecha_inicio]['valor'] = 'em_anticipo.fecha_prestacion';
-            $filtro_especial[$index][$filtros->fecha_inicio]['comparacion'] = 'AND';
-            $filtro_especial[$index][$filtros->fecha_inicio]['valor_es_campo'] = true;
-        }
-
-        $anticipos = (new em_anticipo($this->link))->filtro_and(filtro: $filtro, filtro_especial: $filtro_especial);
+        $anticipos = (new em_anticipo($this->link))->filtro_and(filtro: $filtro, filtro_rango: $filtro_rango);
         if (errores::$error) {
             $error = $this->errores->error(mensaje: 'Error al obtener registros', data: $anticipos);
             print_r($error);
@@ -909,7 +896,6 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
         $registros = array();
 
         foreach ($anticipos->registros as $anticipo) {
-
             $filtro_cliente['em_empleado_id'] = $anticipo['em_empleado_id'];
             $empleado_sucursal = (new tg_empleado_sucursal($this->link))->filtro_and(filtro: $filtro_cliente, limit: 1);
             if (errores::$error) {
@@ -918,7 +904,7 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
                 die('Error');
             }
 
-            $cliente = "No presenta un cliente relacionado";
+            $cliente = "";
 
             if ($empleado_sucursal->n_registros > 0) {
                 $cliente = $empleado_sucursal->registros[0]['com_sucursal_descripcion'];
@@ -945,23 +931,11 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
         $ejecutivo = $this->datos_session_usuario['adm_usuario_nombre'] . " ";
         $ejecutivo .= $this->datos_session_usuario['adm_usuario_ap'];
 
-        $inicio_sistema = gettimeofday(true);
-        $fecha_inicio = date('1970-01-01');
-        $fecha_fin = date('Y-m-d');
-
-        if (!empty($filtros->fecha_inicio)){
-            $fecha_inicio = $filtros->fecha_inicio;
-        }
-
-        if (!empty($filtros->fecha_final)){
-            $fecha_fin = $filtros->fecha_final;
-        }
-
         $formatter = new IntlDateFormatter('es_ES', IntlDateFormatter::LONG, IntlDateFormatter::NONE);
-        $fecha_inicio = $formatter->format(strtotime($fecha_inicio));
-        $fecha_fin = $formatter->format(strtotime($fecha_fin));
+        $filtros->fecha_inicio = $formatter->format(strtotime($filtros->fecha_inicio));
+        $filtros->fecha_final = $formatter->format(strtotime($filtros->fecha_final));
 
-        $periodo = "$fecha_inicio - $fecha_fin";
+        $periodo = "$filtros->fecha_inicio - $filtros->fecha_final";
 
         $tabla['detalles'] = [
             ["titulo" => 'EJECUTIVO:', 'valor' => $ejecutivo],
