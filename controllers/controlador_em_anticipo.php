@@ -10,6 +10,7 @@ use gamboamartin\empleado\models\em_tipo_descuento;
 use gamboamartin\errores\errores;
 use gamboamartin\organigrama\models\org_sucursal;
 use gamboamartin\plugins\exportador;
+use gamboamartin\plugins\Importador;
 use IntlDateFormatter;
 use PDO;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -236,18 +237,9 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
 
     public function lee_archivo(bool $header, bool $ws = false)
     {
-        if (!isset($_FILES['archivo'])) {
-            $error = $this->errores->error(mensaje: 'Error no existe archivo', data: $_FILES);
-            if (!$header) {
-                return $error;
-            }
-            print_r($error);
-            die('Error');
-        }
-
         $doc_documento_modelo = new doc_documento($this->link);
-        $doc_documento_modelo->registro['descripcion'] = $_FILES['archivo']['name'];
-        $doc_documento_modelo->registro['descripcion_select'] = $_FILES['archivo']['name'];
+        $doc_documento_modelo->registro['descripcion'] = rand();
+        $doc_documento_modelo->registro['descripcion_select'] = rand();
         $doc_documento_modelo->registro['doc_tipo_documento_id'] = 1;
         $doc_documento = $doc_documento_modelo->alta_bd(file: $_FILES['archivo']);
         if (errores::$error) {
@@ -259,9 +251,15 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
             die('Error');
         }
 
-        $datos_excel = $this->get_datos_excel(ruta_absoluta: $doc_documento->registro['doc_documento_ruta_absoluta']);
+        $columnas = array("nss", "nombre", "ap", "am", "empresa", "fecha_inicio", "fecha_compromiso", "concepto",
+            "importe", "descuento_periodo", "comentarios");
+        $fechas = array("fecha_inicio", "fecha_compromiso");
+
+        $anticipos_excel = Importador::getInstance()
+            ->leer_registros(ruta_absoluta: $doc_documento->registro['doc_documento_ruta_absoluta'], columnas: $columnas,
+                fechas: $fechas);
         if (errores::$error) {
-            $error = $this->errores->error(mensaje: 'Error obtener datos del archivo excel', data: $datos_excel);
+            $error = $this->errores->error(mensaje: 'Error al leer archivo de anticipos', data: $anticipos_excel);
             if (!$header) {
                 return $error;
             }
@@ -269,13 +267,9 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
             die('Error');
         }
 
-        foreach ($datos_excel as $anticipo) {
-
-            $filtro_empleado = array();
-            $filtro_empleado['em_empleado.nss'] = $anticipo->nss;
-            $em_empleado = (new em_empleado($this->link))->filtro_and(filtro: $filtro_empleado);
-            if (errores::$error) {
-                $error = $this->errores->error(mensaje: 'Error obtener empleado', data: $em_empleado);
+        foreach ($anticipos_excel as $anticipo) {
+            if (!isset($anticipo->nss)) {
+                $error = $this->errores->error(mensaje: 'Error el campo NSS es requerido', data: $anticipo);
                 if (!$header) {
                     return $error;
                 }
@@ -283,45 +277,64 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
                 die('Error');
             }
 
-            if (!isset($movimiento->nombre) && !isset($movimiento->ap) && !isset($movimiento->am) &&
-                $em_empleado->n_registros <= 0) {
+            if (!isset($anticipo->fecha_inicio)) {
+                $anticipo->fecha_inicio = date('Y-m-d');
+            }
+
+            if (!isset($anticipo->fecha_compromiso)) {
+                $anticipo->fecha_compromiso = date('Y-m-d');
+            }
+
+            if (!isset($anticipo->concepto)) {
+                $error = $this->errores->error(mensaje: 'Error el campo CONCEPTO es requerido', data: $anticipo);
+                if (!$header) {
+                    return $error;
+                }
+                print_r($error);
+                die('Error');
+            }
+
+            if (!isset($anticipo->importe)) {
+                $error = $this->errores->error(mensaje: 'Error el campo IMPORTE es requerido', data: $anticipo);
+                if (!$header) {
+                    return $error;
+                }
+                print_r($error);
+                die('Error');
+            }
+
+            $filtro_empleado['em_empleado.nss'] = $anticipo->nss;
+            $em_empleado = (new em_empleado($this->link))->filtro_and(filtro: $filtro_empleado);
+            if (errores::$error) {
+                $error = $this->errores->error(mensaje: 'Error obtener datos el empleado', data: $em_empleado);
+                if (!$header) {
+                    return $error;
+                }
+                print_r($error);
+                die('Error');
+            }
+
+            if ($em_empleado->n_registros <= 0) {
                 $error = $this->errores->error(mensaje: "Error no existe el NSS: $anticipo->nss", data: $anticipo);
                 if (!$header) {
                     return $error;
                 }
                 print_r($error);
                 die('Error');
-            } else if (isset($movimiento->nombre) && isset($movimiento->ap) && isset($movimiento->am) &&
-                $em_empleado->n_registros <= 0) {
-                $filtro_empleado = array();
-                $filtro_empleado['em_empleado.nombre'] = $anticipo->nombre;
-                $filtro_empleado['em_empleado.ap'] = $anticipo->ap;
-                $filtro_empleado['em_empleado.am'] = $anticipo->am;
-                $em_empleado = (new em_empleado($this->link))->filtro_and(filtro: $filtro_empleado);
-                if (errores::$error) {
-                    $error = $this->errores->error(mensaje: 'Error obtener empleado', data: $em_empleado);
-                    if (!$header) {
-                        return $error;
-                    }
-                    print_r($error);
-                    die('Error');
+            } else if ($em_empleado->n_registros > 1){
+                $error = $this->errores->error(mensaje: "Error el NSS: $anticipo->nss esta asignado a varios empleados",
+                    data: $anticipo);
+                if (!$header) {
+                    return $error;
                 }
-
-                if ($em_empleado->n_registros <= 0) {
-                    $error = $this->errores->error(mensaje: "Error no existe el empleado: $anticipo->nombre 
-                    $anticipo->ap $anticipo->am con NSS $anticipo->nss", data: $anticipo);
-                    if (!$header) {
-                        return $error;
-                    }
-                    print_r($error);
-                    die('Error');
-                }
+                print_r($error);
+                die('Error');
             }
 
-            $filtro_anticipo['em_tipo_anticipo.descripcion'] = $anticipo->concepto;
-            $tipo_anticipo = (new em_tipo_anticipo($this->link))->filtro_and(filtro: $filtro_anticipo);
+            $filtro_tipo_anticipo['em_tipo_anticipo.descripcion'] = $anticipo->concepto;
+            $tipo_anticipo = (new em_tipo_anticipo($this->link))->filtro_and(filtro: $filtro_tipo_anticipo);
             if (errores::$error) {
-                $error = $this->errores->error(mensaje: 'Error obtener tipo de anticipo', data: $tipo_anticipo);
+                $error = $this->errores->error(mensaje: 'Error al obtener tipo de anticipo', data: $filtro_tipo_anticipo);
                 if (!$header) {
                     return $error;
                 }
@@ -330,8 +343,7 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
             }
 
             if ($tipo_anticipo->n_registros <= 0) {
-                $error = $this->errores->error(mensaje: "Error no existe el tipo de anticipo: $anticipo->concepto",
-                    data: $anticipo);
+                $error = $this->errores->error(mensaje: "Error no existe el CONCEPTO: $anticipo->concepto", data: $anticipo);
                 if (!$header) {
                     return $error;
                 }
@@ -339,10 +351,10 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
                 die('Error');
             }
 
-            $filtro_descuento['em_tipo_descuento.monto'] = $anticipo->descuento_periodo;
-            $tipo_descuento = (new em_tipo_descuento($this->link))->filtro_and(filtro: $filtro_descuento);
+            $filtro_tipo_descuento['em_tipo_descuento.monto'] = $anticipo->descuento_periodo;
+            $tipo_descuento = (new em_tipo_descuento($this->link))->filtro_and(filtro: $filtro_tipo_descuento);
             if (errores::$error) {
-                $error = $this->errores->error(mensaje: 'Error obtener tipo de anticipo', data: $tipo_descuento);
+                $error = $this->errores->error(mensaje: 'Error al obtener el tipo de descuento', data: $filtro_tipo_descuento);
                 if (!$header) {
                     return $error;
                 }
@@ -351,8 +363,8 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
             }
 
             if ($tipo_descuento->n_registros <= 0) {
-                $error = $this->errores->error(mensaje: "Error no existe el tipo de descuento: $anticipo->descuento_periodo",
-                    data: $anticipo);
+                $error = $this->errores->error(mensaje: "Error no existe un tipo de descuento para el monto: 
+                $anticipo->descuento_periodo", data: $anticipo);
                 if (!$header) {
                     return $error;
                 }
