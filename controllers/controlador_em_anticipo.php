@@ -268,6 +268,8 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
             die('Error');
         }
 
+        $this->link->beginTransaction();
+
         foreach ($anticipos_excel as $anticipo) {
             if (!isset($anticipo->nss)) {
                 $error = $this->errores->error(mensaje: 'Error el campo NSS es requerido', data: $anticipo);
@@ -297,6 +299,24 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
 
             if (!isset($anticipo->importe)) {
                 $error = $this->errores->error(mensaje: 'Error el campo IMPORTE es requerido', data: $anticipo);
+                if (!$header) {
+                    return $error;
+                }
+                print_r($error);
+                die('Error');
+            }
+
+            if (!is_numeric($anticipo->importe)) {
+                $error = $this->errores->error(mensaje: 'Error el campo IMPORTE tiene que un numero', data: $anticipo);
+                if (!$header) {
+                    return $error;
+                }
+                print_r($error);
+                die('Error');
+            }
+
+            if (!is_numeric($anticipo->descuento_periodo)) {
+                $error = $this->errores->error(mensaje: 'Error el campo DESCUENTO PERIODO tiene que un numero', data: $anticipo);
                 if (!$header) {
                     return $error;
                 }
@@ -392,6 +412,7 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
                 $data['monto'] = $anticipo->descuento_periodo;
                 $alta = (new em_tipo_descuento($this->link))->alta_registro(registro: $data);
                 if (errores::$error) {
+                    $this->link->rollBack();
                     $error = $this->errores->error(mensaje: 'Error al dar de alta tipo de descuento', data: $alta);
                     if (!$header) {
                         return $error;
@@ -419,6 +440,7 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
 
             $alta = (new em_anticipo($this->link))->alta_registro(registro: $registro);
             if (errores::$error) {
+                $this->link->rollBack();
                 $error = $this->errores->error(mensaje: 'Error al dar de alta anticipo', data: $alta);
                 if (!$header) {
                     return $error;
@@ -427,6 +449,7 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
                 die('Error');
             }
         }
+        $this->link->commit();
 
         header('Location:' . $this->link_lista);
         exit;

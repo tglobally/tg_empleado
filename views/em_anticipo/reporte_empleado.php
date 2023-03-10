@@ -34,10 +34,10 @@
                             </div>
 
                             <div class="botones">
-                                <!--<button type="submit" class="btn btn-success export" name="btn_action_next"
+                                <button type="submit" class="btn btn-success export" name="btn_action_next"
                                         style="border-radius: 5px" value="exportar" form="form_export">
                                     Exportar
-                                </button>-->
+                                </button>
                             </div>
                         </form>
                         <table id="em_anticipo" class="datatables table table-striped "></table>
