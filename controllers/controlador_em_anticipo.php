@@ -5,6 +5,7 @@ namespace tglobally\tg_empleado\controllers;
 use gamboamartin\administrador\models\adm_usuario;
 use gamboamartin\documento\models\doc_documento;
 use gamboamartin\empleado\models\em_anticipo;
+use gamboamartin\empleado\models\em_metodo_calculo;
 use gamboamartin\empleado\models\em_tipo_anticipo;
 use gamboamartin\empleado\models\em_tipo_descuento;
 use gamboamartin\errores\errores;
@@ -334,13 +335,15 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
             $filtro_tipo_anticipo['em_tipo_anticipo.descripcion'] = $anticipo->concepto;
             $tipo_anticipo = (new em_tipo_anticipo($this->link))->filtro_and(filtro: $filtro_tipo_anticipo);
             if (errores::$error) {
-                $error = $this->errores->error(mensaje: 'Error al obtener tipo de anticipo', data: $filtro_tipo_anticipo);
+                $error = $this->errores->error(mensaje: 'Error al obtener tipo de anticipo', data: $tipo_anticipo);
                 if (!$header) {
                     return $error;
                 }
                 print_r($error);
                 die('Error');
             }
+
+            $em_tipo_descuento_id = -1;
 
             if ($tipo_anticipo->n_registros <= 0) {
                 $error = $this->errores->error(mensaje: "Error no existe el CONCEPTO: $anticipo->concepto", data: $anticipo);
@@ -354,7 +357,7 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
             $filtro_tipo_descuento['em_tipo_descuento.monto'] = $anticipo->descuento_periodo;
             $tipo_descuento = (new em_tipo_descuento($this->link))->filtro_and(filtro: $filtro_tipo_descuento);
             if (errores::$error) {
-                $error = $this->errores->error(mensaje: 'Error al obtener el tipo de descuento', data: $filtro_tipo_descuento);
+                $error = $this->errores->error(mensaje: 'Error al obtener el tipo de descuento', data: $tipo_descuento);
                 if (!$header) {
                     return $error;
                 }
@@ -363,18 +366,49 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
             }
 
             if ($tipo_descuento->n_registros <= 0) {
-                $error = $this->errores->error(mensaje: "Error no existe un tipo de descuento para el monto: 
-                $anticipo->descuento_periodo", data: $anticipo);
-                if (!$header) {
-                    return $error;
+                $filtro_metodo_calculo['em_metodo_calculo.descripcion'] = "monto_fijo";
+                $metodo_calculo = (new em_metodo_calculo($this->link))->filtro_and(filtro: $filtro_metodo_calculo, limit: 1);
+                if (errores::$error) {
+                    $error = $this->errores->error(mensaje: 'Error al obtener el metodo de calculo', data: $filtro_metodo_calculo);
+                    if (!$header) {
+                        return $error;
+                    }
+                    print_r($error);
+                    die('Error');
                 }
-                print_r($error);
-                die('Error');
+
+                if ($metodo_calculo->n_registros <= 0) {
+                    $error = $this->errores->error(mensaje: 'Error no existe el metodo de calculo: monto_fijo', data: $metodo_calculo);
+                    if (!$header) {
+                        return $error;
+                    }
+                    print_r($error);
+                    die('Error');
+                }
+
+                $data['codigo'] = rand() . $anticipo->descuento_periodo;
+                $data['descripcion'] = "monto_fijo ".$anticipo->descuento_periodo;
+                $data['em_metodo_calculo_id'] = $metodo_calculo->registros[0]['em_metodo_calculo_id'];
+                $data['monto'] = $anticipo->descuento_periodo;
+                $alta = (new em_tipo_descuento($this->link))->alta_registro(registro: $data);
+                if (errores::$error) {
+                    $error = $this->errores->error(mensaje: 'Error al dar de alta tipo de descuento', data: $alta);
+                    if (!$header) {
+                        return $error;
+                    }
+                    print_r($error);
+                    die('Error');
+                }
+
+                $em_tipo_descuento_id = $alta->registro_id;
+            } else {
+                $em_tipo_descuento_id = $tipo_descuento->registros[0]['em_tipo_descuento_id'];
             }
 
+            $registro = array();
             $registro['em_empleado_id'] = $em_empleado->registros[0]['em_empleado_id'];
             $registro['em_tipo_anticipo_id'] = $tipo_anticipo->registros[0]['em_tipo_anticipo_id'];
-            $registro['em_tipo_descuento_id'] = $tipo_descuento->registros[0]['em_tipo_descuento_id'];
+            $registro['em_tipo_descuento_id'] = $em_tipo_descuento_id;
             $registro['codigo'] = rand() . $anticipo->concepto;
             $registro['descripcion'] = $anticipo->concepto;
             $registro['monto'] = $anticipo->importe;
