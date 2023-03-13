@@ -117,6 +117,12 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
         $this->sidebar['lista']['titulo'] = "Anticipos";
         $this->sidebar['lista']['menu'] = array($menu_items->alta, $menu_items->importar, $menu_items->reportes);
 
+        $menu_items->importar['menu_seccion_active'] = false;
+
+        $this->sidebar['sube_archivo']['titulo'] = "Empleado";
+        $this->sidebar['sube_archivo']['stepper_active'] = true;
+        $this->sidebar['sube_archivo']['menu'] = array($menu_items->importar);
+
 
         return $menu_items;
     }
