@@ -6,9 +6,7 @@
         <h3 class="text-center titulo-form">Hola, <?php echo $controlador->datos_session_usuario['adm_usuario_user']; ?> </h3>
 
         <div class="  form-main" id="form">
-            <form method="post" action="./index.php?seccion=em_tipo_descuento&accion=alta_bd&session_id=<?php echo $controlador->session_id; ?>" class="form-additional">
-                <?php echo $controlador->inputs->codigo; ?>
-                <?php echo $controlador->inputs->descripcion; ?>
+            <form method="post" action="<?php echo $controlador->link_alta_bd; ?>" class="form-additional">
                 <?php echo $controlador->inputs->em_metodo_calculo_id; ?>
                 <?php echo $controlador->inputs->monto; ?>
                 <div class="buttons col-md-12">
@@ -16,7 +14,7 @@
                         <button type="submit" class="btn btn-info btn-guarda col-md-12 " name="btn_action_next" value="modifica">Guarda</button>
                     </div>
                     <div class="col-md-6 ">
-                        <a href="index.php?seccion=em_tipo_descuento&accion=lista&session_id=<?php echo $controlador->session_id; ?>"  class="btn btn-info btn-guarda col-md-12 ">Regresar</a>
+                        <a href="<?php echo $controlador->link_lista; ?>"  class="btn btn-info btn-guarda col-md-12 ">Regresar</a>
                     </div>
                 </div>
             </form>
