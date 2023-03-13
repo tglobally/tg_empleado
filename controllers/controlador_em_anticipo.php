@@ -2,6 +2,7 @@
 
 namespace tglobally\tg_empleado\controllers;
 
+use base\controller\controler;
 use gamboamartin\administrador\models\adm_usuario;
 use gamboamartin\comercial\models\com_sucursal;
 use gamboamartin\empleado\models\em_anticipo;
@@ -39,6 +40,65 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
             print_r($error);
             die('Error');
         }
+    }
+
+    protected function init_configuraciones(): controler
+    {
+        $conf = parent::init_configuraciones();
+
+        $this->asignar_propiedad(identificador: 'adm_usuario_id', propiedades: ["label" => "Ejecutivo", "cols" => 12,
+            'required' => false, 'disabled' => true, "id_selected" => $this->datos_session_usuario['adm_usuario_id'],
+            "filtro" => array("adm_usuario.id" => $this->datos_session_usuario['adm_usuario_id'])]);
+
+        $this->asignar_propiedad(identificador: 'org_sucursal_id', propiedades: ["label" => "Empresa", "cols" => 12,
+            "required" => false]);
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
+            print_r($error);
+            die('Error');
+        }
+
+        $this->asignar_propiedad(identificador: 'com_sucursal_id', propiedades: ["label" => "Cliente", "cols" => 12,
+            "required" => true]);
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
+            print_r($error);
+            die('Error');
+        }
+
+        $this->asignar_propiedad(identificador: 'em_empleado_id', propiedades: ["label" => "Empleado", "cols" => 12,
+            "required" => false]);
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
+            print_r($error);
+            die('Error');
+        }
+
+        $this->asignar_propiedad(identificador: 'em_tipo_anticipo_id', propiedades: ["label" => "Tipo Anticipo",
+            "cols" => 12, 'required' => false]);
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
+            print_r($error);
+            die('Error');
+        }
+
+        $this->asignar_propiedad(identificador: 'fecha_inicio', propiedades: ["place_holder" => "Fecha Inicio",
+            'required' => false]);
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
+            print_r($error);
+            die('Error');
+        }
+
+        $this->asignar_propiedad(identificador: 'fecha_final', propiedades: ["place_holder" => "Fecha Final",
+            date(format: 'Y-m-d'), 'required' => false]);
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
+            print_r($error);
+            die('Error');
+        }
+
+        return $conf;
     }
 
     protected function init_links(): array|string
@@ -912,38 +972,6 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
         $this->modelo->campos_view['fecha_inicio'] = array("type" => "inputs");
         $this->modelo->campos_view['fecha_final'] = array("type" => "inputs");
 
-        $this->asignar_propiedad(identificador: 'com_sucursal_id', propiedades: ["label" => "Cliente", "cols" => 12,
-            "required" => true]);
-        if (errores::$error) {
-            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
-            print_r($error);
-            die('Error');
-        }
-
-        $this->asignar_propiedad(identificador: 'em_tipo_anticipo_id', propiedades: ["label" => "Tipo Anticipo",
-            "cols" => 12, 'required' => false]);
-        if (errores::$error) {
-            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
-            print_r($error);
-            die('Error');
-        }
-
-        $this->asignar_propiedad(identificador: 'fecha_inicio', propiedades: ["place_holder" => "Fecha Inicio",
-            'required' => false]);
-        if (errores::$error) {
-            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
-            print_r($error);
-            die('Error');
-        }
-
-        $this->asignar_propiedad(identificador: 'fecha_final', propiedades: ["place_holder" => "Fecha Final",
-            date(format: 'Y-m-d'), 'required' => false]);
-        if (errores::$error) {
-            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
-            print_r($error);
-            die('Error');
-        }
-
         $inputs = $this->genera_inputs(keys_selects: $this->keys_selects);
         if (errores::$error) {
             $error = $this->errores->error(mensaje: 'Error al generar inputs', data: $inputs);
@@ -966,42 +994,6 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
         $this->modelo->campos_view['fecha_inicio'] = array("type" => "inputs");
         $this->modelo->campos_view['fecha_final'] = array("type" => "inputs");
 
-        $this->asignar_propiedad(identificador: 'adm_usuario_id', propiedades: ["label" => "Ejecutivo", "cols" => 12,
-            'required' => false, 'disabled' => true, "id_selected" => $this->datos_session_usuario['adm_usuario_id'],
-            "filtro" => array("adm_usuario.id" => $this->datos_session_usuario['adm_usuario_id'])]);
-
-        $this->asignar_propiedad(identificador: 'org_sucursal_id', propiedades: ["label" => "Empresa", "cols" => 12,
-            "required" => false]);
-        if (errores::$error) {
-            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
-            print_r($error);
-            die('Error');
-        }
-
-        $this->asignar_propiedad(identificador: 'em_tipo_anticipo_id', propiedades: ["label" => "Tipo Anticipo",
-            "cols" => 12, 'required' => false]);
-        if (errores::$error) {
-            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
-            print_r($error);
-            die('Error');
-        }
-
-        $this->asignar_propiedad(identificador: 'fecha_inicio', propiedades: ["place_holder" => "Fecha Inicio",
-            'required' => false]);
-        if (errores::$error) {
-            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
-            print_r($error);
-            die('Error');
-        }
-
-        $this->asignar_propiedad(identificador: 'fecha_final', propiedades: ["place_holder" => "Fecha Final",
-            date(format: 'Y-m-d'), 'required' => false]);
-        if (errores::$error) {
-            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
-            print_r($error);
-            die('Error');
-        }
-
         $inputs = $this->genera_inputs(keys_selects: $this->keys_selects);
         if (errores::$error) {
             $error = $this->errores->error(mensaje: 'Error al generar inputs', data: $inputs);
@@ -1014,33 +1006,20 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
 
     public function reporte_empresa(bool $header, bool $ws = false)
     {
-
-
-        $this->asignar_propiedad(identificador: 'fecha_inicio', propiedades: ["place_holder" => "Fecha Inicio", 'required' => false]);
-        if (errores::$error) {
-            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
-            print_r($error);
-            die('Error');
-        }
-
-        $this->asignar_propiedad(identificador: 'fecha_final', propiedades: ["place_holder" => "Fecha Final",
-            date(format: 'Y-m-d'), 'required' => false]);
-        if (errores::$error) {
-            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
-            print_r($error);
-            die('Error');
-        }
-
-        $this->asignar_propiedad(identificador: 'em_tipo_anticipo_id', propiedades: ["label" => "Tipo Anticipo", "cols" => 12, 'required' => false]);
-        if (errores::$error) {
-            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
-            print_r($error);
-            die('Error');
-        }
-
         $r_alta = parent::alta(header: false);
         if (errores::$error) {
             return $this->retorno_error(mensaje: 'Error al generar template', data: $r_alta, header: $header, ws: $ws);
+        }
+
+        $this->modelo->campos_view['org_sucursal_id'] = array("type" => "selects", "model" => new org_sucursal($this->link));
+        $this->modelo->campos_view['fecha_inicio'] = array("type" => "inputs");
+        $this->modelo->campos_view['fecha_final'] = array("type" => "inputs");
+
+        $this->asignar_propiedad(identificador: 'org_sucursal_id', propiedades: ["required" => true]);
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
+            print_r($error);
+            die('Error');
         }
 
         $inputs = $this->genera_inputs(keys_selects: $this->keys_selects);
@@ -1064,17 +1043,14 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
         $this->modelo->campos_view['fecha_inicio'] = array("type" => "inputs");
         $this->modelo->campos_view['fecha_final'] = array("type" => "inputs");
 
-        $keys_selects = $this->init_selects_inputs();
+        $this->asignar_propiedad(identificador: 'em_empleado_id', propiedades: ["required" => true]);
         if (errores::$error) {
-            return $this->errores->error(mensaje: 'Error al inicializar selects', data: $keys_selects);
+            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
+            print_r($error);
+            die('Error');
         }
 
-        $keys_selects['em_tipo_anticipo_id']->cols = 12;
-        $keys_selects['em_tipo_anticipo_id']->required = false;
-        $keys_selects['em_empleado_id']->con_registros = false;
-        $keys_selects['em_empleado_id']->required = true;
-
-        $inputs = $this->inputs(keys_selects: $keys_selects);
+        $inputs = $this->inputs(keys_selects: $this->keys_selects);
         if (errores::$error) {
             return $this->retorno_error(
                 mensaje: 'Error al obtener inputs', data: $inputs, header: $header, ws: $ws);
@@ -1082,6 +1058,4 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
 
         return $this->inputs;
     }
-
-
 }
