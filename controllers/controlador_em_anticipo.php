@@ -901,6 +901,151 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
         return $menu_item;
     }
 
+    public function reporte_cliente(bool $header, bool $ws = false){
+
+        $this->asignar_propiedad(identificador:'com_sucursal_id', propiedades: ["label" => "Cliente", "cols" => 12]);
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
+            print_r($error);
+            die('Error');
+        }
+
+        $this->asignar_propiedad(identificador:'em_tipo_anticipo_id', propiedades: ["label" => "Tipo Anticipo", "cols" => 12,'required'=>false]);
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
+            print_r($error);
+            die('Error');
+        }
+
+        $this->asignar_propiedad(identificador:'fecha_inicio', propiedades: ["place_holder" => "Fecha Inicio"]);
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
+            print_r($error);
+            die('Error');
+        }
+
+        $this->asignar_propiedad(identificador:'fecha_final', propiedades: ["place_holder" => "Fecha Final"]);
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
+            print_r($error);
+            die('Error');
+        }
+
+        $r_alta =  parent::alta(header: false);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al generar template',data:  $r_alta, header: $header,ws:$ws);
+        }
+
+
+        $inputs = $this->genera_inputs(keys_selects: $this->keys_selects);
+        if(errores::$error){
+            $error = $this->errores->error(mensaje: 'Error al generar inputs',data:  $inputs);
+            print_r($error);
+            die('Error');
+        }
+
+        return $this->inputs;
+    }
+
+    public function reporte_ejecutivo(bool $header, bool $ws = false)
+    {
+        $r_alta = parent::alta(header: false);
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al generar template', data: $r_alta, header: $header, ws: $ws);
+        }
+
+        $this->modelo->campos_view['adm_usuario_id'] = array("type" => "selects", "model" => new adm_usuario($this->link));
+        $this->modelo->campos_view['org_sucursal_id'] = array("type" => "selects", "model" => new org_sucursal($this->link));
+        $this->modelo->campos_view['fecha_inicio'] = array("type" => "inputs");
+        $this->modelo->campos_view['fecha_final'] = array("type" => "inputs");
+
+        $this->asignar_propiedad(identificador: 'adm_usuario_id', propiedades: ["label" => "Ejecutivo", "cols" => 12,
+            'required' => false, 'disabled' => true, "id_selected" => $this->datos_session_usuario['adm_usuario_id'],
+            "filtro" => array("adm_usuario.id" => $this->datos_session_usuario['adm_usuario_id'])]);
+
+        $this->asignar_propiedad(identificador: 'org_sucursal_id', propiedades: ["label" => "Empresa", "cols" => 12,
+            "required" => false]);
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
+            print_r($error);
+            die('Error');
+        }
+
+        $this->asignar_propiedad(identificador: 'em_tipo_anticipo_id', propiedades: ["label" => "Tipo Anticipo",
+            "cols" => 12, 'required' => false]);
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
+            print_r($error);
+            die('Error');
+        }
+
+        $this->asignar_propiedad(identificador: 'fecha_inicio', propiedades: ["place_holder" => "Fecha Inicio",
+            'required' => false]);
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
+            print_r($error);
+            die('Error');
+        }
+
+        $this->asignar_propiedad(identificador: 'fecha_final', propiedades: ["place_holder" => "Fecha Final",
+            date(format: 'Y-m-d'), 'required' => false]);
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
+            print_r($error);
+            die('Error');
+        }
+
+        $inputs = $this->genera_inputs(keys_selects: $this->keys_selects);
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al generar inputs', data: $inputs);
+            print_r($error);
+            die('Error');
+        }
+
+        return $this->inputs;
+    }
+
+    public function reporte_empresa(bool $header, bool $ws = false){
+
+
+
+        $this->asignar_propiedad(identificador:'fecha_inicio', propiedades: ["place_holder" => "Fecha Inicio",'required'=>false]);
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
+            print_r($error);
+            die('Error');
+        }
+
+        $this->asignar_propiedad(identificador:'fecha_final', propiedades: ["place_holder" => "Fecha Final",
+            date(format:'Y-m-d'),'required'=>false]);
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
+            print_r($error);
+            die('Error');
+        }
+
+        $this->asignar_propiedad(identificador:'em_tipo_anticipo_id', propiedades: ["label" => "Tipo Anticipo", "cols" => 12,'required'=>false]);
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
+            print_r($error);
+            die('Error');
+        }
+
+        $r_alta =  parent::alta(header: false);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al generar template',data:  $r_alta, header: $header,ws:$ws);
+        }
+
+        $inputs = $this->genera_inputs(keys_selects: $this->keys_selects);
+        if(errores::$error){
+            $error = $this->errores->error(mensaje: 'Error al generar inputs',data:  $inputs);
+            print_r($error);
+            die('Error');
+        }
+
+        return $this->inputs;
+    }
+
     public function reporte_empleado(bool $header, bool $ws = false)
     {
         $r_alta = parent::alta(header: false);
@@ -931,64 +1076,5 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
         return $this->inputs;
     }
 
-    public function reporte_ejecutivo(bool $header, bool $ws = false)
-    {
 
-        $this->asignar_propiedad(identificador: 'fecha_inicio', propiedades: ["place_holder" => "Fecha Inicio", 'required' => false]);
-        if (errores::$error) {
-            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
-            print_r($error);
-            die('Error');
-        }
-
-        $this->asignar_propiedad(identificador: 'fecha_final', propiedades: ["place_holder" => "Fecha Final",
-            date(format: 'Y-m-d'), 'required' => false]);
-        if (errores::$error) {
-            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
-            print_r($error);
-            die('Error');
-        }
-
-        $this->asignar_propiedad(identificador: 'em_tipo_anticipo_id', propiedades: ["label" => "Tipo Anticipo", "cols" => 12, 'required' => false]);
-        if (errores::$error) {
-            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
-            print_r($error);
-            die('Error');
-        }
-
-        $this->asignar_propiedad(identificador: 'em_empleado_id', propiedades: ["label" => "Empleado", "cols" => 12, 'required' => false]);
-        if (errores::$error) {
-            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
-            print_r($error);
-            die('Error');
-        }
-
-        $r_alta = parent::alta(header: false);
-        if (errores::$error) {
-            return $this->retorno_error(mensaje: 'Error al generar template', data: $r_alta, header: $header, ws: $ws);
-        }
-
-        $this->modelo->campos_view['adm_usuario_id'] = array("type" => "selects", "model" => new adm_usuario($this->link));
-        $this->modelo->campos_view['org_sucursal_id'] = array("type" => "selects", "model" => new org_sucursal($this->link));
-
-        $this->asignar_propiedad(identificador: 'adm_usuario_id', propiedades: ["label" => "Ejecutivo", "cols" => 12,
-            'required' => false, 'disabled' => true, "id_selected" => $this->datos_session_usuario['adm_usuario_id'],
-            "filtro" => array("adm_usuario.id" => $this->datos_session_usuario['adm_usuario_id'])]);
-
-        $this->asignar_propiedad(identificador: 'org_sucursal_id', propiedades: ["required" => false]);
-        if (errores::$error) {
-            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
-            print_r($error);
-            die('Error');
-        }
-
-        $inputs = $this->genera_inputs(keys_selects: $this->keys_selects);
-        if (errores::$error) {
-            $error = $this->errores->error(mensaje: 'Error al generar inputs', data: $inputs);
-            print_r($error);
-            die('Error');
-        }
-
-        return $this->inputs;
-    }
 }
