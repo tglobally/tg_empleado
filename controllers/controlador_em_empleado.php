@@ -87,6 +87,8 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
             exit;
         }
 
+
+
         $sidebar = $this->init_sidebar();
         if (errores::$error) {
             $error = $this->errores->error(mensaje: 'Error al inicializar sidebar', data: $sidebar);
@@ -105,17 +107,47 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
         $menu_items->importar = $this->menu_item(menu_item_titulo: "Importar Empleados", link: $this->link_em_empleado_sube_archivo);
         $menu_items->reportes = $this->menu_item(menu_item_titulo: "Reportes", link: $this->link_em_empleado_reportes);
 
+        $menu_items->fiscales = $this->menu_item(menu_item_titulo: "Fiscales", link: $this->link_em_empleado_fiscales);
+        $menu_items->imss = $this->menu_item(menu_item_titulo: "Imss", link: $this->link_em_empleado_imss);
+        $menu_items->cuenta_bancaria = $this->menu_item(menu_item_titulo: "Cuenta Bancaria", link: $this->link_em_empleado_cuenta_bancaria);
+        $menu_items->anticipo = $this->menu_item(menu_item_titulo: "Anticipo", link: $this->link_em_empleado_anticipo);
+        $menu_items->asigna_cliente = $this->menu_item(menu_item_titulo: "Asigna Cliente", link: $this->link_em_empleado_asigna_sucursal);
+
         $menu_items->lista['menu_seccion_active'] = true;
         $menu_items->lista['menu_lateral_active'] = true;
         $menu_items->alta['menu_seccion_active'] = true;
         $menu_items->alta['menu_lateral_active'] = true;
+        $menu_items->modifica['menu_seccion_active'] = true;
+        $menu_items->modifica['menu_lateral_active'] = true;
         $menu_items->importar['menu_seccion_active'] = true;
         $menu_items->importar['menu_lateral_active'] = true;
         $menu_items->reportes['menu_seccion_active'] = true;
         $menu_items->reportes['menu_lateral_active'] = true;
 
-        $this->sidebar['lista']['titulo'] = "Anticipos";
+        $menu_items->fiscales['menu_seccion_active'] = true;
+        $menu_items->fiscales['menu_lateral_active'] = true;
+        $menu_items->imss['menu_seccion_active'] = true;
+        $menu_items->imss['menu_lateral_active'] = true;
+        $menu_items->cuenta_bancaria['menu_seccion_active'] = true;
+        $menu_items->cuenta_bancaria['menu_lateral_active'] = true;
+        $menu_items->anticipo['menu_seccion_active'] = true;
+        $menu_items->anticipo['menu_lateral_active'] = true;
+        $menu_items->asigna_cliente['menu_seccion_active'] = true;
+        $menu_items->asigna_cliente['menu_lateral_active'] = true;
+
+        $this->sidebar['lista']['titulo'] = "Empleado";
         $this->sidebar['lista']['menu'] = array($menu_items->alta, $menu_items->importar, $menu_items->reportes);
+
+        $menu_items->alta['menu_seccion_active'] = false;
+
+        $this->sidebar['alta']['titulo'] = "Empleado";
+        $this->sidebar['alta']['stepper_active'] = true;
+        $this->sidebar['alta']['menu'] = array($menu_items->alta);
+
+        $this->sidebar['modifica']['titulo'] = "Empleado";
+        $this->sidebar['modifica']['stepper_active'] = true;
+        $this->sidebar['modifica']['menu'] = array($menu_items->modifica, $menu_items->fiscales, $menu_items->imss,
+            $menu_items->cuenta_bancaria, $menu_items->anticipo, $menu_items->asigna_cliente);
 
         $menu_items->importar['menu_seccion_active'] = false;
 
@@ -123,6 +155,30 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
         $this->sidebar['sube_archivo']['stepper_active'] = true;
         $this->sidebar['sube_archivo']['menu'] = array($menu_items->importar);
 
+        $this->sidebar['fiscales']['titulo'] = "Empleado";
+        $this->sidebar['fiscales']['stepper_active'] = true;
+        $this->sidebar['fiscales']['menu'] = array($menu_items->modifica, $menu_items->fiscales, $menu_items->imss,
+            $menu_items->cuenta_bancaria, $menu_items->anticipo, $menu_items->asigna_cliente);
+
+        $this->sidebar['imss']['titulo'] = "Empleado";
+        $this->sidebar['imss']['stepper_active'] = true;
+        $this->sidebar['imss']['menu'] = array($menu_items->modifica, $menu_items->fiscales, $menu_items->imss,
+            $menu_items->cuenta_bancaria, $menu_items->anticipo, $menu_items->asigna_cliente);
+
+        $this->sidebar['cuenta_bancaria']['titulo'] = "Empleado";
+        $this->sidebar['cuenta_bancaria']['stepper_active'] = true;
+        $this->sidebar['cuenta_bancaria']['menu'] = array($menu_items->modifica, $menu_items->fiscales, $menu_items->imss,
+            $menu_items->cuenta_bancaria, $menu_items->anticipo, $menu_items->asigna_cliente);
+
+        $this->sidebar['anticipo']['titulo'] = "Empleado";
+        $this->sidebar['anticipo']['stepper_active'] = true;
+        $this->sidebar['anticipo']['menu'] = array($menu_items->modifica, $menu_items->fiscales, $menu_items->imss,
+            $menu_items->cuenta_bancaria, $menu_items->anticipo, $menu_items->asigna_cliente);
+
+        $this->sidebar['asigna_sucursal']['titulo'] = "Empleado";
+        $this->sidebar['asigna_sucursal']['stepper_active'] = true;
+        $this->sidebar['asigna_sucursal']['menu'] = array($menu_items->modifica, $menu_items->fiscales, $menu_items->imss,
+            $menu_items->cuenta_bancaria, $menu_items->anticipo, $menu_items->asigna_cliente);
 
         return $menu_items;
     }

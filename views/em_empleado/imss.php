@@ -8,7 +8,7 @@
 
         <div class="  form-main" id="form">
             <form method="post" action="<?php echo $controlador->link_modifica_bd; ?>" class="form-additional">
-                <?php echo $controlador->inputs->im_registro_patronal_id; ?>
+                <?php echo $controlador->inputs->em_registro_patronal_id; ?>
                 <?php echo $controlador->inputs->nss; ?>
                 <?php echo $controlador->inputs->fecha_inicio_rel_laboral; ?>
                 <?php echo $controlador->inputs->salario_diario; ?>

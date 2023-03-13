@@ -46,6 +46,10 @@ class tg_empleado_sucursal extends _modelo_parent
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al dar de alta sucursal empleado', data: $r_alta_bd);
         }
+
+
+
+
         return $r_alta_bd;
     }
 
