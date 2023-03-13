@@ -6,12 +6,11 @@
         <h3 class="text-center titulo-form">Hola, <?php echo $controlador->datos_session_usuario['adm_usuario_user']; ?> </h3>
 
         <div class="  form-main" id="form">
-            <form method="post" action="./index.php?seccion=em_anticipo&accion=modifica_bd&session_id=<?php echo $controlador->session_id; ?>&registro_id=<?php echo $controlador->registro_id; ?>" class="form-additional">
-                <?php echo $controlador->inputs->id; ?>
+            <form method="post" action="<?php echo $controlador->link_modifica_bd; ?>" class="form-additional">
                 <?php echo $controlador->inputs->em_empleado_id; ?>
-                <?php echo $controlador->inputs->descripcion; ?>
-                <?php echo $controlador->inputs->em_tipo_descuento_id; ?>
                 <?php echo $controlador->inputs->em_tipo_anticipo_id; ?>
+                <?php echo $controlador->inputs->em_tipo_descuento_id; ?>
+                <?php echo $controlador->inputs->descripcion; ?>
                 <?php echo $controlador->inputs->monto; ?>
                 <?php echo $controlador->inputs->n_pagos; ?>
                 <?php echo $controlador->inputs->fecha_prestacion; ?>
@@ -22,7 +21,7 @@
                         <button type="submit" class="btn btn-info btn-guarda col-md-12 " >Modifica</button>
                     </div>
                     <div class="col-md-6 btn-ancho">
-                        <a href="index.php?seccion=em_anticipo&accion=lista&session_id=<?php echo $controlador->session_id; ?>"  class="btn btn-info btn-guarda col-md-12 ">Lista</a>
+                        <a href="<?php echo $controlador->link_lista; ?>"  class="btn btn-info btn-guarda col-md-12 ">Lista</a>
                     </div>
 
                 </div>

@@ -3,78 +3,35 @@
 namespace tglobally\tg_empleado\controllers;
 
 use gamboamartin\administrador\models\adm_usuario;
-use gamboamartin\documento\models\doc_documento;
+use gamboamartin\comercial\models\com_sucursal;
 use gamboamartin\empleado\models\em_anticipo;
-use gamboamartin\empleado\models\em_metodo_calculo;
 use gamboamartin\empleado\models\em_tipo_anticipo;
-use gamboamartin\empleado\models\em_tipo_descuento;
 use gamboamartin\errores\errores;
 use gamboamartin\organigrama\models\org_sucursal;
 use gamboamartin\plugins\exportador;
-use gamboamartin\plugins\Importador;
 use IntlDateFormatter;
 use PDO;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Shared\Date;
 use stdClass;
 use tglobally\template_tg\html;
-use tglobally\tg_empleado\models\em_empleado;
 use tglobally\tg_empleado\models\tg_empleado_sucursal;
 
 class controlador_em_anticipo extends \gamboamartin\empleado\controllers\controlador_em_anticipo
 {
     public string $link_em_anticipo_reporte_ejecutivo = '';
-    public string $link_em_anticipo_importar_anticipos = '';
+    public string $link_em_anticipo_reporte_cliente = '';
+    public string $link_em_anticipo_reporte_empresa = '';
+    public string $link_em_anticipo_reporte_empleado = '';
     public string $link_em_anticipo_exportar_ejecutivo = '';
     public string $link_em_anticipo_exportar_cliente = '';
     public string $link_em_anticipo_exportar_empresa = '';
+    public string $link_em_anticipo_exportar_empleado = '';
+
+    public string $link_em_anticipo_importar_anticipos = '';
 
     public function __construct(PDO $link, stdClass $paths_conf = new stdClass())
     {
         $html_base = new html();
         parent::__construct(link: $link, html: $html_base);
-        $this->titulo_lista = 'Anticipos';
-
-        $this->link_em_anticipo_reporte_ejecutivo = $this->obj_link->link_con_id(accion: 'reporte_ejecutivo', link: $link,
-            registro_id: $this->registro_id, seccion: "em_anticipo");
-        if (errores::$error) {
-            $error = $this->errores->error(mensaje: 'Error al generar link', data: $this->link_em_anticipo_reporte_ejecutivo);
-            print_r($error);
-            die('Error');
-        }
-
-        $this->link_em_anticipo_importar_anticipos = $this->obj_link->link_con_id(accion: "sube_archivo", link: $this->link,
-            registro_id: $this->registro_id, seccion: "em_anticipo");
-        if (errores::$error) {
-            $error = $this->errores->error(mensaje: 'Error al obtener link', data: $this->link_em_anticipo_importar_anticipos);
-            print_r($error);
-            exit;
-        }
-
-        $this->link_em_anticipo_exportar_ejecutivo = $this->obj_link->link_con_id(accion: "exportar_ejecutivo", link: $this->link,
-            registro_id: $this->registro_id, seccion: "em_anticipo");
-        if (errores::$error) {
-            $error = $this->errores->error(mensaje: 'Error al obtener link', data: $this->link_em_anticipo_exportar_ejecutivo);
-            print_r($error);
-            exit;
-        }
-
-        $this->link_em_anticipo_exportar_cliente = $this->obj_link->link_con_id(accion: "exportar_cliente", link: $this->link,
-            registro_id: $this->registro_id, seccion: "em_anticipo");
-        if (errores::$error) {
-            $error = $this->errores->error(mensaje: 'Error al obtener link',
-                data: $this->link_em_anticipo_exportar_cliente);
-            print_r($error);
-            exit;
-        }
-        $this->link_em_anticipo_exportar_empresa = $this->obj_link->link_con_id(accion: "exportar_empresa", link: $this->link,
-            registro_id: $this->registro_id, seccion: "em_anticipo");
-        if (errores::$error) {
-            $error = $this->errores->error(mensaje: 'Error al obtener link',
-                data: $this->link_em_anticipo_exportar_empresa);
-            print_r($error);
-            exit;
-        }
 
         $sidebar = $this->init_sidebar();
         if (errores::$error) {
@@ -82,78 +39,103 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
             print_r($error);
             die('Error');
         }
-
-        $this->asignar_propiedad(identificador: 'fecha_inicio', propiedades: ["required" => false]);
-        if (errores::$error) {
-            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
-            print_r($error);
-            die('Error');
-        }
-
-        $this->asignar_propiedad(identificador: 'fecha_final', propiedades: ["required" => false]);
-        if (errores::$error) {
-            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
-            print_r($error);
-            die('Error');
-        }
-
-        $this->asignar_propiedad(identificador: 'com_sucursal_id', propiedades: ["required" => true]);
-        if (errores::$error) {
-            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
-            print_r($error);
-            die('Error');
-        }
-
-        $this->asignar_propiedad(identificador: 'org_sucursal_id', propiedades: ["required" => true]);
-        if (errores::$error) {
-            $error = $this->errores->error(mensaje: 'Error al asignar propiedad', data: $this);
-            print_r($error);
-            die('Error');
-        }
-
     }
 
-    public function get_datos_excel(string $ruta_absoluta)
+    protected function init_links(): array|string
     {
-        $documento = IOFactory::load($ruta_absoluta);
-        $anticipos = array();
-        $hojaActual = $documento->getSheet(0);
-        $registros = array();
-        foreach ($hojaActual->getRowIterator() as $fila) {
-            foreach ($fila->getCellIterator() as $celda) {
-                $fila = $celda->getRow();
-                $valorRaw = $celda->getValue();
-                $columna = $celda->getColumn();
-
-                if ($fila >= 2) {
-                    if ($columna === "A") {
-                        $reg = new stdClass();
-                        $reg->fila = $fila;
-                        $registros[] = $reg;
-                    }
-                }
-            }
+        $link = parent::init_links();
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al inicializar links', data: $link);
+            print_r($error);
+            exit;
         }
 
-        foreach ($registros as $registro) {
-            $reg = new stdClass();
-            $reg->nss = $hojaActual->getCell('A' . $registro->fila)->getValue();
-            $reg->nombre = $hojaActual->getCell('B' . $registro->fila)->getValue();
-            $reg->ap = $hojaActual->getCell('C' . $registro->fila)->getValue();
-            $reg->am = $hojaActual->getCell('D' . $registro->fila)->getValue();
-            $reg->empresa = $hojaActual->getCell('E' . $registro->fila)->getValue();
-            $reg->fecha_inicio = $hojaActual->getCell('F' . $registro->fila)->getCalculatedValue();
-            $reg->fecha_inicio = Date::excelToDateTimeObject($reg->fecha_inicio)->format('Y-m-d');
-            $reg->fecha_compromiso = $hojaActual->getCell('G' . $registro->fila)->getCalculatedValue();
-            $reg->fecha_compromiso = Date::excelToDateTimeObject($reg->fecha_compromiso)->format('Y-m-d');
-            $reg->concepto = $hojaActual->getCell('H' . $registro->fila)->getValue();
-            $reg->importe = $hojaActual->getCell('I' . $registro->fila)->getValue();
-            $reg->descuento_periodo = $hojaActual->getCell('J' . $registro->fila)->getValue();
-            $reg->comentarios = $hojaActual->getCell('K' . $registro->fila)->getValue();
-            $anticipos[] = $reg;
+        $link = $this->obj_link->get_link(seccion: "em_anticipo", accion: "sube_archivo");
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al recuperar link sube_archivo', data: $link);
+            print_r($error);
+            exit;
+        }
+        $this->link_em_anticipo_importar_anticipos = $link;
+
+        $link = $this->obj_link->get_link(seccion: "em_anticipo", accion: "reporte_ejecutivo");
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al recuperar link reporte_ejecutivo', data: $link);
+            print_r($error);
+            exit;
+        }
+        $this->link_em_anticipo_reporte_ejecutivo = $link;
+
+        $link = $this->obj_link->get_link(seccion: "em_anticipo", accion: "reporte_cliente");
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al recuperar link reporte_cliente', data: $link);
+            print_r($error);
+            exit;
+        }
+        $this->link_em_anticipo_reporte_cliente = $link;
+
+        $link = $this->obj_link->get_link(seccion: "em_anticipo", accion: "reporte_empresa");
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al recuperar link reporte_empleado', data: $link);
+            print_r($error);
+            exit;
+        }
+        $this->link_em_anticipo_reporte_empresa = $link;
+
+        $link = $this->obj_link->get_link(seccion: "em_anticipo", accion: "reporte_empleado");
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al recuperar link reporte_empleado', data: $link);
+            print_r($error);
+            exit;
+        }
+        $this->link_em_anticipo_reporte_empleado = $link;
+
+        $link = $this->obj_link->get_link(seccion: "em_anticipo", accion: "exportar_ejecutivo");
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al recuperar link exportar_ejecutivo', data: $link);
+            print_r($error);
+            exit;
+        }
+        $this->link_em_anticipo_exportar_ejecutivo = $link;
+
+        $link = $this->obj_link->get_link(seccion: "em_anticipo", accion: "exportar_cliente");
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al recuperar link exportar_cliente', data: $link);
+            print_r($error);
+            exit;
+        }
+        $this->link_em_anticipo_exportar_cliente = $link;
+
+        $link = $this->obj_link->get_link(seccion: "em_anticipo", accion: "exportar_empresa");
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al recuperar link exportar_empresa', data: $link);
+            print_r($error);
+            exit;
+        }
+        $this->link_em_anticipo_exportar_empresa = $link;
+
+        $link = $this->obj_link->get_link(seccion: "em_anticipo", accion: "exportar_empleado");
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al recuperar link exportar_empleado', data: $link);
+            print_r($error);
+            exit;
+        }
+        $this->link_em_anticipo_exportar_empleado = $link;
+
+        return $link;
+    }
+
+    public function init_selects_inputs(): array
+    {
+        $keys_selects = parent::init_selects_inputs();
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al icializar selects', data: $keys_selects);
         }
 
-        return $anticipos;
+        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "com_sucursal_id", label: "Cliente",
+            cols: 12);
+
+        return $keys_selects;
     }
 
     private function init_sidebar(): stdClass|array
@@ -186,6 +168,9 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
 
         $this->sidebar['lista']['titulo'] = "Anticipos";
         $this->sidebar['lista']['menu'] = array($menu_items->alta, $menu_items->importar, $menu_items->reportes);
+
+        $this->sidebar['abono']['titulo'] = "Anticipos - Abonos";
+        $this->sidebar['abono']['menu'] = array();
 
         $menu_items->alta['menu_seccion_active'] = false;
 
@@ -236,233 +221,26 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
         return $menu_items;
     }
 
-    public function lee_archivo(bool $header, bool $ws = false)
+    protected function key_selects_txt(array $keys_selects): array
     {
-        $doc_documento_modelo = new doc_documento($this->link);
-        $doc_documento_modelo->registro['descripcion'] = rand();
-        $doc_documento_modelo->registro['descripcion_select'] = rand();
-        $doc_documento_modelo->registro['doc_tipo_documento_id'] = 1;
-        $doc_documento = $doc_documento_modelo->alta_bd(file: $_FILES['archivo']);
+        $keys_selects = parent::key_selects_txt($keys_selects);
         if (errores::$error) {
-            $error = $this->errores->error(mensaje: 'Error al dar de alta el documento', data: $doc_documento);
-            if (!$header) {
-                return $error;
-            }
-            print_r($error);
-            die('Error');
+            return $this->errores->error(mensaje: 'Error al icializar selects', data: $keys_selects);
         }
 
-        $columnas = array("nss", "nombre", "ap", "am", "empresa", "fecha_inicio", "fecha_compromiso", "concepto",
-            "importe", "descuento_periodo", "comentarios");
-        $fechas = array("fecha_inicio", "fecha_compromiso");
-
-        $anticipos_excel = Importador::getInstance()
-            ->leer_registros(ruta_absoluta: $doc_documento->registro['doc_documento_ruta_absoluta'], columnas: $columnas,
-                fechas: $fechas);
+        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 6, key: 'fecha_inicio',
+            keys_selects: $keys_selects, place_holder: 'Fecha Inicio', required: false);
         if (errores::$error) {
-            $error = $this->errores->error(mensaje: 'Error al leer archivo de anticipos', data: $anticipos_excel);
-            if (!$header) {
-                return $error;
-            }
-            print_r($error);
-            die('Error');
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
         }
 
-        $this->link->beginTransaction();
-
-        foreach ($anticipos_excel as $anticipo) {
-            if (!isset($anticipo->nss)) {
-                $error = $this->errores->error(mensaje: 'Error el campo NSS es requerido', data: $anticipo);
-                if (!$header) {
-                    return $error;
-                }
-                print_r($error);
-                die('Error');
-            }
-
-            if (!isset($anticipo->fecha_inicio)) {
-                $anticipo->fecha_inicio = date('Y-m-d');
-            }
-
-            if (!isset($anticipo->fecha_compromiso)) {
-                $anticipo->fecha_compromiso = date('Y-m-d');
-            }
-
-            if (!isset($anticipo->concepto)) {
-                $error = $this->errores->error(mensaje: 'Error el campo CONCEPTO es requerido', data: $anticipo);
-                if (!$header) {
-                    return $error;
-                }
-                print_r($error);
-                die('Error');
-            }
-
-            if (!isset($anticipo->importe)) {
-                $error = $this->errores->error(mensaje: 'Error el campo IMPORTE es requerido', data: $anticipo);
-                if (!$header) {
-                    return $error;
-                }
-                print_r($error);
-                die('Error');
-            }
-
-            if (!is_numeric($anticipo->importe)) {
-                $error = $this->errores->error(mensaje: 'Error el campo IMPORTE tiene que un numero', data: $anticipo);
-                if (!$header) {
-                    return $error;
-                }
-                print_r($error);
-                die('Error');
-            }
-
-            if (!is_numeric($anticipo->descuento_periodo)) {
-                $error = $this->errores->error(mensaje: 'Error el campo DESCUENTO PERIODO tiene que un numero', data: $anticipo);
-                if (!$header) {
-                    return $error;
-                }
-                print_r($error);
-                die('Error');
-            }
-
-            $filtro_empleado['em_empleado.nss'] = $anticipo->nss;
-            $em_empleado = (new em_empleado($this->link))->filtro_and(filtro: $filtro_empleado);
-            if (errores::$error) {
-                $error = $this->errores->error(mensaje: 'Error obtener datos el empleado', data: $em_empleado);
-                if (!$header) {
-                    return $error;
-                }
-                print_r($error);
-                die('Error');
-            }
-
-            if ($em_empleado->n_registros <= 0) {
-                $error = $this->errores->error(mensaje: "Error no existe el NSS: $anticipo->nss", data: $anticipo);
-                if (!$header) {
-                    return $error;
-                }
-                print_r($error);
-                die('Error');
-            } else if ($em_empleado->n_registros > 1){
-                $error = $this->errores->error(mensaje: "Error el NSS: $anticipo->nss esta asignado a varios empleados",
-                    data: $anticipo);
-                if (!$header) {
-                    return $error;
-                }
-                print_r($error);
-                die('Error');
-            }
-
-            $filtro_tipo_anticipo['em_tipo_anticipo.descripcion'] = $anticipo->concepto;
-            $tipo_anticipo = (new em_tipo_anticipo($this->link))->filtro_and(filtro: $filtro_tipo_anticipo);
-            if (errores::$error) {
-                $error = $this->errores->error(mensaje: 'Error al obtener tipo de anticipo', data: $tipo_anticipo);
-                if (!$header) {
-                    return $error;
-                }
-                print_r($error);
-                die('Error');
-            }
-
-            $em_tipo_descuento_id = -1;
-
-            if ($tipo_anticipo->n_registros <= 0) {
-                $error = $this->errores->error(mensaje: "Error no existe el CONCEPTO: $anticipo->concepto", data: $anticipo);
-                if (!$header) {
-                    return $error;
-                }
-                print_r($error);
-                die('Error');
-            }
-
-            $filtro_tipo_descuento['em_tipo_descuento.monto'] = $anticipo->descuento_periodo;
-            $tipo_descuento = (new em_tipo_descuento($this->link))->filtro_and(filtro: $filtro_tipo_descuento);
-            if (errores::$error) {
-                $error = $this->errores->error(mensaje: 'Error al obtener el tipo de descuento', data: $tipo_descuento);
-                if (!$header) {
-                    return $error;
-                }
-                print_r($error);
-                die('Error');
-            }
-
-            if ($tipo_descuento->n_registros <= 0) {
-                $filtro_metodo_calculo['em_metodo_calculo.descripcion'] = "monto_fijo";
-                $metodo_calculo = (new em_metodo_calculo($this->link))->filtro_and(filtro: $filtro_metodo_calculo, limit: 1);
-                if (errores::$error) {
-                    $error = $this->errores->error(mensaje: 'Error al obtener el metodo de calculo', data: $filtro_metodo_calculo);
-                    if (!$header) {
-                        return $error;
-                    }
-                    print_r($error);
-                    die('Error');
-                }
-
-                if ($metodo_calculo->n_registros <= 0) {
-                    $error = $this->errores->error(mensaje: 'Error no existe el metodo de calculo: monto_fijo', data: $metodo_calculo);
-                    if (!$header) {
-                        return $error;
-                    }
-                    print_r($error);
-                    die('Error');
-                }
-
-                $data['codigo'] = rand() . $anticipo->descuento_periodo;
-                $data['descripcion'] = "monto_fijo ".$anticipo->descuento_periodo;
-                $data['em_metodo_calculo_id'] = $metodo_calculo->registros[0]['em_metodo_calculo_id'];
-                $data['monto'] = $anticipo->descuento_periodo;
-                $alta = (new em_tipo_descuento($this->link))->alta_registro(registro: $data);
-                if (errores::$error) {
-                    $this->link->rollBack();
-                    $error = $this->errores->error(mensaje: 'Error al dar de alta tipo de descuento', data: $alta);
-                    if (!$header) {
-                        return $error;
-                    }
-                    print_r($error);
-                    die('Error');
-                }
-
-                $em_tipo_descuento_id = $alta->registro_id;
-            } else {
-                $em_tipo_descuento_id = $tipo_descuento->registros[0]['em_tipo_descuento_id'];
-            }
-
-            $registro = array();
-            $registro['em_empleado_id'] = $em_empleado->registros[0]['em_empleado_id'];
-            $registro['em_tipo_anticipo_id'] = $tipo_anticipo->registros[0]['em_tipo_anticipo_id'];
-            $registro['em_tipo_descuento_id'] = $em_tipo_descuento_id;
-            $registro['codigo'] = rand() . $anticipo->concepto;
-            $registro['descripcion'] = $anticipo->concepto;
-            $registro['monto'] = $anticipo->importe;
-            $registro['n_pagos'] = 1;
-            $registro['fecha_prestacion'] = $anticipo->fecha_compromiso;
-            $registro['fecha_inicio_descuento'] = $anticipo->fecha_inicio;
-            $registro['comentarios'] = $anticipo->comentarios;
-
-            $alta = (new em_anticipo($this->link))->alta_registro(registro: $registro);
-            if (errores::$error) {
-                $this->link->rollBack();
-                $error = $this->errores->error(mensaje: 'Error al dar de alta anticipo', data: $alta);
-                if (!$header) {
-                    return $error;
-                }
-                print_r($error);
-                die('Error');
-            }
-        }
-        $this->link->commit();
-
-        header('Location:' . $this->link_lista);
-        exit;
-    }
-
-    public function sube_archivo(bool $header, bool $ws = false)
-    {
-        $r_alta = parent::alta(header: false, ws: false);
+        $keys_selects = (new \base\controller\init())->key_select_txt(cols: 6, key: 'fecha_final',
+            keys_selects: $keys_selects, place_holder: 'Fecha Final', required: false);
         if (errores::$error) {
-            return $this->errores->error(mensaje: 'Error al generar template', data: $r_alta);
+            return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
         }
 
-        return $r_alta;
+        return $keys_selects;
     }
 
     private function get_filtros(array $post)
@@ -1121,6 +899,36 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
         $menu_item['menu_lateral_active'] = $menu_lateral_active;
 
         return $menu_item;
+    }
+
+    public function reporte_empleado(bool $header, bool $ws = false)
+    {
+        $r_alta = parent::alta(header: false);
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al generar template', data: $r_alta, header: $header, ws: $ws);
+        }
+
+        $this->modelo->campos_view['com_sucursal_id'] = array("type" => "selects", "model" => new com_sucursal($this->link));
+        $this->modelo->campos_view['fecha_inicio'] = array("type" => "inputs");
+        $this->modelo->campos_view['fecha_final'] = array("type" => "inputs");
+
+        $keys_selects = $this->init_selects_inputs();
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al inicializar selects', data: $keys_selects);
+        }
+
+        $keys_selects['em_tipo_anticipo_id']->cols = 12;
+        $keys_selects['em_tipo_anticipo_id']->required = false;
+        $keys_selects['em_empleado_id']->con_registros = false;
+        $keys_selects['em_empleado_id']->required = true;
+
+        $inputs = $this->inputs(keys_selects: $keys_selects);
+        if (errores::$error) {
+            return $this->retorno_error(
+                mensaje: 'Error al obtener inputs', data: $inputs, header: $header, ws: $ws);
+        }
+
+        return $this->inputs;
     }
 
     public function reporte_ejecutivo(bool $header, bool $ws = false)

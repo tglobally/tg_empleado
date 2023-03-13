@@ -1,22 +1,29 @@
 <?php
 /** @var string $url_template */
+
 use config\views;
 
 $ruta_template_base = (new views())->ruta_template_base;
-include $ruta_template_base.'assets/css/_base_css.php';
+include $ruta_template_base . 'assets/css/_base_css.php';
 ?>
 <style>
+
+    body .pagination li.page-item a:hover, body .pagination li.page-item a.active, body .pagination-carousel li a:hover, body .pagination-carousel li.active a, .header .top-bar .pull-right, body .color-secondary, body .btn.color-secondary {
+        background-color: #FFF !important;
+    }
+
     .buttons {
         margin-bottom: 2.25rem;
     }
 
-    .lista{
+    .lista {
         margin-top: 20px;
         margin-bottom: 20px;
     }
+
     .text-header {
         font-family: Helvetica;
-        font-weight: 700!important;
+        font-weight: 700 !important;
         color: #000098;
     }
 
@@ -33,7 +40,7 @@ include $ruta_template_base.'assets/css/_base_css.php';
         word-wrap: break-word;
         background-color: #fff;
         background-clip: border-box;
-        border: 1px solid rgba(0,0,0,.125);
+        border: 1px solid rgba(0, 0, 0, .125);
         border-radius: 0.25rem;
     }
 
@@ -44,8 +51,8 @@ include $ruta_template_base.'assets/css/_base_css.php';
     .card-header {
         padding: 0.75rem 1.25rem;
         margin-bottom: 0;
-        background-color: rgba(0,0,0,.03);
-        border-bottom: 1px solid rgba(0,0,0,.125);
+        background-color: rgba(0, 0, 0, .03);
+        border-bottom: 1px solid rgba(0, 0, 0, .125);
     }
 
     .card-body {
@@ -60,13 +67,14 @@ include $ruta_template_base.'assets/css/_base_css.php';
     }
 
 
-
     .footable.table th, .footable-details.table th {
         font-family: Helvetica;
     }
+
     .footable.table td, .footable-details.table td {
         font-family: Helvetica;
     }
+
     .footable .footable-filtering .input-group .form-control:last-child, .footable .footable-filtering .input-group-addon:last-child, .footable .footable-filtering .input-group-btn:last-child > .btn, .footable .footable-filtering .input-group-btn:last-child > .btn-group > .btn, .footable .footable-filtering .input-group-btn:last-child > .dropdown-toggle, .footable .footable-filtering .input-group-btn:first-child > .btn:not(:first-child), .footable .footable-filtering .input-group-btn:first-child > .btn-group:not(:first-child) > .btn {
         background-color: #0B0595;
         border: 1px solid #0B0595
