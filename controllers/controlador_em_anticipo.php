@@ -343,7 +343,8 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
 
     public function monto_capturado(array $anticipos): float
     {
-        return 2.0;
+        $totales = $this->suma_totales(registros: $anticipos, campo_sumar: array('em_anticipo_monto'));
+        return $totales->em_anticipo_monto;
     }
 
     public function suma_descuentos(array $anticipos): float
@@ -387,7 +388,7 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
         $em_empleado = $em_empleado->registros[0];
 
         $datos['cliente'] = $em_empleado['com_sucursal_descripcion'];
-        $datos['id_nombre'] = "XXXX | " . $em_empleado['em_empleado_nombre_completo'];
+        $datos['id_nombre'] = $em_empleado['em_empleado_id']. " | " . $em_empleado['em_empleado_nombre_completo'];
         $datos['nss'] = $em_empleado['em_empleado_nss'];
         $datos['registro_patronal'] = $em_empleado['em_registro_patronal_descripcion'];
         $datos['monto_capturado'] = $monto_capturado;
@@ -421,7 +422,7 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
         return $totales;
     }
 
-    private function maqueta_salida(int $com_sucursal_id, int $em_empleado_id, array $anticipos): array
+    private function maqueta_salida(int $com_sucursal_id, int $em_empleado_id, int $em_tipo_anticipo, array $anticipos): array
     {
         $datos_remunerado = $this->get_datos_remunerado(com_sucursal_id: $com_sucursal_id, em_empleado_id: $em_empleado_id,
             anticipos: $anticipos);
@@ -462,7 +463,7 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
             ['109926', '01-01-2023', '15-01-2023', 'TIMBRADO', 508.94, 'DUAL', 'Zaida Ivonne'],
             ['109926', '01-01-2023', '15-01-2023', 'TIMBRADO', 508.94, 'DUAL', 'Zaida Ivonne'],
         ];
-        $tabla_2['totales'] = array("titulo" => 'SUMA DESCUENTOS:', 'valor' => 1017.88, 'columna' => "G");
+
         $tabla_2['startRow'] = 2;
         $tabla_2['startColumn'] = "D";
 
@@ -795,7 +796,8 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
 
             if ($anticipos->n_registros > 0) {
                 $data[$tipo_anticipo['em_tipo_anticipo_descripcion']] = $this->maqueta_salida(com_sucursal_id: $filtros->com_sucursal_id,
-                    em_empleado_id: $em_empleado['em_empleado_id'], anticipos: $anticipos->registros);
+                    em_empleado_id: $em_empleado['em_empleado_id'], em_tipo_anticipo: $tipo_anticipo['em_tipo_anticipo_id'],
+                    anticipos: $anticipos->registros);
                 if (errores::$error) {
                     $error = $this->errores->error(mensaje: 'Error al maquetar salida de datos', data: $data);
                     print_r($error);
