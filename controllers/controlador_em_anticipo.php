@@ -349,7 +349,8 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
 
     public function suma_descuentos(array $anticipos): float
     {
-        return 1.0;
+        $totales = $this->suma_totales(registros: $anticipos, campo_sumar: array('em_tipo_descuento_monto'));
+        return $totales->em_tipo_descuento_monto;
     }
 
     private function get_datos_remunerado(int $com_sucursal_id, int $em_empleado_id, array $anticipos): array
