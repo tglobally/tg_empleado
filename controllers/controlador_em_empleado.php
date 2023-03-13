@@ -87,136 +87,12 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
             exit;
         }
 
-        $this->sidebar['lista']['titulo'] = "Empleados";
-        $this->sidebar['lista']['menu'] = array(
-            $this->menu_item(menu_item_titulo: "Alta", link: $this->link_alta,menu_seccion_active: true,
-                menu_lateral_active: true),
-            $this->menu_item(menu_item_titulo: "Sube Empleados", link: $this->link_em_empleado_sube_archivo,menu_seccion_active: true,
-                menu_lateral_active: true),
-            $this->menu_item(menu_item_titulo: "Reportes", link: $this->link_em_empleado_reportes,menu_seccion_active: true,
-                menu_lateral_active: true));
-
-        $this->sidebar['sube_archivo']['titulo'] = "Empleados";
-        $this->sidebar['sube_archivo']['menu'] = array(
-            $this->menu_item(menu_item_titulo: "Alta", link: $this->link_alta,menu_seccion_active: true,
-                menu_lateral_active: true),
-            $this->menu_item(menu_item_titulo: "Sube Empleados", link: $this->link_em_empleado_sube_archivo,menu_seccion_active: true,
-                menu_lateral_active: true),
-            $this->menu_item(menu_item_titulo: "Reportes", link: $this->link_em_empleado_reportes,menu_seccion_active: true,
-                menu_lateral_active: true));
-
-        $this->sidebar['reportes']['titulo'] = "Empleados";
-        $this->sidebar['reportes']['menu'] = array(
-            $this->menu_item(menu_item_titulo: "Alta", link: $this->link_alta,menu_seccion_active: true,
-                menu_lateral_active: true),
-            $this->menu_item(menu_item_titulo: "Sube Empleados", link: $this->link_em_empleado_sube_archivo,menu_seccion_active: true,
-                menu_lateral_active: true),
-            $this->menu_item(menu_item_titulo: "Reportes", link: $this->link_em_empleado_reportes,menu_seccion_active: true,
-                menu_lateral_active: true));
-
-        $this->sidebar['reporte_remunerado']['titulo'] = "Empleados";
-        $this->sidebar['reporte_remunerado']['menu'] = array(
-            $this->menu_item(menu_item_titulo: "Alta", link: $this->link_alta,menu_seccion_active: true,
-                menu_lateral_active: true),
-            $this->menu_item(menu_item_titulo: "Sube Empleados", link: $this->link_em_empleado_sube_archivo,menu_seccion_active: true,
-                menu_lateral_active: true),
-            $this->menu_item(menu_item_titulo: "Reportes", link: $this->link_em_empleado_reportes,menu_seccion_active: true,
-                menu_lateral_active: true));
-
-        $this->sidebar['alta']['titulo'] = "Empleado";
-        $this->sidebar['alta']['stepper_active'] = true;
-        $this->sidebar['alta']['menu'] = array(
-            $this->menu_item(menu_item_titulo: "Alta", link: $this->link_alta,menu_lateral_active: true));
-
-        $this->sidebar['modifica']['titulo'] = "Empleado";
-        $this->sidebar['modifica']['stepper_active'] = true;
-        $this->sidebar['modifica']['menu'] = array(
-            $this->menu_item(menu_item_titulo: "Modifica", link: $this->link_modifica),
-            $this->menu_item(menu_item_titulo: "Fiscales", link: $this->link_em_empleado_fiscales,menu_seccion_active: true,
-                menu_lateral_active: true),
-            $this->menu_item(menu_item_titulo: "Imss", link: $this->link_em_empleado_imss,menu_seccion_active: true,
-                menu_lateral_active: true),
-            $this->menu_item(menu_item_titulo: "Cuenta Bancaria", link: $this->link_em_empleado_cuenta_bancaria,
-                menu_seccion_active: true, menu_lateral_active: true),
-            $this->menu_item(menu_item_titulo: "Anticipo", link: $this->link_em_empleado_anticipo,menu_seccion_active: true,
-                menu_lateral_active: true),
-            $this->menu_item(menu_item_titulo: "Asigna Sucursal", link: $this->link_em_empleado_asigna_sucursal,
-                menu_seccion_active: true, menu_lateral_active: true));
-
-        $this->sidebar['fiscales']['titulo'] = "Empleado";
-        $this->sidebar['fiscales']['stepper_active'] = true;
-        $this->sidebar['fiscales']['menu'] = array(
-            $this->menu_item(menu_item_titulo: "Modifica", link: $this->link_modifica,menu_seccion_active: true,
-                menu_lateral_active: true),
-            $this->menu_item(menu_item_titulo: "Fiscales", link: $this->link_em_empleado_fiscales),
-            $this->menu_item(menu_item_titulo: "Imss", link: $this->link_em_empleado_imss,menu_seccion_active: true,
-                menu_lateral_active: true),
-            $this->menu_item(menu_item_titulo: "Cuenta Bancaria", link: $this->link_em_empleado_cuenta_bancaria,menu_seccion_active: true,
-                menu_lateral_active: true),
-            $this->menu_item(menu_item_titulo: "Anticipo", link: $this->link_em_empleado_anticipo,menu_seccion_active: true,
-                menu_lateral_active: true),
-            $this->menu_item(menu_item_titulo: "Asigna Sucursal", link: $this->link_em_empleado_asigna_sucursal,
-                menu_seccion_active: true, menu_lateral_active: true));
-
-        $this->sidebar['imss']['titulo'] = "Empleado";
-        $this->sidebar['imss']['stepper_active'] = true;
-        $this->sidebar['imss']['menu'] = array(
-            $this->menu_item(menu_item_titulo: "Modifica", link: $this->link_modifica,menu_seccion_active: true,
-                menu_lateral_active: true),
-            $this->menu_item(menu_item_titulo: "Fiscales", link: $this->link_em_empleado_fiscales,
-                menu_seccion_active: true, menu_lateral_active: true),
-            $this->menu_item(menu_item_titulo: "Imss", link: $this->link_em_empleado_imss),
-            $this->menu_item(menu_item_titulo: "Cuenta Bancaria", link: $this->link_em_empleado_cuenta_bancaria,
-                menu_seccion_active: true, menu_lateral_active: true),
-            $this->menu_item(menu_item_titulo: "Anticipo", link: $this->link_em_empleado_anticipo,menu_seccion_active: true,
-                menu_lateral_active: true),
-            $this->menu_item(menu_item_titulo: "Asigna Sucursal", link: $this->link_em_empleado_asigna_sucursal,
-                menu_seccion_active: true, menu_lateral_active: true));
-
-        $this->sidebar['cuenta_bancaria']['titulo'] = "Empleado";
-        $this->sidebar['cuenta_bancaria']['stepper_active'] = true;
-        $this->sidebar['cuenta_bancaria']['menu'] = array(
-            $this->menu_item(menu_item_titulo: "Modifica", link: $this->link_modifica,menu_seccion_active: true,
-                menu_lateral_active: true),
-            $this->menu_item(menu_item_titulo: "Fiscales", link: $this->link_em_empleado_fiscales,
-                menu_seccion_active: true, menu_lateral_active: true),
-            $this->menu_item(menu_item_titulo: "Imss", link: $this->link_em_empleado_imss,menu_seccion_active: true,
-                menu_lateral_active: true),
-            $this->menu_item(menu_item_titulo: "Cuenta Bancaria", link: $this->link_em_empleado_cuenta_bancaria),
-            $this->menu_item(menu_item_titulo: "Anticipo", link: $this->link_em_empleado_anticipo,menu_seccion_active: true,
-                menu_lateral_active: true),
-            $this->menu_item(menu_item_titulo: "Asigna Sucursal", link: $this->link_em_empleado_asigna_sucursal,
-                menu_seccion_active: true, menu_lateral_active: true));
-
-        $this->sidebar['anticipo']['titulo'] = "Empleado";
-        $this->sidebar['anticipo']['stepper_active'] = true;
-        $this->sidebar['anticipo']['menu'] = array(
-            $this->menu_item(menu_item_titulo: "Modifica", link: $this->link_modifica,menu_seccion_active: true,
-                menu_lateral_active: true),
-            $this->menu_item(menu_item_titulo: "Fiscales", link: $this->link_em_empleado_fiscales,
-                menu_seccion_active: true, menu_lateral_active: true),
-            $this->menu_item(menu_item_titulo: "Imss", link: $this->link_em_empleado_imss,menu_seccion_active: true,
-                menu_lateral_active: true),
-            $this->menu_item(menu_item_titulo: "Cuenta Bancaria", link: $this->link_em_empleado_cuenta_bancaria,
-                menu_seccion_active: true, menu_lateral_active: true),
-            $this->menu_item(menu_item_titulo: "Anticipo", link: $this->link_em_empleado_anticipo),
-            $this->menu_item(menu_item_titulo: "Asigna Sucursal", link: $this->link_em_empleado_asigna_sucursal,
-                menu_seccion_active: true, menu_lateral_active: true));
-
-        $this->sidebar['asigna_sucursal']['titulo'] = "Empleado";
-        $this->sidebar['asigna_sucursal']['stepper_active'] = true;
-        $this->sidebar['asigna_sucursal']['menu'] = array(
-            $this->menu_item(menu_item_titulo: "Modifica", link: $this->link_modifica,menu_seccion_active: true,
-                menu_lateral_active: true),
-            $this->menu_item(menu_item_titulo: "Fiscales", link: $this->link_em_empleado_fiscales,
-                menu_seccion_active: true, menu_lateral_active: true),
-            $this->menu_item(menu_item_titulo: "Imss", link: $this->link_em_empleado_imss,menu_seccion_active: true,
-                menu_lateral_active: true),
-            $this->menu_item(menu_item_titulo: "Cuenta Bancaria", link: $this->link_em_empleado_cuenta_bancaria,
-                menu_seccion_active: true, menu_lateral_active: true),
-            $this->menu_item(menu_item_titulo: "Anticipo", link: $this->link_em_empleado_anticipo,
-                menu_seccion_active: true, menu_lateral_active: true),
-            $this->menu_item(menu_item_titulo: "Asigna Sucursal", link: $this->link_em_empleado_asigna_sucursal));
+        $sidebar = $this->init_sidebar();
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al inicializar sidebar', data: $sidebar);
+            print_r($error);
+            die('Error');
+        }
     }
 
     private function init_sidebar(): stdClass|array
@@ -226,77 +102,21 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
         $menu_items->lista = $this->menu_item(menu_item_titulo: "Inicio", link: $this->link_lista);
         $menu_items->alta = $this->menu_item(menu_item_titulo: "Alta", link: $this->link_alta);
         $menu_items->modifica = $this->menu_item(menu_item_titulo: "Modifica", link: $this->link_modifica);
-        $menu_items->importar = $this->menu_item(menu_item_titulo: "Importar Empleados", link: $this->link_lista);
-
-
-        $menu_items->reportes = $this->menu_item(menu_item_titulo: "Reportes", link: $this->link_em_anticipo_reporte_empleado);
-        $menu_items->reporte_ejecutivo = $this->menu_item(menu_item_titulo: "Reporte por Ejecutivo", link: $this->link_em_anticipo_reporte_ejecutivo);
-        $menu_items->reporte_empresa = $this->menu_item(menu_item_titulo: "Reporte por Empresa", link: $this->link_em_anticipo_reporte_empresa);
-        $menu_items->reporte_cliente = $this->menu_item(menu_item_titulo: "Reporte por Cliente", link: $this->link_em_anticipo_reporte_cliente);
-        $menu_items->reporte_trabajador = $this->menu_item(menu_item_titulo: "Reporte por Empleado", link: $this->link_em_anticipo_reporte_empleado);
+        $menu_items->importar = $this->menu_item(menu_item_titulo: "Importar Empleados", link: $this->link_em_empleado_sube_archivo);
+        $menu_items->reportes = $this->menu_item(menu_item_titulo: "Reportes", link: $this->link_em_empleado_reportes);
 
         $menu_items->lista['menu_seccion_active'] = true;
         $menu_items->lista['menu_lateral_active'] = true;
         $menu_items->alta['menu_seccion_active'] = true;
         $menu_items->alta['menu_lateral_active'] = true;
-        $menu_items->modifica['menu_lateral_active'] = true;
         $menu_items->importar['menu_seccion_active'] = true;
         $menu_items->importar['menu_lateral_active'] = true;
         $menu_items->reportes['menu_seccion_active'] = true;
         $menu_items->reportes['menu_lateral_active'] = true;
-        $menu_items->reporte_ejecutivo['menu_seccion_active'] = true;
-        $menu_items->reporte_cliente['menu_seccion_active'] = true;
-        $menu_items->reporte_empresa['menu_seccion_active'] = true;
-        $menu_items->reporte_trabajador['menu_seccion_active'] = true;
 
         $this->sidebar['lista']['titulo'] = "Anticipos";
         $this->sidebar['lista']['menu'] = array($menu_items->alta, $menu_items->importar, $menu_items->reportes);
 
-        $menu_items->alta['menu_seccion_active'] = false;
-
-        $this->sidebar['alta']['titulo'] = "Anticipos";
-        $this->sidebar['alta']['stepper_active'] = true;
-        $this->sidebar['alta']['menu'] = array($menu_items->alta);
-
-        $this->sidebar['modifica']['titulo'] = "Anticipos";
-        $this->sidebar['modifica']['stepper_active'] = true;
-        $this->sidebar['modifica']['menu'] = array($menu_items->modifica);
-
-        $menu_items->importar['menu_seccion_active'] = false;
-
-        $this->sidebar['sube_archivo']['titulo'] = "Anticipos";
-        $this->sidebar['sube_archivo']['stepper_active'] = true;
-        $this->sidebar['sube_archivo']['menu'] = array($menu_items->importar);
-
-        $menu_items->lista['menu_lateral_active'] = false;
-
-        $this->sidebar['reporte_ejecutivo']['titulo'] = "Reportes";
-        $this->sidebar['reporte_ejecutivo']['stepper_active'] = true;
-        $this->sidebar['reporte_ejecutivo']['menu'] = array($menu_items->lista, $menu_items->reporte_ejecutivo,
-            $menu_items->reporte_cliente, $menu_items->reporte_empresa, $menu_items->reporte_trabajador);
-        $this->sidebar['reporte_ejecutivo']['menu'][1]['menu_lateral_active'] = true;
-        $this->sidebar['reporte_ejecutivo']['menu'][1]['menu_seccion_active'] = false;
-
-        $this->sidebar['reporte_cliente']['titulo'] = "Reportes";
-        $this->sidebar['reporte_cliente']['stepper_active'] = true;
-        $this->sidebar['reporte_cliente']['menu'] = array($menu_items->lista, $menu_items->reporte_ejecutivo,
-            $menu_items->reporte_cliente, $menu_items->reporte_empresa, $menu_items->reporte_trabajador);
-        $this->sidebar['reporte_cliente']['menu'][2]['menu_lateral_active'] = true;
-        $this->sidebar['reporte_cliente']['menu'][2]['menu_seccion_active'] = false;
-
-        $this->sidebar['reporte_empresa']['titulo'] = "Reportes";
-        $this->sidebar['reporte_empresa']['stepper_active'] = true;
-        $this->sidebar['reporte_empresa']['menu'] = array($menu_items->lista, $menu_items->reporte_ejecutivo,
-            $menu_items->reporte_cliente, $menu_items->reporte_empresa, $menu_items->reporte_trabajador);
-        $this->sidebar['reporte_empresa']['menu'][3]['menu_lateral_active'] = true;
-        $this->sidebar['reporte_empresa']['menu'][3]['menu_seccion_active'] = false;
-
-        $this->sidebar['reporte_empleado']['titulo'] = "Reportes";
-        $this->sidebar['reporte_empleado']['stepper_active'] = true;
-        $this->sidebar['reporte_empleado']['menu'] = array($menu_items->lista, $menu_items->reporte_ejecutivo,
-            $menu_items->reporte_cliente, $menu_items->reporte_empresa, $menu_items->reporte_trabajador);
-        $this->sidebar['reporte_empleado']['menu'][4]['menu_lateral_active'] = true;
-        $this->sidebar['reporte_empleado']['menu'][4]['menu_seccion_active'] = false;
 
         return $menu_items;
     }
