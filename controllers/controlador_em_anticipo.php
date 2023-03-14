@@ -101,6 +101,31 @@ class controlador_em_anticipo extends \gamboamartin\empleado\controllers\control
         return $conf;
     }
 
+    protected function init_datatable(): stdClass
+    {
+        $columns["org_sucursal_descripcion"]["titulo"] = "Empresa";
+        $columns["em_registro_patronal_descripcion"]["titulo"] = "Registro Patronal";
+        $columns["em_empleado_nss"]["titulo"] = "NSS";
+        $columns["em_empleado_nombre"]["titulo"] = "Remunerado";
+        $columns["em_empleado_nombre"]["campos"] = array("em_empleado_ap", "em_empleado_am");
+        $columns["org_sucursal_id"]["titulo"] = "Cliente";
+        $columns["em_anticipo_status"]["titulo"] = "Estatus";
+        $columns["em_anticipo_monto"]["titulo"] = "Amortización";
+        $columns["em_tipo_descuento_monto"]["titulo"] = "Descuento";
+        $columns["em_anticipo_abonos"]["titulo"] = "Total Descuentos";
+        $columns["em_anticipo_saldo"]["titulo"] = "Saldo";
+        $columns["em_anticipo_n_pagos"]["titulo"] = "# Descuentos";
+
+        $filtro = array("em_anticipo.id", "em_empleado.nss", "em_empleado.nombre", "em_empleado.ap", "em_empleado.am",
+            "em_tipo_anticipo.descripcion", "em_anticipo.monto", "em_anticipo.fecha_prestacion");
+
+        $datatables = new stdClass();
+        $datatables->columns = $columns;
+        $datatables->filtro = $filtro;
+
+        return $datatables;
+    }
+
     protected function init_links(): array|string
     {
         $link = parent::init_links();
