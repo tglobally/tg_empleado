@@ -16,131 +16,17 @@ $url_assets = (new views())->url_assets;
 </div>
 
 <div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="col-sm-2">
-                <a href="<?php echo $controlador->link_lista_org_tipo_puesto; ?>">
-                    <div class="cont_imagen_accion">
-                        <img src="<?php echo $url_assets; ?>img/inicio/imagen_2.jpg">
-                    </div>
-                    <div class="cont_text_accion">
-                        <h4 class="text_seccion">Tipos de Puesto</h4>
-                        <h4 class="text_accion">Catalogo</h4>
-                    </div>
-                </a>
-            </div>
-
-            <div class="col-sm-2">
-                <a href="<?php echo $controlador->link_lista_org_puesto; ?>">
-                    <div class="cont_imagen_accion">
-                        <img src="<?php echo $url_assets; ?>img/inicio/imagen_2.jpg">
-                    </div>
-                    <div class="cont_text_accion">
-                        <h4 class="text_seccion">Puestos</h4>
-                        <h4 class="text_accion">Catalogo</h4>
-                    </div>
-                </a>
-            </div>
-            <div class="col-sm-2">
-                <a href="<?php echo $controlador->link_lista_em_empleado; ?>">
-                    <div class="cont_imagen_accion">
-                        <img src="<?php echo $url_assets; ?>img/inicio/imagen_2.jpg">
-                    </div>
-                    <div class="cont_text_accion">
-                        <h4 class="text_seccion">Empleados</h4>
-                        <h4 class="text_accion">Catalogo</h4>
-                    </div>
-                </a>
-            </div>
-            <div class="col-sm-2">
-                <a href="<?php echo $controlador->link_lista_em_anticipo; ?>">
-                    <div class="cont_imagen_accion">
-                        <img src="<?php echo $url_assets; ?>img/inicio/imagen_2.jpg">
-                    </div>
-                    <div class="cont_text_accion">
-                        <h4 class="text_seccion">Anticipo</h4>
-                        <h4 class="text_accion">Catalogo</h4>
-                    </div>
-                </a>
-            </div>
-            <div class="col-sm-2">
-                <a href="<?php echo $controlador->link_lista_em_tipo_anticipo; ?>">
-                    <div class="cont_imagen_accion">
-                        <img src="<?php echo $url_assets; ?>img/inicio/imagen_2.jpg">
-                    </div>
-                    <div class="cont_text_accion">
-                        <h4 class="text_seccion">Tipo Anticipo</h4>
-                        <h4 class="text_accion">Catalogo</h4>
-                    </div>
-                </a>
-            </div>
-            <div class="col-sm-2">
-                <a href="<?php echo $controlador->link_lista_em_metodo_calculo; ?>">
-                    <div class="cont_imagen_accion">
-                        <img src="<?php echo $url_assets; ?>img/inicio/imagen_2.jpg">
-                    </div>
-                    <div class="cont_text_accion">
-                        <h4 class="text_seccion">Metodo Calculo</h4>
-                        <h4 class="text_accion">Catalogo</h4>
-                    </div>
-                </a>
-            </div>
-            <div class="col-sm-2">
-                <a href="<?php echo $controlador->link_lista_em_tipo_descuento; ?>">
-                    <div class="cont_imagen_accion">
-                        <img src="<?php echo $url_assets; ?>img/inicio/imagen_2.jpg">
-                    </div>
-                    <div class="cont_text_accion">
-                        <h4 class="text_seccion">Tipo Descuento</h4>
-                        <h4 class="text_accion">Catalogo</h4>
-                    </div>
-                </a>
-            </div>
-            <div class="col-sm-2">
-                <a href="<?php echo $controlador->link_lista_em_abono_anticipo; ?>">
-                    <div class="cont_imagen_accion">
-                        <img src="<?php echo $url_assets; ?>img/inicio/imagen_2.jpg">
-                    </div>
-                    <div class="cont_text_accion">
-                        <h4 class="text_seccion">Abono Anticipo</h4>
-                        <h4 class="text_accion">Catalogo</h4>
-                    </div>
-                </a>
-            </div>
-            <div class="col-sm-2">
-                <a href="<?php echo $controlador->link_lista_em_tipo_abono_anticipo; ?>">
-                    <div class="cont_imagen_accion">
-                        <img src="<?php echo $url_assets; ?>img/inicio/imagen_2.jpg">
-                    </div>
-                    <div class="cont_text_accion">
-                        <h4 class="text_seccion">Tipo Abono Anticipo</h4>
-                        <h4 class="text_accion">Catalogo</h4>
-                    </div>
-                </a>
-            </div>
-            <div class="col-sm-2">
-                <a href="<?php echo $controlador->link_lista_em_cuenta_bancaria; ?>">
-                    <div class="cont_imagen_accion">
-                        <img src="<?php echo $url_assets; ?>img/inicio/imagen_2.jpg">
-                    </div>
-                    <div class="cont_text_accion">
-                        <h4 class="text_seccion">Cuentas Bancarias</h4>
-                        <h4 class="text_accion">Catalogo</h4>
-                    </div>
-                </a>
-            </div>
-            <div class="col-sm-2">
-                <a href="<?php echo $controlador->link_lista_em_registro_patronal; ?>">
-                    <div class="cont_imagen_accion">
-                        <img src="<?php echo $url_assets; ?>img/inicio/imagen_2.jpg">
-                    </div>
-                    <div class="cont_text_accion">
-                        <h4 class="text_seccion">Registro Patronal</h4>
-                        <h4 class="text_accion">Catalogo</h4>
-                    </div>
-                </a>
-            </div>
-        </div>
-
+    <div class="catalogos">
+        <?php foreach ($controlador->links_catalogos as $indice => $valor): ?>
+            <a href="<?php echo $valor["link"];?>">
+                <div class="cont_imagen_accion">
+                    <img src="<?php echo $url_assets; ?>img/inicio/imagen_2.jpg">
+                </div>
+                <div class="cont_text_accion">
+                    <h4 class="text_seccion"><?php echo $valor["titulo"];?></h4>
+                    <h4 class="text_accion"><?php echo $valor["subtitulo"];?></h4>
+                </div>
+            </a>
+        <?php endforeach; ?>
     </div>
 </div>

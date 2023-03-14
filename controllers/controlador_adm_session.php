@@ -10,7 +10,9 @@ namespace tglobally\tg_empleado\controllers;
 
 use config\generales;
 use gamboamartin\errores\errores;
+use gamboamartin\system\links_menu;
 use JsonException;
+use PDO;
 use stdClass;
 
 
@@ -19,24 +21,47 @@ class controlador_adm_session extends \gamboamartin\controllers\controlador_adm_
     public string $include_menu = '';
     public string $mensaje_html = '';
 
-    public string $link_alta_tg_cte_tipo_alianza = '';
-    public string $link_lista_org_tipo_puesto = '';
-    public string $link_alta_tg_cte_alianza = '';
-    public string $link_lista_org_puesto = '';
-    public string $link_alta_com_cliente = '';
-    public string $link_lista_com_cliente = '';
-    public string $link_alta_em_empleado = '';
-    public string $link_lista_em_empleado = '';
-    public string $link_alta_em_anticipo = '';
-    public string $link_lista_em_anticipo = '';
-    public string $link_alta_em_tipo_anticipo = '';
-    public string $link_lista_em_tipo_anticipo = '';
-    public string $link_lista_em_metodo_calculo = '';
-    public string $link_lista_em_tipo_descuento = '';
-    public string $link_lista_em_abono_anticipo = '';
-    public string $link_lista_em_tipo_abono_anticipo = '';
-    public string $link_lista_em_cuenta_bancaria = '';
-    public string $link_lista_em_registro_patronal = '';
+    public array $secciones = array("em_empleado", "em_anticipo", "em_abono_anticipo", "em_cuenta_bancaria", "em_registro_patronal",
+        "em_tipo_anticipo", "em_tipo_descuento", "em_tipo_abono_anticipo", "em_metodo_calculo" , "org_puesto" , "org_tipo_puesto");
+    public array $links_catalogos = array();
+
+    public stdClass $links;
+
+    public function __construct(PDO $link, stdClass $paths_conf = new stdClass())
+    {
+        parent::__construct($link, $paths_conf);
+
+        $this->links = (new links_menu(link: $link, registro_id: $this->registro_id))->genera_links($this);
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al inicializar links', data: $this->links);
+            print_r($error);
+            die('Error');
+        }
+
+        $this->links_catalogos["em_empleado"]["titulo"] = "Empleados";
+        $this->links_catalogos["em_empleado"]["subtitulo"] = "Catálogo";
+        $this->links_catalogos["em_anticipo"]["titulo"] = "Anticipos";
+        $this->links_catalogos["em_anticipo"]["subtitulo"] = "Catálogo";
+        $this->links_catalogos["em_abono_anticipo"]["titulo"] = "Abonos";
+        $this->links_catalogos["em_abono_anticipo"]["subtitulo"] = "Catálogo";
+        $this->links_catalogos["em_cuenta_bancaria"]["titulo"] = "Cuentas Bancarias";
+        $this->links_catalogos["em_cuenta_bancaria"]["subtitulo"] = "Catálogo";
+        $this->links_catalogos["em_registro_patronal"]["titulo"] = "Registros Patronales";
+        $this->links_catalogos["em_registro_patronal"]["subtitulo"] = "Catálogo";
+        $this->links_catalogos["em_tipo_anticipo"]["titulo"] = "Tipos Anticipos";
+        $this->links_catalogos["em_tipo_anticipo"]["subtitulo"] = "Catálogo";
+        $this->links_catalogos["em_tipo_descuento"]["titulo"] = "Tipos Descuentos";
+        $this->links_catalogos["em_tipo_descuento"]["subtitulo"] = "Catálogo";
+        $this->links_catalogos["em_tipo_abono_anticipo"]["titulo"] = "Tipo Abonos";
+        $this->links_catalogos["em_tipo_abono_anticipo"]["subtitulo"] = "Catálogo";
+        $this->links_catalogos["em_metodo_calculo"]["titulo"] = "Métodos Calculo";
+        $this->links_catalogos["em_metodo_calculo"]["subtitulo"] = "Catálogo";
+
+        $this->links_catalogos["org_puesto"]["titulo"] = "Puestos";
+        $this->links_catalogos["org_puesto"]["subtitulo"] = "Catálogo";
+        $this->links_catalogos["org_tipo_puesto"]["titulo"] = "Tipo Puestos";
+        $this->links_catalogos["org_tipo_puesto"]["subtitulo"] = "Catálogo";
+    }
 
     /**
      * Funcion de controlador donde se ejecutaran siempre que haya un acceso denegado
@@ -50,6 +75,23 @@ class controlador_adm_session extends \gamboamartin\controllers\controlador_adm_
 
         return array();
 
+    }
+
+    public function get_link(string $seccion, string $accion = "lista"): array|string
+    {
+        if (!property_exists($this->links, $seccion)) {
+            $error = $this->errores->error(mensaje: "Error no existe la seccion: $seccion", data: $seccion);
+            print_r($error);
+            die('Error');
+        }
+
+        if (!property_exists($this->links->$seccion, $accion)) {
+            $error = $this->errores->error(mensaje: 'Error no existe la accion', data: $accion);
+            print_r($error);
+            die('Error');
+        }
+
+        return $this->links->$seccion->$accion;
     }
 
     /**
@@ -72,48 +114,47 @@ class controlador_adm_session extends \gamboamartin\controllers\controlador_adm_
             return $this->retorno_error(mensaje:  'Error al generar template',data: $template, header: $header, ws: $ws);
         }
 
-        $hd = "index.php?seccion=tg_cte_tipo_alianza&accion=alta&session_id=$this->session_id";
-        $this->link_alta_tg_cte_tipo_alianza = $hd;
-        $hd = "index.php?seccion=tg_cte_alianza&accion=alta&session_id=$this->session_id";
-        $this->link_alta_tg_cte_alianza = $hd;
-        $hd = "index.php?seccion=com_cliente&accion=alta&session_id=$this->session_id";
-        $this->link_alta_com_cliente = $hd;
-        $hd = "index.php?seccion=em_empleado&accion=alta&session_id=$this->session_id";
-        $this->link_alta_em_empleado = $hd;
-        $hd = "index.php?seccion=em_anticipo&accion=alta&session_id=$this->session_id";
-        $this->link_alta_em_anticipo = $hd;
-        $hd = "index.php?seccion=em_tipo_anticipo&accion=alta&session_id=$this->session_id";
-        $this->link_alta_em_tipo_anticipo = $hd;
-
-        $hd = "index.php?seccion=org_tipo_puesto&accion=lista&session_id=$this->session_id";
-        $this->link_lista_org_tipo_puesto = $hd;
-        $hd = "index.php?seccion=org_puesto&accion=lista&session_id=$this->session_id";
-        $this->link_lista_org_puesto = $hd;
-        $hd = "index.php?seccion=com_cliente&accion=lista&session_id=$this->session_id";
-        $this->link_lista_com_cliente = $hd;
-        $hd = "index.php?seccion=em_empleado&accion=lista&session_id=$this->session_id";
-        $this->link_lista_em_empleado = $hd;
-        $hd = "index.php?seccion=em_anticipo&accion=lista&session_id=$this->session_id";
-        $this->link_lista_em_anticipo = $hd;
-        $hd = "index.php?seccion=em_tipo_anticipo&accion=lista&session_id=$this->session_id";
-        $this->link_lista_em_tipo_anticipo= $hd;
-        $hd = "index.php?seccion=em_metodo_calculo&accion=lista&session_id=$this->session_id";
-        $this->link_lista_em_metodo_calculo= $hd;
-        $hd = "index.php?seccion=em_tipo_descuento&accion=lista&session_id=$this->session_id";
-        $this->link_lista_em_tipo_descuento= $hd;
-        $hd = "index.php?seccion=em_abono_anticipo&accion=lista&session_id=$this->session_id";
-        $this->link_lista_em_abono_anticipo= $hd;
-        $hd = "index.php?seccion=em_tipo_abono_anticipo&accion=lista&session_id=$this->session_id";
-        $this->link_lista_em_tipo_abono_anticipo= $hd;
-        $hd = "index.php?seccion=em_cuenta_bancaria&accion=lista&session_id=$this->session_id";
-        $this->link_lista_em_cuenta_bancaria= $hd;
-        $hd = "index.php?seccion=em_registro_patronal&accion=lista&session_id=$this->session_id";
-        $this->link_lista_em_registro_patronal= $hd;
+        $this->links_catalogos = $this->inicializar_links();
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al inicializar links', data: $this->links_catalogos);
+        }
 
         $this->include_menu = (new generales())->path_base;
         $this->include_menu .= 'templates/inicio.php';
 
         return $template;
+    }
+
+    public function inicializar_links(): array
+    {
+        foreach ($this->secciones as $link => $valor){
+
+            $seccion = $valor;
+            $accion = "lista";
+
+            if (!is_numeric($link)){
+                $seccion = $link;
+                $accion = $valor;
+            }
+
+            if (!array_key_exists($seccion,$this->links_catalogos)){
+                $this->links_catalogos[$seccion] = array();
+            }
+
+            if (!array_key_exists("titulo",$this->links_catalogos[$seccion])){
+                $this->links_catalogos[$seccion]["titulo"] = $seccion;
+            }
+
+            if (!array_key_exists("subtitulo",$this->links_catalogos[$seccion])){
+                $this->links_catalogos[$seccion]["subtitulo"] = $accion;
+            }
+
+            $this->links_catalogos[$seccion]["link"] = $this->get_link(seccion: $seccion,accion: $accion);
+            if(errores::$error){
+                return $this->errores->error(mensaje: 'Error al obtener link', data: $this->links);
+            }
+        }
+        return $this->links_catalogos;
     }
 
     /**
