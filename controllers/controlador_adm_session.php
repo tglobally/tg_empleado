@@ -22,7 +22,7 @@ class controlador_adm_session extends \gamboamartin\controllers\controlador_adm_
     public string $mensaje_html = '';
 
     public array $secciones = array("em_empleado", "em_anticipo", "em_abono_anticipo", "em_cuenta_bancaria", "em_registro_patronal",
-        "em_tipo_anticipo", "em_tipo_descuento", "em_tipo_abono_anticipo", "em_metodo_calculo" , "org_puesto" , "org_tipo_puesto");
+        "em_tipo_anticipo", "em_tipo_descuento", "em_tipo_abono_anticipo", "em_metodo_calculo" );
     public array $links_catalogos = array();
 
     public stdClass $links;
@@ -56,11 +56,6 @@ class controlador_adm_session extends \gamboamartin\controllers\controlador_adm_
         $this->links_catalogos["em_tipo_abono_anticipo"]["subtitulo"] = "Catálogo";
         $this->links_catalogos["em_metodo_calculo"]["titulo"] = "Métodos Calculo";
         $this->links_catalogos["em_metodo_calculo"]["subtitulo"] = "Catálogo";
-
-        $this->links_catalogos["org_puesto"]["titulo"] = "Puestos";
-        $this->links_catalogos["org_puesto"]["subtitulo"] = "Catálogo";
-        $this->links_catalogos["org_tipo_puesto"]["titulo"] = "Tipo Puestos";
-        $this->links_catalogos["org_tipo_puesto"]["subtitulo"] = "Catálogo";
     }
 
     /**
