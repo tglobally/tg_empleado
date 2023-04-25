@@ -5,6 +5,7 @@ use gamboamartin\errores\errores;
 use html\em_empleado_html;
 use html\org_empresa_html;
 use tglobally\tg_empleado\models\em_empleado;
+use tglobally\tg_empleado\models\em_registro_patronal;
 use tglobally\tg_empleado\models\org_empresa;
 use PDO;
 use stdClass;
@@ -17,7 +18,13 @@ class controlador_em_registro_patronal extends \gamboamartin\empleado\controller
     {
         $html_base = new html();
         parent::__construct(link: $link, html: $html_base);
+
+        $modelo = new em_registro_patronal(link: $link);
+        $this->modelo = $modelo;
+
+
         $this->titulo_lista = 'Registro Patronal';
+
 
         $this->sidebar['lista']['titulo'] = "Registro Patronal";
         $this->sidebar['lista']['menu'] = array(
