@@ -21,6 +21,7 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
     public string $link_em_empleado_anticipo = '';
     public string $link_em_empleado_asigna_sucursal = '';
     public string $link_tg_empleado_sucursal_alta_bd = '';
+    public string $link_em_empleado_asigna_correo = '';
 
     public function __construct(PDO $link, stdClass $paths_conf = new stdClass())
     {
@@ -74,6 +75,15 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
         if (errores::$error) {
             $error = $this->errores->error(mensaje: 'Error al obtener link',
                 data: $this->link_em_empleado_asigna_sucursal);
+            print_r($error);
+            exit;
+        }
+
+        $this->link_em_empleado_asigna_correo = $this->obj_link->link_con_id(accion: "asigna_correo",link: $this->link,
+            registro_id: $this->registro_id,seccion: "em_empleado");
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al obtener link',
+                data: $this->link_em_empleado_asigna_correo);
             print_r($error);
             exit;
         }
@@ -178,6 +188,11 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
         $this->sidebar['asigna_sucursal']['titulo'] = "Empleado";
         $this->sidebar['asigna_sucursal']['stepper_active'] = true;
         $this->sidebar['asigna_sucursal']['menu'] = array($menu_items->modifica, $menu_items->fiscales, $menu_items->imss,
+            $menu_items->cuenta_bancaria, $menu_items->anticipo, $menu_items->asigna_cliente);
+
+        $this->sidebar['asigna_correo']['titulo'] = "Empleado";
+        $this->sidebar['asigna_correo']['stepper_active'] = true;
+        $this->sidebar['asigna_correo']['menu'] = array($menu_items->modifica, $menu_items->fiscales, $menu_items->imss,
             $menu_items->cuenta_bancaria, $menu_items->anticipo, $menu_items->asigna_cliente);
 
         return $menu_items;
@@ -312,6 +327,27 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
         }
 
         return $r_modifica;
+    }
+
+    public function asigna_correo(bool $header = true, bool $ws = false, array $not_actions = array()): array|string
+    {
+        $r_alta = $this->init_alta();
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al inicializar alta', data: $r_alta, header: $header, ws: $ws);
+        }
+
+        $keys_selects = $this->init_selects_inputs();
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al inicializar selects', data: $keys_selects, header: $header,
+                ws: $ws);
+        }
+
+        $base = $this->base_upd(keys_selects: $keys_selects, params: array(), params_ajustados: array());
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al integrar base', data: $base, header: $header, ws: $ws);
+        }
+
+        return $r_alta;
     }
 
     public function asigna_sucursal(bool $header = true, bool $ws = false, array $not_actions = array()): array|string
