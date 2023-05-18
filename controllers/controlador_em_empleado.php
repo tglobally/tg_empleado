@@ -2,9 +2,12 @@
 namespace tglobally\tg_empleado\controllers;
 
 use gamboamartin\comercial\models\com_sucursal;
+use gamboamartin\documento\models\doc_documento;
 use gamboamartin\empleado\models\em_cuenta_bancaria;
+use gamboamartin\empleado\models\em_registro_patronal;
 use gamboamartin\errores\errores;
 use gamboamartin\system\actions;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use tglobally\tg_empleado\models\em_empleado;
 use tglobally\tg_empleado\models\tg_empleado_sucursal;
 use PDO;
@@ -414,6 +417,147 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
 
         return $alta;
     }
+
+    public function ajusta_puestos(bool $header, bool $ws = false)
+    {
+        $em_empleado = (new em_empleado($this->link))->registro(registro_id: $this->registro_id);
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al obtener manifiesto', data: $em_empleado);
+            if (!$header) {
+                return $error;
+            }
+            print_r($error);
+            die('Error');
+        }
+
+        $doc_documento_modelo = new doc_documento($this->link);
+        $doc_documento_modelo->registro['descripcion'] = $em_empleado['em_empleado_descripcion'];
+        $doc_documento_modelo->registro['descripcion_select'] = $em_empleado['em_empleado_descripcion'];
+        $doc_documento_modelo->registro['doc_tipo_documento_id'] = 1;
+        $doc_documento = $doc_documento_modelo->alta_bd(file: $_FILES['archivo']);
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al dar de alta el documento', data: $doc_documento);
+            if (!$header) {
+                return $error;
+            }
+            print_r($error);
+            die('Error');
+        }
+
+        $empleados_excel = $this->obten_empleados_excel(ruta_absoluta: $doc_documento->registro['doc_documento_ruta_absoluta']);
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error obtener empleados', data: $empleados_excel);
+            if (!$header) {
+                return $error;
+            }
+            print_r($error);
+            die('Error');
+        }
+
+        $filtro['em_registro_patronal.id'] = $em_empleado['em_registro_patronal_id'];
+        $em_registro_patronal = (new em_registro_patronal($this->link))->filtro_and(filtro: $filtro);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error obtener registro patronal', data: $em_registro_patronal);
+        }
+
+        $em_registro_patronal_id = $em_registro_patronal->registros[0]['em_registro_patronal_id'];
+        $empleados = array();
+
+        foreach ($empleados_excel as $empleado){
+
+            $registro = array();
+            $keys = array('codigo','nombre','ap','am','telefono','curp','rfc','nss','fecha_inicio_rel_laboral',
+                'salario_diario','salario_diario');
+            foreach ($keys as $key){
+                if(isset($empleado->$key)){
+                    $registro[$key] = $empleado->$key;
+                }
+            }
+
+            $em_empleado = new \gamboamartin\empleado\models\em_empleado($this->link);
+            $em_empleado->registro = $registro;
+            $r_alta = $em_empleado->alta_bd();
+            if (errores::$error) {
+                $error = $this->errores->error(mensaje: 'Error al dar de alta registro', data: $r_alta);
+                if (!$header) {
+                    return $error;
+                }
+                print_r($error);
+                die('Error');
+            }
+        }
+
+        $link = "./index.php?seccion=em_empleado&accion=lista&registro_id=" . $this->registro_id;
+        $link .= "&session_id=$this->session_id";
+        header('Location:' . $link);
+        exit;
+    }
+
+    public function obten_empleados_excel(string $ruta_absoluta)
+    {
+        $documento = IOFactory::load($ruta_absoluta);
+        $totalDeHojas = $documento->getSheetCount();
+
+        $empleados = array();
+        for ($indiceHoja = 0; $indiceHoja < $totalDeHojas; $indiceHoja++) {
+            $hojaActual = $documento->getSheet($indiceHoja);
+            $registros = array();
+            foreach ($hojaActual->getRowIterator() as $fila) {
+                foreach ($fila->getCellIterator() as $celda) {
+                    $fila = $celda->getRow();
+                    $valorRaw = $celda->getValue();
+                    $columna = $celda->getColumn();
+
+                    if ($fila >= 7) {
+                        if ($columna === "A" && is_numeric($valorRaw)) {
+                            $reg = new stdClass();
+                            $reg->fila = $fila;
+                            $registros[] = $reg;
+                        }
+                    }
+                }
+            }
+
+            foreach ($registros as $registro) {
+                $reg = new stdClass();
+                $reg->codigo = $hojaActual->getCell('A' . $registro->fila)->getValue();
+                $reg->nombre = $hojaActual->getCell('B' . $registro->fila)->getValue();
+                $reg->ap = $hojaActual->getCell('C' . $registro->fila)->getValue();
+                $reg->am = $hojaActual->getCell('D' . $registro->fila)->getValue();
+                $reg->faltas = 0;
+                $reg->prima_dominical = 0;
+                $reg->dias_festivos_laborados = 0;
+                $reg->incapacidades = 0;
+                $reg->vacaciones = 0;
+                $reg->dias_descanso_laborado = 0;
+                $reg->compensacion = 0;
+
+                $reg->prima_vacacional = 0;
+                $reg->despensa = 0;
+                $reg->actividades_culturales = 0;
+                $reg->seguro_vida = 0;
+                $reg->caja_ahorro = 0;
+                $reg->anticipo_nomina = 0;
+                $reg->pension_alimenticia = 0;
+                $reg->descuentos = 0;
+                $reg->horas_extras_dobles = 0;
+                $reg->horas_extras_triples = 0;
+                $reg->gratificacion_especial = 0;
+                $reg->premio_puntualidad = 0;
+                $reg->premio_asistencia = 0;
+                $reg->ayuda_transporte = 0;
+                $reg->productividad = 0;
+                $reg->gratificacion = 0;
+                $reg->monto_neto = 0;
+                $reg->monto_sueldo = 0;
+
+                $empleados[] = $reg;
+            }
+        }
+
+        return $empleados;
+    }
+
 
 
     /**
