@@ -20,7 +20,7 @@ class em_empleado extends \gamboamartin\empleado\models\em_empleado {
             return $this->error->error(mensaje: 'Error al dar de alta empleado',data: $alta_bd);
         }
 
-        $registros_empleado_sucursal = $this->genera_registro_empleado_sucursal(em_empleado: $alta_bd);
+        /*$registros_empleado_sucursal = $this->genera_registro_empleado_sucursal(em_empleado: $alta_bd);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar registros de empleado-sucursal',
                 data: $registros_empleado_sucursal);
@@ -29,7 +29,7 @@ class em_empleado extends \gamboamartin\empleado\models\em_empleado {
         $alta_empleado_sucursal = (new tg_empleado_sucursal($this->link))->alta_registro(registro: $registros_empleado_sucursal);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al dar de alta empleado-sucursal', data: $alta_empleado_sucursal);
-        }
+        }*/
 
         return $alta_bd;
 

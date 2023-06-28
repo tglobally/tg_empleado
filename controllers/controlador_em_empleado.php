@@ -100,8 +100,6 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
             exit;
         }
 
-
-
         $sidebar = $this->init_sidebar();
         if (errores::$error) {
             $error = $this->errores->error(mensaje: 'Error al inicializar sidebar', data: $sidebar);
@@ -388,6 +386,7 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
 
         $registro['em_empleado_id'] = $this->registro_id;
         $registro['com_sucursal_id'] = $_POST['com_sucursal_id'];
+
 
         $alta = (new tg_empleado_sucursal($this->link))->alta_registro(registro: $registro);
         if (errores::$error) {
