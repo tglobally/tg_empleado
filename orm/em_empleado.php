@@ -15,12 +15,16 @@ class em_empleado extends \gamboamartin\empleado\models\em_empleado {
 
     public function alta_bd(array $keys_integra_ds = array('codigo', 'descripcion')): array|stdClass
     {
+        $com_sucursal = $this->registro['com_sucursal_id'];
+
+        unset($this->registro['com_sucursal_id']);
+
         $alta_bd = parent::alta_bd($keys_integra_ds);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al dar de alta empleado',data: $alta_bd);
         }
 
-        $registros_empleado_sucursal = $this->genera_registro_empleado_sucursal(em_empleado: $alta_bd);
+        $registros_empleado_sucursal = $this->genera_registro_empleado_sucursal(em_empleado: $alta_bd, com_sucursal: $com_sucursal);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar registros de empleado-sucursal',
                 data: $registros_empleado_sucursal);
@@ -35,14 +39,14 @@ class em_empleado extends \gamboamartin\empleado\models\em_empleado {
 
     }
 
-    private function genera_registro_empleado_sucursal(mixed $em_empleado) : array{
+    private function genera_registro_empleado_sucursal(mixed $em_empleado, int $com_sucursal) : array{
         $descripcion = $em_empleado->registro_id.$em_empleado->registro['em_empleado_descripcion'];
         $codigo = $em_empleado->registro_id.$em_empleado->registro['em_empleado_codigo'];
         $descripcion_select = $em_empleado->registro_id.$em_empleado->registro['em_empleado_descripcion_select'];
         $codigo_bis= $em_empleado->registro_id.$em_empleado->registro['em_empleado_codigo_bis'];
         $alias = $em_empleado->registro_id.$em_empleado->registro['em_empleado_alias'];
         $em_empleado_id = $em_empleado->registro_id;
-        $com_sucursal_id = 1;
+        $com_sucursal_id = $com_sucursal;
         $fecha = date('Y-m-d');;
 
         return array('descripcion' => $descripcion,'codigo' => $codigo,'descripcion_select' => $descripcion_select,
