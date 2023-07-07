@@ -1,5 +1,6 @@
 <?php /** @var \tglobally\tg_empleado\controllers\controlador_em_anticipo $controlador */ ?>
 <?php (new \tglobally\template_tg\template())->sidebar($controlador); ?>
+
 <div class="col-md-9 formulario">
     <div class="col-lg-12">
 
@@ -40,6 +41,28 @@
                     </div>
                     <div class="col-md-6 ">
                         <a href="<?php echo $controlador->link_lista; ?>" class="btn btn-info btn-guarda col-md-12 ">Regresar</a>
+                    </div>
+                </div>
+                <div class="buttons col-md-12">
+                    <div class="col-md-4 ">
+                        <a href="<?php echo $controlador->link_dp_pais_alta; ?>" class="btn btn-info btn-guarda col-md-12 ">Nuevo País</a>
+                    </div>
+                    <div class="col-md-4 ">
+                        <a href="<?php echo $controlador->link_dp_estado_alta; ?>" class="btn btn-info btn-guarda col-md-12 ">Nuevo Estado</a>
+                    </div>
+                    <div class="col-md-4 ">
+                        <a href="<?php echo $controlador->link_dp_municipio_alta; ?>" class="btn btn-info btn-guarda col-md-12 ">Nuevo Municipio</a>
+                    </div>
+                </div>
+                <div class="buttons col-md-12">
+                    <div class="col-md-4 ">
+                        <a href="<?php echo $controlador->link_dp_cp_alta; ?>" class="btn btn-info btn-guarda col-md-12 ">Nuevo CP</a>
+                    </div>
+                    <div class="col-md-4 ">
+                        <a href="<?php echo $controlador->link_dp_colonia_alta; ?>" class="btn btn-info btn-guarda col-md-12 ">Nueva Colonia</a>
+                    </div>
+                    <div class="col-md-4 ">
+                        <a href="<?php echo $controlador->link_dp_calle_alta; ?>" class="btn btn-info btn-guarda col-md-12 ">Nueva Calle</a>
                     </div>
                 </div>
             </form>

@@ -28,6 +28,13 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
     public string $link_tg_empleado_sucursal_alta_bd = '';
     public string $link_em_empleado_asigna_correo = '';
 
+    public string $link_dp_pais_alta = '';
+    public string $link_dp_municipio_alta = '';
+    public string $link_dp_estado_alta = '';
+    public string $link_dp_cp_alta = '';
+    public string $link_dp_colonia_alta = '';
+    public string $link_dp_calle_alta = '';
+
     public function __construct(PDO $link, stdClass $paths_conf = new stdClass())
     {
         $html_base = new html();
@@ -93,11 +100,67 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
             exit;
         }
 
+
+
         $this->link_tg_empleado_sucursal_alta_bd = $this->obj_link->link_alta_bd(link: $this->link,
             seccion: 'tg_empleado_sucursal');
         if (errores::$error) {
             $error = $this->errores->error(mensaje: 'Error al obtener link',
                 data: $this->link_tg_empleado_sucursal_alta_bd);
+            print_r($error);
+            exit;
+        }
+
+        $this->link_dp_pais_alta = $this->obj_link->link_con_id(accion: "alta",link: $this->link,
+            registro_id: $this->registro_id,seccion: "dp_pais");
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al obtener link',
+                data: $this->link_dp_pais_alta);
+            print_r($error);
+            exit;
+        }
+
+        $this->link_dp_estado_alta = $this->obj_link->link_con_id(accion: "alta",link: $this->link,
+            registro_id: $this->registro_id,seccion: "dp_estado");
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al obtener link',
+                data: $this->link_dp_estado_alta);
+            print_r($error);
+            exit;
+        }
+
+        $this->link_dp_municipio_alta = $this->obj_link->link_con_id(accion: "alta",link: $this->link,
+            registro_id: $this->registro_id,seccion: "dp_municipio");
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al obtener link',
+                data: $this->link_dp_municipio_alta);
+            print_r($error);
+            exit;
+        }
+
+        $this->link_dp_cp_alta = $this->obj_link->link_con_id(accion: "alta",link: $this->link,
+            registro_id: $this->registro_id,seccion: "dp_cp");
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al obtener link',
+                data: $this->link_dp_cp_alta);
+            print_r($error);
+            exit;
+        }
+
+        $this->link_dp_colonia_alta = $this->obj_link->link_con_id(accion: "alta",link: $this->link,
+            registro_id: $this->registro_id,seccion: "dp_colonia_postal");
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al obtener link',
+                data: $this->link_dp_colonia_alta);
+            print_r($error);
+            exit;
+        }
+
+        $this->link_dp_calle_alta = $this->obj_link->link_con_id(accion: "alta",link: $this->link,
+            registro_id: $this->registro_id,seccion: "dp_calle_pertenece");
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al obtener link',
+                data: $this->link_dp_calle_alta);
             print_r($error);
             exit;
         }
