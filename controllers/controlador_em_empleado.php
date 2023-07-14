@@ -708,9 +708,9 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
         }
 
         $columnas = array("CODIGO", "NOMBRE", "APELLIDO PATERNO", "APELLIDO MATERNO", "TELEFONO", "CURP", "RFC",
-            "NSS", "FECHA DE INGRESO", "SALARIO DIARIO", "FACTOR DE INTEGRACION", "SALARIO DIARIO INTEGRADO",
+            "NSS", "FECHA DE INGRESO", "FECHA ANTIGUEDAD", "SALARIO DIARIO", "FACTOR DE INTEGRACION", "SALARIO DIARIO INTEGRADO",
             "BANCO", "NUMERO DE CUENTA", "CLABE", "NOMINA", "CLIENTE");
-        $fechas = array("FECHA DE INGRESO");
+        $fechas = array("FECHA DE INGRESO", "FECHA ANTIGUEDAD");
 
         $empleados_excel = Importador::getInstance()
             ->leer_registros(ruta_absoluta: $doc_documento->registro['doc_documento_ruta_absoluta'], columnas: $columnas,
@@ -738,6 +738,7 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
             $registros_empleado['rfc'] = $empleado['RFC'];
             $registros_empleado['nss'] = $empleado['NSS'];
             $registros_empleado['fecha_inicio_rel_laboral'] = $empleado['FECHA DE INGRESO'];
+            $registros_empleado['fecha_antiguedad'] = $empleado['FECHA ANTIGUEDAD'];
             $registros_empleado['salario_diario'] = $empleado['SALARIO DIARIO'];
 
             $filtro_bn_sucursal['bn_sucursal.descripcion'] = strtoupper($empleado['BANCO']);
