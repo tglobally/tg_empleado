@@ -207,7 +207,7 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
         return $campos_view;
     }
 
-    private function init_sidebar(): stdClass|array
+    public function init_sidebar(): stdClass|array
     {
         $menu_items = new stdClass();
 
