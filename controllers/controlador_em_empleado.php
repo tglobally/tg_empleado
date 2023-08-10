@@ -25,6 +25,7 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
     public string $link_em_empleado_cuenta_bancaria = '';
     public string $link_em_empleado_anticipo = '';
     public string $link_em_empleado_asigna_sucursal = '';
+    public string $link_em_empleado_asigna_provision = '';
     public string $link_tg_empleado_sucursal_alta_bd = '';
     public string $link_em_empleado_asigna_correo = '';
 
@@ -87,6 +88,15 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
         if (errores::$error) {
             $error = $this->errores->error(mensaje: 'Error al obtener link',
                 data: $this->link_em_empleado_asigna_sucursal);
+            print_r($error);
+            exit;
+        }
+
+        $this->link_em_empleado_asigna_provision = $this->obj_link->link_con_id(accion: "asigna_provision",link: $this->link,
+            registro_id: $this->registro_id,seccion: "em_empleado");
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al obtener link',
+                data: $this->link_em_empleado_asigna_provision);
             print_r($error);
             exit;
         }
@@ -222,6 +232,8 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
         $menu_items->cuenta_bancaria = $this->menu_item(menu_item_titulo: "Cuenta Bancaria", link: $this->link_em_empleado_cuenta_bancaria);
         $menu_items->anticipo = $this->menu_item(menu_item_titulo: "Anticipo", link: $this->link_em_empleado_anticipo);
         $menu_items->asigna_cliente = $this->menu_item(menu_item_titulo: "Asigna Cliente", link: $this->link_em_empleado_asigna_sucursal);
+        $menu_items->asigna_provision = $this->menu_item(menu_item_titulo: "Provisiones", link: $this->link_em_empleado_asigna_provision);
+
 
         $menu_items->lista['menu_seccion_active'] = true;
         $menu_items->lista['menu_lateral_active'] = true;
@@ -244,6 +256,8 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
         $menu_items->anticipo['menu_lateral_active'] = true;
         $menu_items->asigna_cliente['menu_seccion_active'] = true;
         $menu_items->asigna_cliente['menu_lateral_active'] = true;
+        $menu_items->asigna_provision['menu_seccion_active'] = true;
+        $menu_items->asigna_provision['menu_lateral_active'] = true;
 
         $this->sidebar['lista']['titulo'] = "Empleado";
         $this->sidebar['lista']['menu'] = array($menu_items->alta, $menu_items->importar, $menu_items->reportes);
@@ -257,7 +271,7 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
         $this->sidebar['modifica']['titulo'] = "Empleado";
         $this->sidebar['modifica']['stepper_active'] = true;
         $this->sidebar['modifica']['menu'] = array($menu_items->modifica, $menu_items->fiscales, $menu_items->imss,
-            $menu_items->cuenta_bancaria, $menu_items->anticipo, $menu_items->asigna_cliente);
+            $menu_items->cuenta_bancaria, $menu_items->anticipo, $menu_items->asigna_cliente, $menu_items->asigna_provision);
 
         $menu_items->importar['menu_seccion_active'] = false;
 
@@ -268,27 +282,32 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
         $this->sidebar['fiscales']['titulo'] = "Empleado";
         $this->sidebar['fiscales']['stepper_active'] = true;
         $this->sidebar['fiscales']['menu'] = array($menu_items->modifica, $menu_items->fiscales, $menu_items->imss,
-            $menu_items->cuenta_bancaria, $menu_items->anticipo, $menu_items->asigna_cliente);
+            $menu_items->cuenta_bancaria, $menu_items->anticipo, $menu_items->asigna_cliente, $menu_items->asigna_provision);
 
         $this->sidebar['imss']['titulo'] = "Empleado";
         $this->sidebar['imss']['stepper_active'] = true;
         $this->sidebar['imss']['menu'] = array($menu_items->modifica, $menu_items->fiscales, $menu_items->imss,
-            $menu_items->cuenta_bancaria, $menu_items->anticipo, $menu_items->asigna_cliente);
+            $menu_items->cuenta_bancaria, $menu_items->anticipo, $menu_items->asigna_cliente, $menu_items->asigna_provision);
 
         $this->sidebar['cuenta_bancaria']['titulo'] = "Empleado";
         $this->sidebar['cuenta_bancaria']['stepper_active'] = true;
         $this->sidebar['cuenta_bancaria']['menu'] = array($menu_items->modifica, $menu_items->fiscales, $menu_items->imss,
-            $menu_items->cuenta_bancaria, $menu_items->anticipo, $menu_items->asigna_cliente);
+            $menu_items->cuenta_bancaria, $menu_items->anticipo, $menu_items->asigna_cliente, $menu_items->asigna_provision);
 
         $this->sidebar['anticipo']['titulo'] = "Empleado";
         $this->sidebar['anticipo']['stepper_active'] = true;
         $this->sidebar['anticipo']['menu'] = array($menu_items->modifica, $menu_items->fiscales, $menu_items->imss,
-            $menu_items->cuenta_bancaria, $menu_items->anticipo, $menu_items->asigna_cliente);
+            $menu_items->cuenta_bancaria, $menu_items->anticipo, $menu_items->asigna_cliente, $menu_items->asigna_provision);
 
         $this->sidebar['asigna_sucursal']['titulo'] = "Empleado";
         $this->sidebar['asigna_sucursal']['stepper_active'] = true;
         $this->sidebar['asigna_sucursal']['menu'] = array($menu_items->modifica, $menu_items->fiscales, $menu_items->imss,
-            $menu_items->cuenta_bancaria, $menu_items->anticipo, $menu_items->asigna_cliente);
+            $menu_items->cuenta_bancaria, $menu_items->anticipo, $menu_items->asigna_cliente, $menu_items->asigna_provision);
+
+        $this->sidebar['asigna_provision']['titulo'] = "Empleado";
+        $this->sidebar['asigna_provision']['stepper_active'] = true;
+        $this->sidebar['asigna_provision']['menu'] = array($menu_items->modifica, $menu_items->fiscales, $menu_items->imss,
+            $menu_items->cuenta_bancaria, $menu_items->anticipo, $menu_items->asigna_cliente, $menu_items->asigna_provision);
 
         $this->sidebar['asigna_correo']['titulo'] = "Empleado";
         $this->sidebar['asigna_correo']['stepper_active'] = true;
@@ -486,6 +505,28 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
     }
 
     public function asigna_sucursal(bool $header = true, bool $ws = false, array $not_actions = array()): array|string
+    {
+        $seccion = "tg_empleado_sucursal";
+
+        $data_view = new stdClass();
+        $data_view->names = array('Id', 'Código', 'RFC Cliente', 'Razón Social Client', 'Sucursal Cliente', 'Acciones');
+        $data_view->keys_data = array($seccion . "_id", $seccion . '_codigo', 'com_cliente_rfc', 'com_cliente_razon_social',
+            'com_sucursal_descripcion');
+        $data_view->key_actions = 'acciones';
+        $data_view->namespace_model = 'tglobally\\tg_empleado\\models';
+        $data_view->name_model_children = $seccion;
+
+        $contenido_table = $this->contenido_children(data_view: $data_view, next_accion: __FUNCTION__,
+            not_actions: $not_actions);
+        if (errores::$error) {
+            return $this->retorno_error(
+                mensaje: 'Error al obtener tbody', data: $contenido_table, header: $header, ws: $ws);
+        }
+
+        return $contenido_table;
+    }
+
+    public function asigna_provision(bool $header = true, bool $ws = false, array $not_actions = array()): array|string
     {
         $seccion = "tg_empleado_sucursal";
 
