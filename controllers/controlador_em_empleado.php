@@ -207,7 +207,7 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
         $init_data['em_empleado'] = "gamboamartin\\empleado";
         $init_data['em_registro_patronal'] = "gamboamartin\\empleado";
         $init_data['com_sucursal'] = "gamboamartin\\comercial";
-
+        $init_data['org_sucursal'] = "gamboamartin\\organigrama";
 
         $campos_view = $this->campos_view_base(init_data: $init_data, keys: $keys);
         if (errores::$error) {
@@ -329,8 +329,10 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
 
         $keys_selects['em_centro_costo_id']->cols = 6;
 
-
-        return $keys_selects;
+        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "com_sucursal_id", label: "Cliente",
+            cols: 12);
+        return $this->init_selects(keys_selects: $keys_selects, key: "org_sucursal_id", label: "Empresa",
+            cols: 12);
     }
 
     private function init_selects(array $keys_selects, string $key, string $label, int $id_selected = -1, int $cols = 6,
@@ -412,6 +414,27 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
             $keys_selects['em_empleado_id']->disabled = true;
 
             $inputs = $this->controlador_tg_empleado_sucursal->inputs(keys_selects: $keys_selects);
+            if (errores::$error) {
+                return $this->errores->error(mensaje: 'Error al obtener inputs', data: $inputs);
+            }
+
+            $this->inputs = $inputs;
+        } else if ($this->accion === "asigna_provision"){
+            $r_template = $this->alta(header: false);
+            if (errores::$error) {
+                return $this->errores->error(mensaje: 'Error al obtener template', data: $r_template);
+            }
+
+            $keys_selects = $this->init_selects_inputs();
+            if (errores::$error) {
+                return $this->errores->error(mensaje: 'Error al inicializar selects', data: $keys_selects);
+            }
+
+            /*$keys_selects['em_empleado_id']->id_selected = $this->registro_id;
+            $keys_selects['em_empleado_id']->filtro = array("em_empleado.id" => $this->registro_id);
+            $keys_selects['em_empleado_id']->disabled = true;*/
+
+            $inputs = $this->inputs(keys_selects: $keys_selects);
             if (errores::$error) {
                 return $this->errores->error(mensaje: 'Error al obtener inputs', data: $inputs);
             }

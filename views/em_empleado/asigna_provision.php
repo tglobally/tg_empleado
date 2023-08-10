@@ -11,12 +11,12 @@
         <div class="  form-main" id="form">
             <form method="post" action="<?php echo $controlador->link_tg_empleado_sucursal_alta_bd; ?>"
                   class="form-additional">
-
-
+                <?php echo $controlador->inputs->com_sucursal_id; ?>
+                <?php echo $controlador->inputs->org_sucursal_id; ?>
                 <div class="buttons col-md-12">
                     <div class="col-md-6 btn-ancho">
                         <button type="submit" class="btn btn-info btn-guarda col-md-12 " name="btn_action_next"
-                                value="asigna_sucursal">Asigna Sucursal
+                                value="asigna_sucursal">Actualizar Registros
                         </button>
                     </div>
                     <div class="col-md-6 btn-ancho">
