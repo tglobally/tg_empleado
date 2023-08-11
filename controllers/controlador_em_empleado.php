@@ -7,6 +7,8 @@ use gamboamartin\documento\models\doc_documento;
 use gamboamartin\empleado\models\em_cuenta_bancaria;
 use gamboamartin\empleado\models\em_registro_patronal;
 use gamboamartin\errores\errores;
+use gamboamartin\facturacion\models\fc_csd;
+use gamboamartin\organigrama\models\org_sucursal;
 use gamboamartin\plugins\Importador;
 use gamboamartin\system\actions;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -430,8 +432,20 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
                 return $this->errores->error(mensaje: 'Error al inicializar selects', data: $keys_selects);
             }
 
-            $filtro["tg_empleado_sucursal.em_empleado_id"] = $this->registro_id;
+            $empleado = $this->modelo->registro(registro_id: $this->registro_id);
+            if (errores::$error) {
+                return $this->errores->error(mensaje: 'Error al obtener al empleado', data: $empleado);
+            }
 
+            $filtro = array();
+            $filtro["fc_csd.id"] = $empleado['em_registro_patronal_fc_csd_id'];
+            $empresa = (new fc_csd($this->link))->filtro_and(filtro: $filtro,limit: 1);
+            if (errores::$error) {
+                return $this->errores->error(mensaje: 'Error al obtener empresa', data: $empresa);
+            }
+
+            $filtro = array();
+            $filtro["tg_empleado_sucursal.em_empleado_id"] = $this->registro_id;
             $cliente = (new tg_empleado_sucursal($this->link))->filtro_and(filtro: $filtro,limit: 1);
             if (errores::$error) {
                 return $this->errores->error(mensaje: 'Error al obtener cliente', data: $cliente);
@@ -440,6 +454,10 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
             $keys_selects['com_sucursal_id']->id_selected = $cliente->registros[0]["com_sucursal_id"];
             $keys_selects['com_sucursal_id']->filtro = array("com_sucursal.id" => $cliente->registros[0]["com_sucursal_id"]);
             $keys_selects['com_sucursal_id']->disabled = true;
+
+            $keys_selects['org_sucursal_id']->id_selected = $empresa->registros[0]["org_sucursal_id"];
+            $keys_selects['org_sucursal_id']->filtro = array("org_sucursal.id" => $empresa->registros[0]["org_sucursal_id"]);
+            $keys_selects['org_sucursal_id']->disabled = true;
 
             $inputs = $this->inputs(keys_selects: $keys_selects);
             if (errores::$error) {
