@@ -553,9 +553,9 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
         $seccion = "tg_empleado_sucursal";
 
         $data_view = new stdClass();
-        $data_view->names = array('Id', 'RFC Cliente', 'Razón Social', 'Cliente', 'Acciones');
-        $data_view->keys_data = array($seccion . "_id", 'com_cliente_rfc', 'com_cliente_razon_social',
-            'com_sucursal_descripcion');
+        $data_view->names = array('Id', 'RFC Cliente', 'Cliente', 'RFC Empresa', 'Empresa', 'Acciones');
+        $data_view->keys_data = array($seccion . "_id", 'com_cliente_rfc', 'com_sucursal_descripcion', 'org_empresa_rfc',
+            'org_sucursal_descripcion');
         $data_view->key_actions = 'acciones';
         $data_view->namespace_model = 'tglobally\\tg_empleado\\models';
         $data_view->name_model_children = $seccion;

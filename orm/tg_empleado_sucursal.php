@@ -14,8 +14,8 @@ class tg_empleado_sucursal extends _modelo_parent
     {
         $tabla = "tg_empleado_sucursal";
         $columnas = array($tabla => false, 'em_empleado' => $tabla, 'em_registro_patronal'=> 'em_empleado',
-            'com_sucursal' => $tabla, 'com_cliente' => 'com_sucursal', 'dp_calle_pertenece' => 'com_sucursal',
-            'dp_calle' => 'dp_calle_pertenece', 'fc_csd' => 'em_registro_patronal',
+            'com_sucursal' => $tabla, 'org_sucursal' => $tabla, 'org_empresa' => 'org_sucursal', 'com_cliente' => 'com_sucursal',
+            'dp_calle_pertenece' => 'com_sucursal', 'dp_calle' => 'dp_calle_pertenece', 'fc_csd' => 'em_registro_patronal',
             'dp_colonia_postal' => 'dp_calle_pertenece', 'dp_colonia' => 'dp_colonia_postal', 'dp_cp' => 'dp_colonia_postal',
             'dp_municipio' => 'dp_cp', 'dp_estado' => 'dp_municipio', 'dp_pais' => 'dp_estado');
         $campos_obligatorios = array();

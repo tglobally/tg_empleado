@@ -13,6 +13,8 @@
                   class="form-additional">
                 <?php echo $controlador->inputs->em_empleado_id; ?>
                 <?php echo $controlador->inputs->com_sucursal_id; ?>
+                <?php echo $controlador->inputs->org_sucursal_id; ?>
+
 
                 <?php echo $controlador->inputs->hidden_row_id; ?>
                 <?php echo $controlador->inputs->hidden_seccion_retorno; ?>
