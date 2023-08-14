@@ -9,7 +9,7 @@
             Hola, <?php echo $controlador->datos_session_usuario['adm_usuario_user']; ?> </h3>
 
         <div class="  form-main" id="form">
-            <form method="post" action="<?php echo $controlador->link_tg_empleado_sucursal_alta_bd; ?>"
+            <form method="post" action="./index.php?seccion=em_empleado&accion=asigna_sucursal_bd&session_id=<?php echo $controlador->session_id; ?>&registro_id=<?php echo $controlador->registro_id; ?>"
                   class="form-additional">
                 <?php echo $controlador->inputs->em_empleado_id; ?>
                 <?php echo $controlador->inputs->com_sucursal_id; ?>

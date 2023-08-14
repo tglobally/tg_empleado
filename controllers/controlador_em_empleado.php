@@ -605,7 +605,7 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
 
         $registro['em_empleado_id'] = $this->registro_id;
         $registro['com_sucursal_id'] = $_POST['com_sucursal_id'];
-
+        $registro['org_sucursal_id'] = $_POST['org_sucursal_id'];
 
         $alta = (new tg_empleado_sucursal($this->link))->alta_registro(registro: $registro);
         if (errores::$error) {
