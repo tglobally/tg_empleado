@@ -13,6 +13,36 @@
                   class="form-additional">
                 <?php echo $controlador->inputs->com_sucursal_id; ?>
                 <?php echo $controlador->inputs->org_sucursal_id; ?>
+
+
+                <div class="control-group">
+                    <div class="control-group col-sm-6">
+                        <div class="controls">
+                            <input type="checkbox" class="form-check-input" name="prima_vacacional" value="activo">
+                            <label class="form-check-label" for="flexCheckDefault">Prima Vacacional</label>
+                        </div>
+                    </div>
+                    <div class="control-group col-sm-6">
+                        <div class="controls">
+                            <input type="checkbox" class="form-check-input" name="vacaciones" value="activo">
+                            <label class="form-check-label" for="flexCheckDefault">Vacaciones</label>
+                        </div>
+                    </div>
+                    <div class="control-group col-sm-6">
+                        <div class="controls">
+                            <input type="checkbox" class="form-check-input" name="prima_antiguedad" value="activo">
+                            <label class="form-check-label" for="flexCheckDefault">Prima Antigüedad</label>
+                        </div>
+                    </div>
+                    <div class="control-group col-sm-6">
+                        <div class="controls">
+                            <input type="checkbox" class="form-check-input" name="aguinaldo" value="activo">
+                            <label class="form-check-label" for="flexCheckDefault">Gratificación Anual (Aguinaldo)</label>
+                        </div>
+                    </div>
+                </div>
+
+
                 <div class="buttons col-md-12">
                     <div class="col-md-6 btn-ancho">
                         <button type="submit" class="btn btn-info btn-guarda col-md-12 " name="btn_action_next"
