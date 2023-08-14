@@ -325,10 +325,6 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
         if (errores::$error) {
             return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
         }
-
-        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "com_sucursal_id", label: "Cliente",
-            cols: 12);
-
         $keys_selects['em_centro_costo_id']->cols = 6;
 
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "com_sucursal_id", label: "Cliente",
@@ -557,8 +553,8 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
         $seccion = "tg_empleado_sucursal";
 
         $data_view = new stdClass();
-        $data_view->names = array('Id', 'Código', 'RFC Cliente', 'Razón Social Client', 'Sucursal Cliente', 'Acciones');
-        $data_view->keys_data = array($seccion . "_id", $seccion . '_codigo', 'com_cliente_rfc', 'com_cliente_razon_social',
+        $data_view->names = array('Id', 'RFC Cliente', 'Razón Social', 'Cliente', 'Acciones');
+        $data_view->keys_data = array($seccion . "_id", 'com_cliente_rfc', 'com_cliente_razon_social',
             'com_sucursal_descripcion');
         $data_view->key_actions = 'acciones';
         $data_view->namespace_model = 'tglobally\\tg_empleado\\models';

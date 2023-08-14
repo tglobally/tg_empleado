@@ -140,6 +140,6 @@ class controlador_tg_empleado_sucursal extends _ctl_base
     public function init_selects_inputs(): array
     {
         $keys_selects = $this->init_selects(keys_selects: array(), key: "em_empleado_id", label: "Empleado",cols: 12);
-        return $this->init_selects(keys_selects: $keys_selects, key: "com_sucursal_id", label: "Sucursal",cols: 12);
+        return $this->init_selects(keys_selects: $keys_selects, key: "com_sucursal_id", label: "Cliente",cols: 12);
     }
 }

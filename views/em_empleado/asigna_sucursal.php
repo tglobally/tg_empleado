@@ -21,7 +21,7 @@
                 <div class="buttons col-md-12">
                     <div class="col-md-6 btn-ancho">
                         <button type="submit" class="btn btn-info btn-guarda col-md-12 " name="btn_action_next"
-                                value="asigna_sucursal">Asigna Sucursal
+                                value="asigna_sucursal">Asigna Cliente
                         </button>
                     </div>
                     <div class="col-md-6 btn-ancho">
@@ -35,7 +35,7 @@
     <div class="lista">
         <div class="card">
             <div class="card-header">
-                <span class="text-header">Sucursales Asignadas</span>
+                <span class="text-header">Clientes Asignados</span>
             </div>
             <div class="card-body">
                 <?php echo $controlador->contenido_table; ?>
