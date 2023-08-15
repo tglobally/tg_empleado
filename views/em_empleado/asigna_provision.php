@@ -11,6 +11,7 @@
         <div class="  form-main" id="form">
             <form method="post" action="<?php echo $controlador->link_tg_empleado_sucursal_alta_bd; ?>"
                   class="form-additional">
+                <?php echo $controlador->inputs->em_empleado_id; ?>
                 <?php echo $controlador->inputs->com_sucursal_id; ?>
                 <?php echo $controlador->inputs->org_sucursal_id; ?>
 

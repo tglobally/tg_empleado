@@ -329,6 +329,8 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
 
         $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "com_sucursal_id", label: "Cliente",
             cols: 12);
+        $keys_selects = $this->init_selects(keys_selects: $keys_selects, key: "em_empleado_id", label: "Empleado",
+            cols: 12);
         return $this->init_selects(keys_selects: $keys_selects, key: "org_sucursal_id", label: "Empresa",
             cols: 12);
     }
@@ -428,32 +430,26 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
                 return $this->errores->error(mensaje: 'Error al inicializar selects', data: $keys_selects);
             }
 
-            $empleado = $this->modelo->registro(registro_id: $this->registro_id);
+            $keys_selects['em_empleado_id']->id_selected = $this->registro_id;
+            $keys_selects['em_empleado_id']->filtro = array("em_empleado.id" => $this->registro_id);
+            $keys_selects['em_empleado_id']->disabled = true;
+
+            $filtro['tg_empleado_sucursal.em_empleado_id'] = $this->registro_id;
+            $clientes = (new tg_empleado_sucursal($this->link))->filtro_and(filtro: $filtro);
             if (errores::$error) {
-                return $this->errores->error(mensaje: 'Error al obtener al empleado', data: $empleado);
+                return $this->errores->error(mensaje: 'Error al obtener clientes', data: $clientes);
             }
 
-            $filtro = array();
-            $filtro["fc_csd.id"] = $empleado['em_registro_patronal_fc_csd_id'];
-            $empresa = (new fc_csd($this->link))->filtro_and(filtro: $filtro,limit: 1);
-            if (errores::$error) {
-                return $this->errores->error(mensaje: 'Error al obtener empresa', data: $empresa);
+            $registros_aplanados = array();
+
+            foreach ($clientes->registros as $registro) {
+                if (!in_array($registro['com_sucursal_id'], $registros_aplanados)){
+                    $registros_aplanados[] = $registro['com_sucursal_id'];
+                }
             }
 
-            $filtro = array();
-            $filtro["tg_empleado_sucursal.em_empleado_id"] = $this->registro_id;
-            $cliente = (new tg_empleado_sucursal($this->link))->filtro_and(filtro: $filtro,limit: 1);
-            if (errores::$error) {
-                return $this->errores->error(mensaje: 'Error al obtener cliente', data: $cliente);
-            }
-
-            $keys_selects['com_sucursal_id']->id_selected = $cliente->registros[0]["com_sucursal_id"];
-            $keys_selects['com_sucursal_id']->filtro = array("com_sucursal.id" => $cliente->registros[0]["com_sucursal_id"]);
-            $keys_selects['com_sucursal_id']->disabled = true;
-
-            $keys_selects['org_sucursal_id']->id_selected = $empresa->registros[0]["org_sucursal_id"];
-            $keys_selects['org_sucursal_id']->filtro = array("org_sucursal.id" => $empresa->registros[0]["org_sucursal_id"]);
-            $keys_selects['org_sucursal_id']->disabled = true;
+            $keys_selects['com_sucursal_id']->in = array("llave" => 'com_sucursal.id', "values" => $registros_aplanados);
+            $keys_selects['org_sucursal_id']->con_registros = false;
 
             $inputs = $this->inputs(keys_selects: $keys_selects);
             if (errores::$error) {
