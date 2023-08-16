@@ -91,6 +91,19 @@ class controlador_tg_empleado_sucursal extends _ctl_base
         return $salida;
     }
 
+    public function get_empresas(bool $header, bool $ws = true): array|stdClass
+    {
+        $keys['em_empleado'] = array('id', 'descripcion', 'codigo', 'codigo_bis');
+        $keys['com_sucursal'] = array('id', 'descripcion', 'codigo', 'codigo_bis');
+
+        $salida = $this->get_out(header: $header, keys: $keys, ws: $ws);
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al generar salida', data: $salida, header: $header, ws: $ws);
+        }
+
+        return $salida;
+    }
+
     private function init_configuraciones(): controler
     {
         $this->seccion_titulo = 'Sucursal Empleado';
