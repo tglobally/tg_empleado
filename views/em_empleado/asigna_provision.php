@@ -58,5 +58,16 @@
             </form>
         </div>
     </div>
+
+    <div class="lista">
+        <div class="card">
+            <div class="card-header">
+                <span class="text-header">Provisiones Asignadas</span>
+            </div>
+            <div class="card-body">
+                <?php echo $controlador->contenido_table; ?>
+            </div> <!-- /. widget-table-->
+        </div>
+    </div>
 </div>
 

@@ -568,12 +568,12 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
 
     public function asigna_provision(bool $header = true, bool $ws = false, array $not_actions = array()): array|string
     {
-        $seccion = "tg_empleado_sucursal";
+        $seccion = "tg_conf_provisiones_empleado";
 
         $data_view = new stdClass();
-        $data_view->names = array('Id', 'Código', 'RFC Cliente', 'Razón Social Client', 'Sucursal Cliente', 'Acciones');
-        $data_view->keys_data = array($seccion . "_id", $seccion . '_codigo', 'com_cliente_rfc', 'com_cliente_razon_social',
-            'com_sucursal_descripcion');
+        $data_view->names = array('Id', 'Cliente','Empresa','Provisión','Acciones');
+        $data_view->keys_data = array($seccion . "_id", "com_sucursal_descripcion", "org_sucursal_descripcion",
+            "tg_tipo_provision_descripcion");
         $data_view->key_actions = 'acciones';
         $data_view->namespace_model = 'tglobally\\tg_empleado\\models';
         $data_view->name_model_children = $seccion;
