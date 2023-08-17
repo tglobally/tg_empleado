@@ -47,7 +47,7 @@
                 <div class="buttons col-md-12">
                     <div class="col-md-6 btn-ancho">
                         <button type="submit" class="btn btn-info btn-guarda col-md-12 " name="btn_action_next"
-                                value="asigna_sucursal">Actualizar Registros
+                                value="asigna_sucursal">Procesar
                         </button>
                     </div>
                     <div class="col-md-6 btn-ancho">

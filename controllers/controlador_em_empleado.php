@@ -571,7 +571,7 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
         $seccion = "tg_conf_provisiones_empleado";
 
         $data_view = new stdClass();
-        $data_view->names = array('Id', 'Cliente','Empresa','Provisión','Acciones');
+        $data_view->names = array('Id', 'Cliente','Empresa','Provisión');
         $data_view->keys_data = array($seccion . "_id", "com_sucursal_descripcion", "org_sucursal_descripcion",
             "tg_tipo_provision_descripcion");
         $data_view->key_actions = 'acciones';
