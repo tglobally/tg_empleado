@@ -19,25 +19,25 @@
                 <div class="control-group">
                     <div class="control-group col-sm-6">
                         <div class="controls">
-                            <input type="checkbox" class="form-check-input" name="prima_vacacional" value="activo">
+                            <input type="checkbox" class="form-check-input" name="prima_vacacional" value="PRIMA VACACIONAL">
                             <label class="form-check-label" for="flexCheckDefault">Prima Vacacional</label>
                         </div>
                     </div>
                     <div class="control-group col-sm-6">
                         <div class="controls">
-                            <input type="checkbox" class="form-check-input" name="vacaciones" value="activo">
+                            <input type="checkbox" class="form-check-input" name="vacaciones" value="VACACIONES">
                             <label class="form-check-label" for="flexCheckDefault">Vacaciones</label>
                         </div>
                     </div>
                     <div class="control-group col-sm-6">
                         <div class="controls">
-                            <input type="checkbox" class="form-check-input" name="prima_antiguedad" value="activo">
+                            <input type="checkbox" class="form-check-input" name="prima_antiguedad" value="PRIMA DE ANTIGÜEDAD">
                             <label class="form-check-label" for="flexCheckDefault">Prima Antigüedad</label>
                         </div>
                     </div>
                     <div class="control-group col-sm-6">
                         <div class="controls">
-                            <input type="checkbox" class="form-check-input" name="aguinaldo" value="activo">
+                            <input type="checkbox" class="form-check-input" name="aguinaldo" value="GRATIFICACIÓN ANUAL (AGUINALDO)">
                             <label class="form-check-label" for="flexCheckDefault">Gratificación Anual (Aguinaldo)</label>
                         </div>
                     </div>
