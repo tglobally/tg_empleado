@@ -13,10 +13,13 @@ use gamboamartin\plugins\Importador;
 use gamboamartin\system\actions;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use tglobally\tg_empleado\models\em_empleado;
+use tglobally\tg_empleado\models\tg_conf_provision;
+use tglobally\tg_empleado\models\tg_conf_provisiones_empleado;
 use tglobally\tg_empleado\models\tg_empleado_sucursal;
 use PDO;
 use stdClass;
 use tglobally\template_tg\html;
+use tglobally\tg_empleado\models\tg_tipo_provision;
 use Throwable;
 
 class controlador_em_empleado extends \gamboamartin\empleado\controllers\controlador_em_empleado {
@@ -609,20 +612,60 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
                 mensaje: 'Error al inicializar', data: $siguiente_view, header: $header, ws: $ws);
         }
 
-        print_r($_POST);exit();
+        $provisiones = $this->determinar_provisiones(registros: $_POST);
 
-        $registro['em_empleado_id'] = $this->registro_id;
-
-        $alta = (new tg_empleado_sucursal($this->link))->alta_registro(registro: $registro);
+        $filtro['tg_conf_provision.com_sucursal_id'] = $_POST['com_sucursal_id'];
+        $filtro['tg_conf_provision.org_sucursal_id'] = $_POST['org_sucursal_id'];
+        $filtro['tg_conf_provision.estado'] = "activo";
+        $configuracion = (new tg_conf_provision($this->link))->filtro_and(filtro: $filtro);
         if (errores::$error) {
-            $this->link->rollBack();
-            return $this->retorno_error(mensaje: 'Error al dar de alta cuenta bancaria', data: $alta,
-                header: $header, ws: $ws);
+            return $this->errores->error(mensaje: 'Error al obtener configuracion', data: $configuracion);
         }
 
-        $alta->siguiente_view = "asigna_provision";
+        if ($configuracion->n_registros > 0){
+            $filtro['tg_conf_provisiones_empleado.tg_conf_provision_id'] = $configuracion->registros[0]['tg_conf_provision_id'];
+            $filtro['tg_conf_provisiones_empleado.em_empleado_id'] = $this->registro_id;
+            $borrados = (new tg_conf_provisiones_empleado($this->link))->elimina_con_filtro_and(filtro: $filtro);
+            if (errores::$error) {
+                $this->link->rollBack();
+                return $this->errores->error(mensaje: 'Error al eliminar provisiones', data: $borrados);
+            }
 
-        return $alta;
+            foreach ($provisiones as $provision){
+                $filtro = array();
+                $filtro['tg_tipo_provision.descripcion'] = $provision;
+                $id_provision = (new tg_tipo_provision($this->link))->filtro_and(columnas: array('tg_tipo_provision_id'),
+                    filtro: $filtro);
+                if (errores::$error) {
+                    return $this->errores->error(mensaje: 'Error al obtener provision', data: $id_provision);
+                }
+
+                $alta['tg_conf_provision_id'] = $configuracion->registros[0]['tg_conf_provision_id'];
+                $alta['em_empleado_id'] = $this->registro_id;
+                $alta['tg_tipo_provision_id'] = $id_provision->registros[0]['tg_tipo_provision_id'];
+                $alta['descripcion'] = $provision;
+                $alta['codigo'] = $this->modelo->get_codigo_aleatorio();
+                $alta['codigo_bis'] = $alta['codigo'];
+                $alta_bd = (new tg_conf_provisiones_empleado($this->link))->alta_registro(registro: $alta);
+                if (errores::$error) {
+                    $this->link->rollBack();
+                    return $this->errores->error(mensaje: 'Error al insertar provision', data: $alta_bd);
+                }
+
+            }
+        }
+        $this->link->commit();
+        $link = "./index.php?seccion=em_empleado&accion=asigna_provision&registro_id=" . $this->registro_id;
+        $link .= "&session_id=$this->session_id";
+        header('Location:' . $link);
+        exit();
+    }
+
+    public function determinar_provisiones(array $registros): array
+    {
+        unset($registros['com_sucursal_id']);
+        unset($registros['org_sucursal_id']);
+        return $registros;
     }
 
     public function asigna_sucursal_bd(bool $header = true, bool $ws = false, array $not_actions = array()): array|string
