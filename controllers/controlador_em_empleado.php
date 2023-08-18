@@ -29,6 +29,7 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
     public string $link_em_empleado_asigna_sucursal = '';
     public string $link_em_empleado_asigna_provision = '';
     public string $link_tg_empleado_sucursal_alta_bd = '';
+    public string $link_tg_empleado_asigna_provision_bd = '';
     public string $link_em_empleado_asigna_correo = '';
 
     public string $link_dp_pais_alta = '';
@@ -119,6 +120,15 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
         if (errores::$error) {
             $error = $this->errores->error(mensaje: 'Error al obtener link',
                 data: $this->link_tg_empleado_sucursal_alta_bd);
+            print_r($error);
+            exit;
+        }
+
+        $this->link_tg_empleado_asigna_provision_bd = $this->obj_link->link_con_id(accion: "asigna_provision_bd",link: $this->link,
+            registro_id: $this->registro_id,seccion: "em_empleado");
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al obtener link',
+                data: $this->link_tg_empleado_asigna_provision_bd);
             print_r($error);
             exit;
         }
@@ -586,6 +596,33 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
         }
 
         return $contenido_table;
+    }
+
+    public function asigna_provision_bd(bool $header = true, bool $ws = false, array $not_actions = array()): array|string
+    {
+        $this->link->beginTransaction();
+
+        $siguiente_view = $this->inicializa_transaccion();
+        if (errores::$error) {
+            $this->link->rollBack();
+            return $this->retorno_error(
+                mensaje: 'Error al inicializar', data: $siguiente_view, header: $header, ws: $ws);
+        }
+
+        print_r($_POST);exit();
+
+        $registro['em_empleado_id'] = $this->registro_id;
+
+        $alta = (new tg_empleado_sucursal($this->link))->alta_registro(registro: $registro);
+        if (errores::$error) {
+            $this->link->rollBack();
+            return $this->retorno_error(mensaje: 'Error al dar de alta cuenta bancaria', data: $alta,
+                header: $header, ws: $ws);
+        }
+
+        $alta->siguiente_view = "asigna_provision";
+
+        return $alta;
     }
 
     public function asigna_sucursal_bd(bool $header = true, bool $ws = false, array $not_actions = array()): array|string
