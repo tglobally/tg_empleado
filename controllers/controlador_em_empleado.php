@@ -622,6 +622,8 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
             return $this->errores->error(mensaje: 'Error al obtener configuracion', data: $configuracion);
         }
 
+        $configuracion_id = -1;
+
         if ($configuracion->n_registros > 0){
             $filtro['tg_conf_provisiones_empleado.tg_conf_provision_id'] = $configuracion->registros[0]['tg_conf_provision_id'];
             $filtro['tg_conf_provisiones_empleado.em_empleado_id'] = $this->registro_id;
@@ -631,29 +633,47 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
                 return $this->errores->error(mensaje: 'Error al eliminar provisiones', data: $borrados);
             }
 
-            foreach ($provisiones as $provision){
-                $filtro = array();
-                $filtro['tg_tipo_provision.descripcion'] = $provision;
-                $id_provision = (new tg_tipo_provision($this->link))->filtro_and(columnas: array('tg_tipo_provision_id'),
-                    filtro: $filtro);
-                if (errores::$error) {
-                    return $this->errores->error(mensaje: 'Error al obtener provision', data: $id_provision);
-                }
+            $configuracion_id = $configuracion->registros[0]['tg_conf_provision_id'];
+        } else {
+            $alta['com_sucursal_id'] = $_POST['com_sucursal_id'];
+            $alta['org_sucursal_id'] = $_POST['org_sucursal_id'];
+            $alta['estado'] = "activo";
+            $alta['descripcion'] = "CONF.";
+            $alta['codigo'] = $this->modelo->get_codigo_aleatorio();
+            $alta['codigo_bis'] = $alta['codigo'];
 
-                $alta['tg_conf_provision_id'] = $configuracion->registros[0]['tg_conf_provision_id'];
-                $alta['em_empleado_id'] = $this->registro_id;
-                $alta['tg_tipo_provision_id'] = $id_provision->registros[0]['tg_tipo_provision_id'];
-                $alta['descripcion'] = $provision;
-                $alta['codigo'] = $this->modelo->get_codigo_aleatorio();
-                $alta['codigo_bis'] = $alta['codigo'];
-                $alta_bd = (new tg_conf_provisiones_empleado($this->link))->alta_registro(registro: $alta);
-                if (errores::$error) {
-                    $this->link->rollBack();
-                    return $this->errores->error(mensaje: 'Error al insertar provision', data: $alta_bd);
-                }
+            $alta_bd = (new tg_conf_provision($this->link))->alta_registro(registro: $alta);
+            if (errores::$error) {
+                $this->link->rollBack();
+                return $this->errores->error(mensaje: 'Error al insertar configuracion', data: $alta_bd);
+            }
 
+            $configuracion_id = $alta_bd->registro_id;
+        }
+
+        foreach ($provisiones as $provision){
+            $filtro = array();
+            $filtro['tg_tipo_provision.descripcion'] = $provision;
+            $id_provision = (new tg_tipo_provision($this->link))->filtro_and(columnas: array('tg_tipo_provision_id'),
+                filtro: $filtro);
+            if (errores::$error) {
+                return $this->errores->error(mensaje: 'Error al obtener provision', data: $id_provision);
+            }
+
+            $alta['tg_conf_provision_id'] = $configuracion_id;
+            $alta['em_empleado_id'] = $this->registro_id;
+            $alta['tg_tipo_provision_id'] = $id_provision->registros[0]['tg_tipo_provision_id'];
+            $alta['descripcion'] = $provision;
+            $alta['codigo'] = $this->modelo->get_codigo_aleatorio();
+            $alta['codigo_bis'] = $alta['codigo'];
+            $alta_bd = (new tg_conf_provisiones_empleado($this->link))->alta_registro(registro: $alta);
+            if (errores::$error) {
+                $this->link->rollBack();
+                return $this->errores->error(mensaje: 'Error al insertar provision', data: $alta_bd);
             }
         }
+
+
         $this->link->commit();
         $link = "./index.php?seccion=em_empleado&accion=asigna_provision&registro_id=" . $this->registro_id;
         $link .= "&session_id=$this->session_id";
