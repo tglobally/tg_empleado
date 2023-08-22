@@ -651,6 +651,12 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
             $configuracion_id = $alta_bd->registro_id;
         }
 
+        $tipo_calculo = "inactive";
+
+        if (isset($_POST['tipo_calculo']) && $_POST['tipo_calculo'] === "active"){
+            $tipo_calculo = "active";
+        }
+
         foreach ($provisiones as $provision){
             $filtro = array();
             $filtro['tg_tipo_provision.descripcion'] = $provision;
@@ -666,6 +672,7 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
             $alta['descripcion'] = $provision;
             $alta['codigo'] = $this->modelo->get_codigo_aleatorio();
             $alta['codigo_bis'] = $alta['codigo'];
+            $alta['tipo_calculo'] = $tipo_calculo;
             $alta_bd = (new tg_conf_provisiones_empleado($this->link))->alta_registro(registro: $alta);
             if (errores::$error) {
                 $this->link->rollBack();
@@ -685,6 +692,7 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
     {
         unset($registros['com_sucursal_id']);
         unset($registros['org_sucursal_id']);
+        unset($registros['tipo_calculo']);
         return $registros;
     }
 
