@@ -926,7 +926,7 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
 
         $columnas = array("CODIGO", "NOMBRE", "APELLIDO PATERNO", "APELLIDO MATERNO", "TELEFONO", "CURP", "RFC",
             "NSS", "FECHA DE INGRESO", "FECHA ANTIGUEDAD", "SALARIO DIARIO", "FACTOR DE INTEGRACION", "SALARIO DIARIO INTEGRADO",
-            "BANCO", "NUMERO DE CUENTA", "CLABE", "NOMINA", "CLIENTE");
+            "SALARIO TOTAL","BANCO", "NUMERO DE CUENTA", "CLABE", "NOMINA", "CLIENTE");
         $fechas = array("FECHA DE INGRESO", "FECHA ANTIGUEDAD");
 
         $empleados_excel = Importador::getInstance()
@@ -957,6 +957,7 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
             $registros_empleado['fecha_inicio_rel_laboral'] = $empleado['FECHA DE INGRESO'];
             $registros_empleado['fecha_antiguedad'] = $empleado['FECHA ANTIGUEDAD'];
             $registros_empleado['salario_diario'] = $empleado['SALARIO DIARIO'];
+            $registros_empleado['salario_total'] = $empleado['SALARIO TOTAL'];
 
             $filtro_bn_sucursal['bn_sucursal.descripcion'] = strtoupper($empleado['BANCO']);
             $bn_sucursal = (new bn_sucursal($this->link))->filtro_and(columnas: array('bn_sucursal_id'),
