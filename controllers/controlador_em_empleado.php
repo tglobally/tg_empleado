@@ -198,6 +198,34 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
         }
     }
 
+    public function alta(bool $header, bool $ws = false): array|string
+    {
+        $r_alta = $this->init_alta();
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al inicializar alta', data: $r_alta, header: $header, ws: $ws);
+        }
+
+        $keys_selects = $this->init_selects_inputs();
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al inicializar selects', data: $keys_selects, header: $header,
+                ws: $ws);
+        }
+
+        $this->row_upd->fecha_inicio_rel_laboral = date('Y-m-d');
+        $this->row_upd->fecha_antiguedad = date('Y-m-d');
+        $this->row_upd->salario_diario = 0;
+        $this->row_upd->salario_diario_integrado = 0;
+        $this->row_upd->salario_total = 0;
+
+        $inputs = $this->inputs(keys_selects: $keys_selects);
+        if (errores::$error) {
+            return $this->retorno_error(
+                mensaje: 'Error al obtener inputs', data: $inputs, header: $header, ws: $ws);
+        }
+
+        return $r_alta;
+    }
+
     protected function campos_view(): array
     {
         $keys = new stdClass();
