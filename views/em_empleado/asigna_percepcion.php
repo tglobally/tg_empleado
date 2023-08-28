@@ -9,10 +9,11 @@
             Hola, <?php echo $controlador->datos_session_usuario['adm_usuario_user']; ?> </h3>
 
         <div class="  form-main" id="form">
-            <form method="post" action="<?php echo $controlador->link_tg_empleado_asigna_provision_bd; ?>"
+            <form method="post" action="<?php echo $controlador->link_tg_empleado_asigna_percepcion_bd; ?>"
                   class="form-additional">
                 <?php echo $controlador->inputs->em_empleado_id; ?>
                 <?php echo $controlador->inputs->com_sucursal_id; ?>
+                <?php echo $controlador->inputs->nom_percepcion_id; ?>
                 <?php echo $controlador->inputs->monto; ?>
 
                 <div class="buttons col-md-12">

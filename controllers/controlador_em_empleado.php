@@ -13,6 +13,8 @@ use gamboamartin\plugins\Importador;
 use gamboamartin\system\actions;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use tglobally\tg_empleado\models\em_empleado;
+use tglobally\tg_empleado\models\tg_conf_percepcion;
+use tglobally\tg_empleado\models\tg_conf_percepcion_empleado;
 use tglobally\tg_empleado\models\tg_conf_provision;
 use tglobally\tg_empleado\models\tg_conf_provisiones_empleado;
 use tglobally\tg_empleado\models\tg_empleado_sucursal;
@@ -816,6 +818,73 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
 
         $this->link->commit();
         $link = "./index.php?seccion=em_empleado&accion=asigna_provision&registro_id=" . $this->registro_id;
+        $link .= "&session_id=$this->session_id";
+        header('Location:' . $link);
+        exit();
+    }
+
+    public function asigna_percepcion_bd(bool $header = true, bool $ws = false, array $not_actions = array()): array|string
+    {
+        $this->link->beginTransaction();
+
+        $siguiente_view = $this->inicializa_transaccion();
+        if (errores::$error) {
+            $this->link->rollBack();
+            return $this->retorno_error(
+                mensaje: 'Error al inicializar', data: $siguiente_view, header: $header, ws: $ws);
+        }
+
+        $filtro['tg_conf_percepcion.com_sucursal_id'] = $_POST['com_sucursal_id'];
+        $filtro['tg_conf_percepcion.estado'] = "activo";
+        $configuracion = (new tg_conf_percepcion($this->link))->filtro_and(filtro: $filtro);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al obtener configuracion', data: $configuracion);
+        }
+
+        if ($configuracion->n_registros <= 0){
+            $alta['com_sucursal_id'] = $_POST['com_sucursal_id'];
+            $alta['estado'] = "activo";
+            $alta['descripcion'] = "CONF.";
+            $alta['codigo'] = $this->modelo->get_codigo_aleatorio();
+            $alta['codigo_bis'] = $alta['codigo'];
+
+            $alta_bd = (new tg_conf_percepcion($this->link))->alta_registro(registro: $alta);
+            if (errores::$error) {
+                $this->link->rollBack();
+                return $this->errores->error(mensaje: 'Error al insertar configuracion', data: $alta_bd);
+            }
+            $configuracion->registros[0]['tg_conf_percepcion_id'] = $alta_bd->registro_id;
+        }
+
+        $filtro['tg_conf_percepcion_empleado.tg_conf_percepcion_id'] = $configuracion->registros[0]['tg_conf_percepcion_id'];
+        $filtro['tg_conf_percepcion_empleado.em_empleado_id'] = $this->registro_id;
+        $filtro['tg_conf_percepcion_empleado.nom_percepcion_id'] = $_POST['nom_percepcion_id'];
+        $filtro['tg_conf_percepcion.estado'] = "activo";
+        $configuracion_empleado = (new tg_conf_percepcion_empleado($this->link))->filtro_and(filtro: $filtro);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al obtener configuracion', data: $configuracion_empleado);
+        }
+
+        if ($configuracion_empleado->n_registros > 0){
+            return $this->retorno_error(mensaje: 'Error ya existe una configuracion asignada para la percepcion',
+                data: $configuracion_empleado, header: $header, ws: $ws);
+        }
+
+        $alta['tg_conf_percepcion_id'] = $configuracion->registros[0]['tg_conf_percepcion_id'];
+        $alta['em_empleado_id'] = $this->registro_id;
+        $alta['nom_percepcion_id'] = $_POST['nom_percepcion_id'];
+        $alta['monto'] = $_POST['monto'];
+        $alta['descripcion'] = "CONF.". $this->registro_id;
+        $alta['codigo'] = $this->modelo->get_codigo_aleatorio();
+        $alta['codigo_bis'] = $alta['codigo'];
+        $alta_bd = (new tg_conf_percepcion_empleado($this->link))->alta_registro(registro: $alta);
+        if (errores::$error) {
+            $this->link->rollBack();
+            return $this->errores->error(mensaje: 'Error al insertar cof. percepcion', data: $alta_bd);
+        }
+
+        $this->link->commit();
+        $link = "./index.php?seccion=em_empleado&accion=asigna_percepcion&registro_id=" . $this->registro_id;
         $link .= "&session_id=$this->session_id";
         header('Location:' . $link);
         exit();
