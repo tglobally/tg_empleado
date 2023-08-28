@@ -555,7 +555,25 @@ class controlador_em_empleado extends \gamboamartin\empleado\controllers\control
                 return $this->errores->error(mensaje: 'Error al inicializar selects', data: $keys_selects);
             }
 
+            $keys_selects['em_empleado_id']->id_selected = $this->registro_id;
+            $keys_selects['em_empleado_id']->filtro = array("em_empleado.id" => $this->registro_id);
+            $keys_selects['em_empleado_id']->disabled = true;
 
+            $filtro['tg_empleado_sucursal.em_empleado_id'] = $this->registro_id;
+            $clientes = (new tg_empleado_sucursal($this->link))->filtro_and(filtro: $filtro);
+            if (errores::$error) {
+                return $this->errores->error(mensaje: 'Error al obtener clientes', data: $clientes);
+            }
+
+            $registros_aplanados = array();
+
+            foreach ($clientes->registros as $registro) {
+                if (!in_array($registro['com_sucursal_id'], $registros_aplanados)){
+                    $registros_aplanados[] = $registro['com_sucursal_id'];
+                }
+            }
+
+            $keys_selects['com_sucursal_id']->in = array("llave" => 'com_sucursal.id', "values" => $registros_aplanados);
 
             $inputs = $this->inputs(keys_selects: $keys_selects);
             if (errores::$error) {
